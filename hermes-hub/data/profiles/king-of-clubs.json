@@ -1,0 +1,147 @@
+{
+  "id": "king-of-clubs",
+  "name": "KING OF CLUBS",
+  "suit": "clubs",
+  "rank": "king",
+  "role": "Tracking & Attribution",
+  "tagline": "Every conversion tracked. Server-side, GA4, CAPI — nothing lost.",
+  "model": "huggingface/deepseek-ai/DeepSeek-V4-Flash:novita",
+  "modelLabel": "DEEPSEEK-V4-FLASH",
+  "modelColor": "#2dd4bf",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#2dd4bf",
+  "gateway": "telegram",
+  "gatewayHandle": "@king_clubs_bot",
+  "soulFile": "data/souls/king-of-clubs.md",
+  "skills": [
+    "severus-connects-analytics",
+    "severus-connects-reporting",
+    "severus-auditor",
+    "severus-design-performance",
+    "verification-loop",
+    "production-audit",
+    "api-design",
+    "backend-patterns"
+  ],
+  "tools": [
+    {
+      "id": "tracking-audit",
+      "label": "Tracking Audit",
+      "description": "GA4 event quality, CAPI match rate, GTM container health"
+    },
+    {
+      "id": "server-side-tracking",
+      "label": "Server-Side Setup",
+      "description": "CAPI implementation, GA4 Measurement Protocol, sGTM"
+    },
+    {
+      "id": "verification-loop",
+      "label": "Verification Loop",
+      "description": "Tracking verification with real-time event testing"
+    },
+    {
+      "id": "gtm-builder",
+      "label": "GTM Builder",
+      "description": "Tag, trigger, variable setup for GA4 + Meta Pixel"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Tracking specs, event schemas, GTM container docs, CAPI logs",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "ga4",
+      "label": "GA4",
+      "detail": "Enhanced measurement — events, conversions, audiences",
+      "status": "connected"
+    },
+    {
+      "id": "meta-capi",
+      "label": "Meta CAPI",
+      "detail": "Server-side Conversions API — event deduplication",
+      "status": "connected"
+    },
+    {
+      "id": "gtm",
+      "label": "Google Tag Manager",
+      "detail": "Container linked — web + server container",
+      "status": "connected"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@king_clubs_bot — tracking anomaly alerts",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6"
+    },
+    {
+      "name": "GA4",
+      "status": "connected",
+      "detail": "Enhanced measurement"
+    },
+    {
+      "name": "Meta CAPI",
+      "status": "connected",
+      "detail": "Server-side events"
+    },
+    {
+      "name": "Google Tag Manager",
+      "status": "connected",
+      "detail": "Container linked"
+    }
+  ],
+  "crons": [
+    {
+      "id": "tracking-audit",
+      "label": "Tracking Audit",
+      "schedule": "0 9 * * 3",
+      "human": "Wednesdays at 09:00",
+      "lastRun": "2026-05-13T09:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 26,
+    "messagesTotal": 481,
+    "lastActive": "1d ago"
+  },
+  "whitelist": [
+    "severus-connects-analytics",
+    "severus-connects-reporting",
+    "severus-auditor",
+    "severus-design-performance",
+    "verification-loop",
+    "production-audit",
+    "api-design",
+    "backend-patterns"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": []
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/king-of-clubs.png"
+}

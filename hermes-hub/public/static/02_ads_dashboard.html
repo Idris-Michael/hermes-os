@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1080px; height: 608px;
+    background: #f1f3f4;
+    font-family: "Google Sans", "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #202124;
+    overflow: hidden;
+  }
+
+  /* Top nav */
+  .top-nav {
+    height: 48px;
+    background: #fff;
+    border-bottom: 1px solid #dadce0;
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 16px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo-icon {
+    width: 32px; height: 32px;
+    background: #1a73e8;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 700;
+  }
+  .nav-logo-text { font-size: 16px; font-weight: 500; color: #1a73e8; }
+  .nav-account {
+    margin-left: auto;
+    font-size: 12px; color: #5f6368;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #ea4335;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 600;
+  }
+
+  /* Left sidebar */
+  .sidebar {
+    position: absolute;
+    top: 48px; left: 0;
+    width: 200px; height: calc(608px - 48px);
+    background: #fff;
+    border-right: 1px solid #dadce0;
+    padding: 8px 0;
+  }
+  .sb-item {
+    padding: 10px 20px;
+    font-size: 13px; color: #5f6368;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sb-item.active {
+    color: #1a73e8; background: #e8f0fe;
+    border-right: 3px solid #1a73e8;
+    font-weight: 500;
+  }
+  .sb-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  /* Main content */
+  .main {
+    position: absolute;
+    top: 48px; left: 200px;
+    right: 0; bottom: 0;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  /* Header row */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .page-title { font-size: 20px; font-weight: 400; color: #202124; }
+  .date-range {
+    font-size: 12px; color: #5f6368;
+    border: 1px solid #dadce0;
+    padding: 6px 12px; border-radius: 4px;
+    background: #fff;
+  }
+
+  /* Summary cards */
+  .summary-row {
+    display: flex; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .summary-card {
+    flex: 1; background: #fff;
+    border: 1px solid #dadce0; border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .sc-label { font-size: 11px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .sc-value { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 4px; }
+  .sc-delta { font-size: 11px; }
+  .sc-delta.neg { color: #ea4335; }
+  .sc-delta.pos { color: #34a853; }
+  .sc-delta.warn { color: #fbbc04; }
+
+  /* ROAS card highlighted bad */
+  .sc-roas { border-color: #ea4335; background: #fce8e6; }
+  .sc-roas .sc-value { color: #c5221f; }
+
+  /* Campaign table */
+  .table-wrap {
+    background: #fff;
+    border: 1px solid #dadce0; border-radius: 8px;
+    overflow: hidden;
+  }
+  .table-header {
+    display: flex; align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #dadce0;
+    font-size: 13px; font-weight: 500; color: #202124;
+    gap: 8px;
+  }
+  .th-badge {
+    background: #e8f0fe; color: #1a73e8;
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    text-align: left; padding: 10px 16px;
+    color: #5f6368; font-weight: 500; font-size: 11px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e8eaed;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f3f4;
+    color: #202124;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8f9fa; }
+  .status-dot {
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 6px;
+  }
+  .status-dot.active { background: #34a853; }
+  .status-dot.paused { background: #fbbc04; }
+  .status-dot.limited { background: #ea4335; }
+  .cell-red { color: #c5221f; font-weight: 500; }
+  .cell-warn { color: #f29900; font-weight: 500; }
+  .cell-green { color: #34a853; font-weight: 500; }
+  .cell-bold { font-weight: 600; }
+
+  /* Alert banner */
+  .alert-banner {
+    background: #fce8e6;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; color: #c5221f;
+  }
+  .alert-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<!-- Top Nav -->
+<div class="top-nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">G</div>
+    <span class="nav-logo-text">Google Ads</span>
+  </div>
+  <span style="color:#5f6368; font-size:13px;">DTC Ecommerce Brand · Account #481-220-7734</span>
+  <div class="nav-account">
+    <span>Last synced: Today, 09:41</span>
+    <div class="nav-avatar">IB</div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sb-item" style="padding:12px 20px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#9aa0a6; font-weight:600;">Campaigns</div>
+  <div class="sb-item active"><span class="sb-dot"></span>All campaigns</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#34a853"></span>Shopping</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#1a73e8"></span>Search</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#9c27b0"></span>Display</div>
+  <div style="border-top:1px solid #e8eaed; margin: 8px 0;"></div>
+  <div class="sb-item"><span class="sb-dot" style="background:#5f6368"></span>Audiences</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#5f6368"></span>Keywords</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#5f6368"></span>Ad groups</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#ea4335"></span>Recommendations</div>
+  <div style="border-top:1px solid #e8eaed; margin: 8px 0;"></div>
+  <div class="sb-item"><span class="sb-dot" style="background:#5f6368"></span>Conversions</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#ea4335"></span>Attribution ⚠</div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="page-header">
+    <div class="page-title">All campaigns</div>
+    <div class="date-range">Jul 1 – Jul 31, 2024 ▾</div>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert-banner">
+    <span class="alert-icon">⚠</span>
+    <div>
+      <strong>Conversion tracking issue detected.</strong> 3 campaigns are recording conversions on every session. ROAS data may be inaccurate.
+      <span style="text-decoration:underline; cursor:pointer;">Fix conversion tracking →</span>
+    </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="sc-label">Cost</div>
+      <div class="sc-value">£4,218</div>
+      <div class="sc-delta warn">▲ 12% vs prev period</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Conversions</div>
+      <div class="sc-value">84</div>
+      <div class="sc-delta neg">▼ 31% vs prev period</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Conv. Value</div>
+      <div class="sc-value">£3,816</div>
+      <div class="sc-delta neg">▼ 24% vs prev period</div>
+    </div>
+    <div class="summary-card sc-roas">
+      <div class="sc-label">ROAS</div>
+      <div class="sc-value">0.90×</div>
+      <div class="sc-delta neg">▼ Spending more than earning</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">CTR</div>
+      <div class="sc-value">1.2%</div>
+      <div class="sc-delta neg">▼ 0.4% vs benchmark</div>
+    </div>
+  </div>
+
+  <!-- Campaign table -->
+  <div class="table-wrap">
+    <div class="table-header">
+      Campaigns
+      <span class="th-badge">5 active</span>
+      <span style="margin-left:auto; color:#5f6368; font-size:12px; font-weight:400;">Showing: All statuses</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campaign</th>
+          <th>Status</th>
+          <th>Budget</th>
+          <th>Impressions</th>
+          <th>Clicks</th>
+          <th>CTR</th>
+          <th>Conv.</th>
+          <th>ROAS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cell-bold">All Products — Generic</td>
+          <td><span class="status-dot limited"></span><span class="cell-red">Budget limited</span></td>
+          <td>£60/day</td>
+          <td>148,220</td>
+          <td>1,782</td>
+          <td class="cell-warn">1.2%</td>
+          <td class="cell-red">31</td>
+          <td class="cell-red">0.74×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">Brand — Exact Match</td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£20/day</td>
+          <td>22,410</td>
+          <td>890</td>
+          <td class="cell-green">3.9%</td>
+          <td>28</td>
+          <td class="cell-warn">1.4×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">Shopping — All Inventory</td>
+          <td><span class="status-dot paused"></span>Paused</td>
+          <td>£40/day</td>
+          <td>82,100</td>
+          <td>610</td>
+          <td class="cell-red">0.7%</td>
+          <td class="cell-red">14</td>
+          <td class="cell-red">0.92×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">Remarketing — All Visitors</td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£15/day</td>
+          <td>44,800</td>
+          <td>312</td>
+          <td>0.7%</td>
+          <td>8</td>
+          <td class="cell-warn">1.1×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">DSA — Site-wide</td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£10/day</td>
+          <td>31,200</td>
+          <td>188</td>
+          <td>0.6%</td>
+          <td class="cell-red">3</td>
+          <td class="cell-red">0.48×</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

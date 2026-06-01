@@ -1,0 +1,14 @@
+{
+  "01-demo-full-report.png": "Full pipeline output \u2014 one auto-generated review of a real-world mutual NDA. Green, Amber, Red, and UNMAPPED tiers visible at a glance.",
+  "02-demo-header-and-escalation.png": "Above the fold \u2014 pipeline metadata, escalation banner, and the 3/2/1/1 clause distribution. The lawyer's 30-second triage.",
+  "03-clause-01.png": "Green tier \u2014 Confidentiality Definition matches the standard position exactly. Auto-approved against brain.md \u00a7 1.",
+  "03-clause-02.png": "Green tier \u2014 Term and Termination exceeds the standard position (strictly more protective). Auto-approved.",
+  "03-clause-03.png": "Green tier \u2014 Return / Destruction matches the playbook. Auto-approved with full policy traceability.",
+  "03-clause-04.png": "Amber tier \u2014 Permitted Disclosure proposes 'all group companies' without limitation. Pipeline proposes the standard-position rewrite.",
+  "03-clause-05.png": "Amber tier \u2014 Limitation of Liability cap below threshold. Rewrite ready for one-click lawyer approval.",
+  "03-clause-06.png": "Red tier \u2014 Governing Law proposes Delaware. Hard escalation: no policy permits non-UK jurisdiction.",
+  "03-clause-07.png": "UNMAPPED tier \u2014 Residual Knowledge clause has no policy in brain.md. Flagged for human, never silently classified.",
+  "10-source-brain.png": "brain.md \u2014 the AI's grounding source. Extracted from 50 historical NDAs via NotebookLM, edited by the legal team in plain Markdown.",
+  "11-source-agents.png": "agents.md \u2014 Architect (Claude) classifies and rewrites. Auditor (Gemini) verifies. Orchestrator runs both in parallel.",
+  "12-source-pipeline.png": "review_pipeline.py \u2014 CLI orchestration. Two API keys, one PDF or DOCX, one HTML report. Runs in seconds."
+}

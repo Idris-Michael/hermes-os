@@ -1,0 +1,120 @@
+# ─── Dependencies ──────────────────────────────────────────
+node_modules/
+**/node_modules/
+.pnp/
+.pnp.js
+
+# ─── Build outputs ─────────────────────────────────────────
+.next/
+**/.next/
+dist/
+**/dist/
+build/
+**/build/
+out/
+**/out/
+*.tsbuildinfo
+.cache/
+**/.cache/
+
+# ─── Env / secrets ─────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+n8n.env
+**/.env
+**/.env.local
+**/.env.*.local
+**/secrets/
+**/credentials/
+*.pem
+*.key
+*.cert
+*service-account*.json
+
+# ─── Big binaries / archives ───────────────────────────────
+*.exe
+*.tar.gz
+*.zip
+*.7z
+*.rar
+*.dmg
+*.iso
+
+# ─── Media / heavy assets ──────────────────────────────────
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+hermes-os-explainer_frames/
+studio-exports/
+
+# ─── Runtime / logs / databases ────────────────────────────
+logs/
+**/logs/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+data.db
+db.sqlite
+**/data.db
+**/db.sqlite
+bridge-audit.jsonl
+nlm_save_signal
+
+# ─── Caches / firecrawl / planning scratch ─────────────────
+.firecrawl/
+.planning/
+.specify/
+
+# ─── OS / editor ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ─── Python ────────────────────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+**/.venv/
+**/venv/
+
+# ─── Personal vault folders (excluded entirely) ────────────
+**/Obsidian Vault/
+**/UX Designer-Stack/
+
+# ─── Third-party / vendored source trees we don't own ──────
+30-seconds-of-code/
+9arm-skills/
+andrej-karpathy-skills/
+awesome/
+clean-code-skills/
+mattpocock-skills/
+everything-claude-code/
+agentic-stack/
+arcads-claude-code/
+notebooklm-py/
+
+# ─── Snapshots / one-off artefacts ─────────────────────────
+hermes-hub-snapshot-*
+"Antigravity*"
+"NotebookLMSkill*"
+.mcp.json
+
+# ─── Vendored third-party trees (too heavy, not our code) ──
+opencode/
+paperclip/
+hermes-hub/everything-claude-code/
+n8n-workflows/everything-claude-code/

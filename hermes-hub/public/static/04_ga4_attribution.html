@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1080px; height: 608px;
+    background: #f1f3f4;
+    font-family: "Google Sans", "Segoe UI", sans-serif;
+    font-size: 13px; color: #202124; overflow: hidden;
+  }
+  .top-nav {
+    height: 48px; background: #fff; border-bottom: 1px solid #dadce0;
+    display: flex; align-items: center; padding: 0 16px; gap: 16px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; }
+  .nav-logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #ea4335 0%, #fbbc04 33%, #34a853 66%, #1a73e8 100%);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 700;
+  }
+  .nav-logo-text { font-size: 16px; font-weight: 500; color: #202124; }
+  .nav-sub { font-size: 13px; color: #5f6368; margin-left: 4px; }
+  .nav-account {
+    margin-left: auto; font-size: 12px; color: #5f6368;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-avatar {
+    width: 28px; height: 28px; border-radius: 50%; background: #34a853;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 600;
+  }
+
+  /* Left sidebar */
+  .sidebar {
+    position: absolute; top: 48px; left: 0;
+    width: 220px; height: calc(608px - 48px);
+    background: #fff; border-right: 1px solid #dadce0; padding: 16px 0;
+  }
+  .sb-section {
+    padding: 0 16px 8px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #9aa0a6; font-weight: 600; margin-top: 8px;
+  }
+  .sb-item {
+    padding: 9px 20px; font-size: 13px; color: #5f6368;
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+  }
+  .sb-item.active {
+    color: #1a73e8; background: #e8f0fe;
+    border-right: 3px solid #1a73e8; font-weight: 500;
+  }
+  .sb-icon { font-size: 15px; }
+
+  /* Main */
+  .main {
+    position: absolute; top: 48px; left: 220px;
+    right: 0; bottom: 0; padding: 20px; overflow: hidden;
+  }
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .page-title { font-size: 20px; font-weight: 400; }
+  .property-badge {
+    background: #e8f0fe; color: #1a73e8;
+    font-size: 12px; padding: 4px 12px; border-radius: 16px;
+    border: 1px solid #c5d9f5; font-weight: 500;
+  }
+
+  /* Two-column layout */
+  .cols { display: flex; gap: 14px; }
+  .col-left { flex: 1; }
+  .col-right { width: 300px; }
+
+  /* Event stream */
+  .events-card {
+    background: #fff; border: 1px solid #dadce0;
+    border-radius: 8px; overflow: hidden; margin-bottom: 14px;
+  }
+  .card-header {
+    padding: 12px 16px; border-bottom: 1px solid #e8eaed;
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #34a853; flex-shrink: 0;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    text-align: left; padding: 8px 16px; color: #5f6368;
+    font-weight: 500; font-size: 11px; background: #f8f9fa;
+    border-bottom: 1px solid #e8eaed; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  td { padding: 9px 16px; border-bottom: 1px solid #f1f3f4; }
+  tr:last-child td { border-bottom: none; }
+  .ev-name {
+    font-family: monospace; font-size: 12px;
+    background: #f1f3f4; padding: 2px 6px; border-radius: 3px; color: #202124;
+  }
+  .ev-green { color: #34a853; font-weight: 600; }
+  .ev-blue { color: #1a73e8; font-weight: 600; }
+  .ev-count { font-weight: 600; color: #202124; }
+  .ev-time { color: #9aa0a6; font-size: 11px; }
+
+  /* Attribution model card */
+  .attr-card {
+    background: #fff; border: 1px solid #dadce0;
+    border-radius: 8px; overflow: hidden;
+  }
+  .attr-row {
+    display: flex; align-items: center;
+    padding: 11px 16px; border-bottom: 1px solid #f1f3f4; gap: 10px;
+  }
+  .attr-row:last-child { border-bottom: none; }
+  .attr-channel {
+    flex: 1; font-size: 12px; color: #202124;
+  }
+  .attr-bar-wrap { width: 120px; }
+  .attr-bar {
+    height: 6px; border-radius: 3px; background: #e8eaed; overflow: hidden;
+  }
+  .attr-fill { height: 100%; border-radius: 3px; }
+  .attr-pct { font-size: 12px; font-weight: 600; color: #202124; min-width: 36px; text-align: right; }
+
+  /* Linked accounts */
+  .linked-card {
+    background: #fff; border: 1px solid #dadce0;
+    border-radius: 8px; overflow: hidden;
+  }
+  .linked-item {
+    display: flex; align-items: center; padding: 12px 16px;
+    border-bottom: 1px solid #f1f3f4; gap: 12px;
+  }
+  .linked-item:last-child { border-bottom: none; }
+  .linked-icon {
+    width: 28px; height: 28px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .linked-name { font-size: 13px; font-weight: 500; flex: 1; }
+  .linked-status { font-size: 11px; }
+  .linked-status.ok { color: #34a853; font-weight: 600; }
+
+  /* tROAS badge */
+  .troas-card {
+    background: #e6f4ea; border: 1px solid #ceead6;
+    border-radius: 8px; padding: 14px 16px; margin-top: 14px;
+  }
+  .troas-label { font-size: 11px; color: #137333; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .troas-value { font-size: 28px; font-weight: 600; color: #137333; }
+  .troas-sub { font-size: 11px; color: #5f6368; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<div class="top-nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">A</div>
+    <span class="nav-logo-text">Analytics</span>
+    <span class="nav-sub">· GA4</span>
+  </div>
+  <span style="color:#5f6368; font-size:13px;">DTC Ecommerce Brand · Property ID: 387204119</span>
+  <div class="nav-account">
+    <span style="color:#137333; font-weight:500;">✓ Linked to Google Ads</span>
+    <div class="nav-avatar">IB</div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sb-section">Reports</div>
+  <div class="sb-item"><span class="sb-icon">📊</span>Overview</div>
+  <div class="sb-item"><span class="sb-icon">👤</span>Acquisition</div>
+  <div class="sb-item active"><span class="sb-icon">🎯</span>Conversions</div>
+  <div class="sb-item"><span class="sb-icon">💰</span>Monetisation</div>
+  <div class="sb-item"><span class="sb-icon">🔗</span>Attribution</div>
+  <div class="sb-section">Configure</div>
+  <div class="sb-item"><span class="sb-icon">⚡</span>Events</div>
+  <div class="sb-item"><span class="sb-icon">🔗</span>Linked products</div>
+  <div class="sb-item"><span class="sb-icon">⚙</span>Admin</div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="page-header">
+    <div class="page-title">Conversions &amp; Attribution</div>
+    <div class="property-badge">Property 387204119 · Data-driven attribution</div>
+  </div>
+
+  <div class="cols">
+    <!-- Left: event stream + attribution -->
+    <div class="col-left">
+      <!-- Events card -->
+      <div class="events-card">
+        <div class="card-header">
+          <div class="live-dot"></div>
+          Conversion events
+          <span style="margin-left:auto; font-size:11px; color:#5f6368; font-weight:400;">Last 30 days</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Event name</th>
+              <th>Count</th>
+              <th>Conv. Value</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ev-name">purchase</span></td>
+              <td class="ev-count ev-green">226</td>
+              <td class="ev-green">£9,336</td>
+              <td class="ev-time">Google Ads · GCLID</td>
+            </tr>
+            <tr>
+              <td><span class="ev-name">add_to_cart</span></td>
+              <td class="ev-count ev-blue">1,482</td>
+              <td>—</td>
+              <td class="ev-time">GA4 tag</td>
+            </tr>
+            <tr>
+              <td><span class="ev-name">begin_checkout</span></td>
+              <td class="ev-count">418</td>
+              <td>—</td>
+              <td class="ev-time">GA4 tag</td>
+            </tr>
+            <tr>
+              <td><span class="ev-name">view_item</span></td>
+              <td class="ev-count">14,220</td>
+              <td>—</td>
+              <td class="ev-time">GA4 tag</td>
+            </tr>
+            <tr>
+              <td><span class="ev-name">session_start</span></td>
+              <td class="ev-count">38,440</td>
+              <td>—</td>
+              <td class="ev-time">GA4 tag</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Attribution model -->
+      <div class="attr-card">
+        <div class="card-header">Attribution model · Data-driven</div>
+        <div class="attr-row">
+          <div class="attr-channel">Paid Search (PMax)</div>
+          <div class="attr-bar-wrap"><div class="attr-bar"><div class="attr-fill" style="width:58%; background:#1a73e8;"></div></div></div>
+          <div class="attr-pct">58%</div>
+        </div>
+        <div class="attr-row">
+          <div class="attr-channel">Shopping</div>
+          <div class="attr-bar-wrap"><div class="attr-bar"><div class="attr-fill" style="width:24%; background:#fbbc04;"></div></div></div>
+          <div class="attr-pct">24%</div>
+        </div>
+        <div class="attr-row">
+          <div class="attr-channel">Brand Search</div>
+          <div class="attr-bar-wrap"><div class="attr-bar"><div class="attr-fill" style="width:12%; background:#34a853;"></div></div></div>
+          <div class="attr-pct">12%</div>
+        </div>
+        <div class="attr-row">
+          <div class="attr-channel">Direct / Other</div>
+          <div class="attr-bar-wrap"><div class="attr-bar"><div class="attr-fill" style="width:6%; background:#ea4335;"></div></div></div>
+          <div class="attr-pct">6%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: linked + tROAS -->
+    <div class="col-right">
+      <div class="linked-card">
+        <div class="card-header">Linked products</div>
+        <div class="linked-item">
+          <div class="linked-icon" style="background:#e8f0fe; color:#1a73e8;">G</div>
+          <div>
+            <div class="linked-name">Google Ads</div>
+            <div class="linked-status ok">✓ Linked · Auto-tagging on · GCLID active</div>
+          </div>
+        </div>
+        <div class="linked-item">
+          <div class="linked-icon" style="background:#fef7e0; color:#b06000;">M</div>
+          <div>
+            <div class="linked-name">Google Merchant Centre</div>
+            <div class="linked-status ok">✓ Feed synced · 1,840 products</div>
+          </div>
+        </div>
+        <div class="linked-item">
+          <div class="linked-icon" style="background:#e6f4ea; color:#137333;">S</div>
+          <div>
+            <div class="linked-name">Search Console</div>
+            <div class="linked-status ok">✓ Verified · Organic data imported</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="troas-card">
+        <div class="troas-label">Target ROAS (Smart Bidding)</div>
+        <div class="troas-value">300%</div>
+        <div class="troas-sub">Bid strategy: Maximise conversion value<br>All campaigns using data-driven attribution</div>
+      </div>
+
+      <div style="margin-top:14px; background:#fff; border:1px solid #dadce0; border-radius:8px; padding:14px 16px;">
+        <div style="font-size:11px; color:#5f6368; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">Conversion health</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>Tag firing</span><span style="color:#34a853; font-weight:600;">✓ Healthy</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>GCLID passback</span><span style="color:#34a853; font-weight:600;">✓ Active</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>Enhanced conversions</span><span style="color:#34a853; font-weight:600;">✓ On</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>Cross-device tracking</span><span style="color:#34a853; font-weight:600;">✓ On</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>Duplicate conversions</span><span style="color:#34a853; font-weight:600;">✓ None detected</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

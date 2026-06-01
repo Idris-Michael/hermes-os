@@ -1,0 +1,3 @@
+[upwork-feed] initial fetch failed: UPWORK_RSS_URLS not configured in .env.local (comma-separated saved-search RSS URLs)
+[upwork-feed] tick failed: UPWORK_RSS_URLS not configured in .env.local (comma-separated saved-search RSS URLs)
+[upwork-feed] tick failed: UPWORK_RSS_URLS not configured in .env.local (comma-separated saved-search RSS URLs)

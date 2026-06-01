@@ -1,0 +1,177 @@
+{
+  "name": "07-sc-lead-nurture",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sc-nurture",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-nurture",
+      "name": "Webhook — Enter Nurture",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "notes": "Called by workflow 06 for unqualified leads. Also callable manually for prospects who go cold mid-conversation."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"queued\", \"message\": \"Lead added to nurture sequence\" }"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [460, 160]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Severus Connects, a specialist Google Ads and digital growth agency based in London. Write a warm, non-salesy nurture email sequence for a prospect. Use the persona of Idris-Michael Bakare — direct, expert, helpful.\n\nWrite 3 emails as a JSON array:\n[\n  { \"subject\": \"...\", \"body\": \"...\", \"delay_days\": 0 },\n  { \"subject\": \"...\", \"body\": \"...\", \"delay_days\": 4 },\n  { \"subject\": \"...\", \"body\": \"...\", \"delay_days\": 9 }\n]\n\nEmail 1 (day 0): Educational value — share one specific insight relevant to their service path. No ask.\nEmail 2 (day 4): Case study or result story relevant to their industry/service. Soft CTA: 'happy to share how we did this for a similar brand.'\nEmail 3 (day 9): Direct but respectful — check if timing is better now. Clear CTA to book a 20-min call.\n\nKeep each email under 150 words. Plain text, no HTML. Sign off as Idris."
+            },
+            {
+              "role": "user",
+              "content": "=Prospect: {{ $json.name }}\nService interest: {{ $json.service_path }}\nScore: {{ $json.score }}/10\nDisqualify reason: {{ $json.disqualify_reason ?? 'timing / budget not confirmed' }}\nSource: {{ $json.source }}"
+            }
+          ]
+        },
+        "options": { "maxTokens": 1200 }
+      },
+      "id": "claude-sequence",
+      "name": "Claude — Generate 3-Email Sequence",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const raw = $('Claude — Generate 3-Email Sequence').first().json.text;\nconst match = raw.match(/\\[[\\s\\S]*\\]/);\nconst emails = match ? JSON.parse(match[0]) : [];\nconst lead = $('Webhook — Enter Nurture').first().json;\nreturn emails.map((e, i) => ({ json: { ...lead, ...e, sequence_index: i + 1, send_at: new Date(Date.now() + e.delay_days * 86400000).toISOString() } }));"
+      },
+      "id": "parse-emails",
+      "name": "Code — Parse Email Array",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "gmail-email-1",
+      "name": "Gmail — Send Email 1 (Immediate)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [900, 300],
+      "notes": "Sends item 0 (delay_days: 0) immediately. Items 1 and 2 need Wait nodes — see notes."
+    },
+    {
+      "parameters": {
+        "amount": 4,
+        "unit": "days"
+      },
+      "id": "wait-4d",
+      "name": "Wait — 4 Days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook — Enter Nurture').first().json.email }}",
+        "subject": "={{ $('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)?.[0] ? JSON.parse($('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)[0])[1]?.subject : 'Following up' }}",
+        "message": "={{ $('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)?.[0] ? JSON.parse($('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)[0])[1]?.body : '' }}",
+        "options": { "appendAttribution": false }
+      },
+      "id": "gmail-email-2",
+      "name": "Gmail — Send Email 2 (Day 4)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "days"
+      },
+      "id": "wait-5d",
+      "name": "Wait — 5 More Days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook — Enter Nurture').first().json.email }}",
+        "subject": "={{ $('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)?.[0] ? JSON.parse($('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)[0])[2]?.subject : 'Quick check-in' }}",
+        "message": "={{ $('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)?.[0] ? JSON.parse($('Claude — Generate 3-Email Sequence').first().json.text.match(/\\[([\\s\\S]*?)\\]/)[0])[2]?.body : '' }}",
+        "options": { "appendAttribution": false }
+      },
+      "id": "gmail-email-3",
+      "name": "Gmail — Send Email 3 (Day 9)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "filePath": "=C:/Users/profs/Desktop/Sandbox/Severus Connects/Leads/Nurture/{{ $('Webhook — Enter Nurture').first().json.name.replace(/ /g,'_') }}_nurture.md",
+        "content": "=# Nurture: {{ $('Webhook — Enter Nurture').first().json.name }}\n\n**Email:** {{ $('Webhook — Enter Nurture').first().json.email }}\n**Source:** {{ $('Webhook — Enter Nurture').first().json.source }}\n**Score:** {{ $('Webhook — Enter Nurture').first().json.score }}/10\n**Service Path:** {{ $('Webhook — Enter Nurture').first().json.service_path }}\n**Started:** {{ new Date().toISOString().split('T')[0] }}\n\n## Sequence\n\n{{ $('Claude — Generate 3-Email Sequence').first().json.text }}\n",
+        "options": {}
+      },
+      "id": "obsidian-log",
+      "name": "Write — Obsidian Nurture Log",
+      "type": "n8n-nodes-base.writeFile",
+      "typeVersion": 1,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "=🌱 *Nurture Sequence Started*\n\n*Prospect:* {{ $('Webhook — Enter Nurture').first().json.name }}\n*Service:* {{ $('Webhook — Enter Nurture').first().json.service_path }}\n*Emails:* 3 over 9 days\n\nSequence logged to Obsidian.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-notify",
+      "name": "Telegram — Notify Start",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2220, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — Enter Nurture": {
+      "main": [
+        [
+          { "node": "Webhook Response", "type": "main", "index": 0 },
+          { "node": "Claude — Generate 3-Email Sequence", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Claude — Generate 3-Email Sequence": { "main": [[{ "node": "Code — Parse Email Array", "type": "main", "index": 0 }]] },
+    "Code — Parse Email Array": { "main": [[{ "node": "Gmail — Send Email 1 (Immediate)", "type": "main", "index": 0 }]] },
+    "Gmail — Send Email 1 (Immediate)": { "main": [[{ "node": "Wait — 4 Days", "type": "main", "index": 0 }]] },
+    "Wait — 4 Days": { "main": [[{ "node": "Gmail — Send Email 2 (Day 4)", "type": "main", "index": 0 }]] },
+    "Gmail — Send Email 2 (Day 4)": { "main": [[{ "node": "Wait — 5 More Days", "type": "main", "index": 0 }]] },
+    "Wait — 5 More Days": { "main": [[{ "node": "Gmail — Send Email 3 (Day 9)", "type": "main", "index": 0 }]] },
+    "Gmail — Send Email 3 (Day 9)": { "main": [[{ "node": "Write — Obsidian Nurture Log", "type": "main", "index": 0 }]] },
+    "Write — Obsidian Nurture Log": { "main": [[{ "node": "Telegram — Notify Start", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "3-email nurture sequence for unqualified or cold leads. Claude writes the sequence personalised to service path. Emails sent immediately, day 4, day 9. Sequence logged to Obsidian.",
+    "trigger": "Webhook POST /sc-nurture (called by 06-sc-lead-capture-routing)",
+    "variables_required": ["TELEGRAM_CHAT_ID"],
+    "credentials_required": ["Anthropic API Key", "Gmail OAuth2", "Telegram Bot Token"]
+  }
+}

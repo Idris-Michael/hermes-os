@@ -1,0 +1,186 @@
+{
+  "id": "ace-of-hearts",
+  "name": "ACE OF HEARTS",
+  "suit": "hearts",
+  "rank": "ace",
+  "role": "Creative Director",
+  "tagline": "Concepts that stop the scroll. Every brief becomes a campaign worth remembering.",
+  "model": "claude-opus-4-7",
+  "modelLabel": "CLAUDE-OPUS-4.7",
+  "modelColor": "#ec4899",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#ec4899",
+  "gateway": "telegram",
+  "gatewayHandle": "@ace_hearts_bot",
+  "soulFile": "data/souls/ace-of-hearts.md",
+  "skills": [
+    "severus-design-system",
+    "severus-design-discovery",
+    "severus-social-strategy",
+    "creative",
+    "frontend-design-direction",
+    "motion-ui",
+    "make-interfaces-feel-better",
+    "frontend-slides",
+    "severus-design-websitebuild",
+    "severus-design-redesign",
+    "severus-design-systemcreation",
+    "severus-design-motionanimation",
+    "voicebox-tts",
+    "openscreen-recording"
+  ],
+  "tools": [
+    {
+      "id": "creative-brief",
+      "label": "Creative Brief",
+      "description": "Generates structured campaign briefs from audience + product inputs"
+    },
+    {
+      "id": "motion-ui",
+      "label": "Motion UI",
+      "description": "Animated UI direction, micro-interactions, scroll behaviour"
+    },
+    {
+      "id": "design-direction",
+      "label": "Design Direction",
+      "description": "Visual identity, colour, typography, layout decisions"
+    },
+    {
+      "id": "frontend-slides",
+      "label": "Frontend Slides",
+      "description": "Presentation-grade slide decks in HTML/CSS"
+    },
+    {
+      "id": "website-build",
+      "label": "Website Build",
+      "description": "Discovery \u00e2\u2020\u2019 Figma \u00e2\u2020\u2019 Next.js \u00e2\u2020\u2019 Vercel deploy, full project lifecycle"
+    },
+    {
+      "id": "design-system-creation",
+      "label": "Design System Creation",
+      "description": "Tokens, component library, Storybook, npm package, docs"
+    },
+    {
+      "id": "voicebox-tts",
+      "label": "Voicebox TTS",
+      "description": "7 local TTS engines \u00b7 Chatterbox Turbo [laugh][sigh] \u00b7 23 languages \u00b7 offline"
+    },
+    {
+      "id": "openscreen",
+      "label": "OpenScreen",
+      "description": "Screen recorder with auto-zoom, cursor tracking, motion blur \u2014 for motion UI demos"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Creative briefs, moodboards, brand guidelines vault",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Trend research, competitor creative synthesis",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "notion",
+      "label": "Notion",
+      "detail": "Brief workspace \u00e2\u20ac\u201d campaign decks, brand assets",
+      "status": "connected"
+    },
+    {
+      "id": "figma",
+      "label": "Figma",
+      "detail": "Design handoff \u00e2\u20ac\u201d OAuth pending",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@ace_hearts_bot \u00e2\u20ac\u201d brief requests and creative reviews",
+      "status": "connected"
+    },
+    {
+      "id": "voicebox",
+      "label": "Voicebox",
+      "detail": "Local \u00b7 :17493 \u2014 voice synthesis for motion UI narration",
+      "status": "pending"
+    },
+    {
+      "id": "openscreen",
+      "label": "OpenScreen",
+      "detail": "Desktop \u2014 auto-zoom screen recorder for component walkthroughs",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-opus-4-7"
+    },
+    {
+      "name": "Figma",
+      "status": "pending",
+      "detail": "OAuth pending"
+    },
+    {
+      "name": "Notion",
+      "status": "connected",
+      "detail": "Brief workspace"
+    }
+  ],
+  "crons": [
+    {
+      "id": "creative-brief",
+      "label": "Creative Brief Digest",
+      "schedule": "0 10 * * 1-5",
+      "human": "Weekdays at 10:00",
+      "lastRun": "2026-05-15T10:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 38,
+    "messagesTotal": 702,
+    "lastActive": "3h ago"
+  },
+  "whitelist": [
+    "severus-design-system",
+    "severus-design-discovery",
+    "severus-social-strategy",
+    "creative",
+    "frontend-design-direction",
+    "motion-ui",
+    "make-interfaces-feel-better",
+    "frontend-slides",
+    "severus-design-websitebuild",
+    "severus-design-redesign",
+    "severus-design-systemcreation",
+    "severus-design-motionanimation"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": [
+      "send-email"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/ace-of-hearts.png"
+}

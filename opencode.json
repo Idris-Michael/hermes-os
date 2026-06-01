@@ -1,0 +1,53 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-haiku-4-5-20251001",
+  "username": "Idris",
+  "autoupdate": "notify",
+  "share": "manual",
+  "server": {
+    "port": 4200,
+    "hostname": "127.0.0.1"
+  },
+  "agent": {
+    "build": {
+      "instructions": [
+        "You are operating inside the Hermes OS — a bespoke AI agency system built by Severus Connects.",
+        "The owner is Idris-Michael Bakare, founder of Severus Connects, a London-based AI performance marketing agency.",
+        "Services: GA4 Analytics, AI Shopping Ads, AI Performance Ads.",
+        "Revenue target: £5,000–£8,000/month by June 2026.",
+        "Be concise, direct, and agency-minded. Prioritise deliverable output over explanation.",
+        "When working on code in this repo, follow the existing conventions without adding abstractions beyond what is asked."
+      ],
+      "model": "anthropic/claude-sonnet-4-5"
+    },
+    "plan": {
+      "model": "anthropic/claude-opus-4-7"
+    }
+  },
+  "provider": {
+    "huggingface": {
+      "name": "HuggingFace Router",
+      "baseURL": "https://router.huggingface.co/v1",
+      "apiKey": "{env:HF_TOKEN}",
+      "models": [
+        {
+          "id": "deepseek-ai/DeepSeek-V4-Flash:novita",
+          "name": "DeepSeek V4 Flash"
+        },
+        {
+          "id": "Qwen/Qwen3.6:novita",
+          "name": "Qwen 3.6"
+        }
+      ]
+    }
+  },
+  "mcp": {
+    "obsidian": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "mcp-obsidian", "C:\\Users\\profs\\Documents\\Obsidian Vault"],
+      "enabled": true
+    }
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "id": "king-of-spades",
+  "name": "KING OF SPADES",
+  "suit": "spades",
+  "rank": "king",
+  "role": "Google Ads Auditor",
+  "tagline": "Dismantles wasted spend. Every keyword earns its place or gets cut.",
+  "model": "huggingface/Qwen/Qwen3.6:novita",
+  "modelLabel": "QWEN-3.6",
+  "modelColor": "#8b5cf6",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#8b5cf6",
+  "gateway": "telegram",
+  "gatewayHandle": "@king_spades_bot",
+  "soulFile": "data/souls/king-of-spades.md",
+  "skills": [
+    "severus-auditor",
+    "severus-connects-performance",
+    "severus-connects-reporting",
+    "severus-connects-analytics",
+    "production-audit",
+    "iterative-retrieval",
+    "verification-loop",
+    "eval-harness"
+  ],
+  "tools": [
+    {
+      "id": "google-ads-audit",
+      "label": "Google Ads Audit",
+      "description": "Keyword, Quality Score, bid strategy, wasted spend analysis"
+    },
+    {
+      "id": "budget-pacing",
+      "label": "Budget Pacing",
+      "description": "Daily/monthly budget pacing and allocation checks"
+    },
+    {
+      "id": "eval-harness",
+      "label": "Eval Harness",
+      "description": "Structured audit scoring against benchmark criteria"
+    },
+    {
+      "id": "verification-loop",
+      "label": "Verification Loop",
+      "description": "Multi-pass audit with self-correction"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Audit reports, keyword lists, client account notes",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Audit research, benchmark data synthesis",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "google-ads",
+      "label": "Google Ads",
+      "detail": "MCC linked — full account read access",
+      "status": "connected"
+    },
+    {
+      "id": "ga4",
+      "label": "GA4",
+      "detail": "Analytics linked — conversion data, attribution",
+      "status": "connected"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@king_spades_bot — audit summaries delivered on schedule",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-opus-4-7"
+    },
+    {
+      "name": "Google Ads",
+      "status": "connected",
+      "detail": "MCC linked"
+    },
+    {
+      "name": "GA4",
+      "status": "connected",
+      "detail": "Analytics linked"
+    }
+  ],
+  "crons": [
+    {
+      "id": "budget-audit",
+      "label": "Budget Audit",
+      "schedule": "0 9 * * 1",
+      "human": "Mondays at 09:00",
+      "lastRun": "2026-05-12T09:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "qs-check",
+      "label": "Quality Score Check",
+      "schedule": "0 14 * * 3",
+      "human": "Wednesdays at 14:00",
+      "lastRun": "2026-05-13T14:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 31,
+    "messagesTotal": 587,
+    "lastActive": "6h ago"
+  },
+  "whitelist": [
+    "severus-auditor",
+    "severus-connects-performance",
+    "severus-connects-reporting",
+    "severus-connects-analytics",
+    "production-audit",
+    "iterative-retrieval",
+    "verification-loop",
+    "eval-harness"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions",
+      "publish",
+      "ads-write"
+    ],
+    "require_approval_for": [
+      "external-api-write"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/king-of-spades.png"
+}

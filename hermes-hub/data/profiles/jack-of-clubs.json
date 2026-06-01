@@ -1,0 +1,162 @@
+{
+  "id": "jack-of-clubs",
+  "name": "JACK OF CLUBS",
+  "suit": "clubs",
+  "rank": "jack",
+  "role": "Web Architect & Builder",
+  "tagline": "From brief to deployed URL. Design \u00e2\u2020\u2019 code \u00e2\u2020\u2019 live. No handoffs, no gaps.",
+  "model": "claude-sonnet-4-6",
+  "modelLabel": "SONNET 4.6",
+  "modelColor": "#2dd4bf",
+  "badge": "ACTIVE",
+  "synced": true,
+  "accentColor": "#2dd4bf",
+  "gateway": "telegram",
+  "gatewayHandle": "@jack_clubs_bot",
+  "soulFile": "data/souls/jack-of-clubs.md",
+  "skills": [
+    "severus-design-websitebuild",
+    "severus-design-redesign",
+    "severus-design-cms",
+    "severus-design-ecommerce",
+    "frontend-design-direction",
+    "devops",
+    "severus-design-launch",
+    "api-design",
+    "openscreen-recording"
+  ],
+  "tools": [
+    {
+      "id": "site-builder",
+      "label": "Site Builder",
+      "description": "Full website lifecycle: sitemap \u00e2\u2020\u2019 Figma \u00e2\u2020\u2019 Next.js \u00e2\u2020\u2019 Vercel deploy"
+    },
+    {
+      "id": "redesign-audit",
+      "label": "Redesign Audit",
+      "description": "Heuristic + Lighthouse audit of existing sites, diff against new Figma"
+    },
+    {
+      "id": "cms-scaffolder",
+      "label": "CMS Scaffolder",
+      "description": "Contentful/Sanity/Hygraph schemas, ISR config, webhook\u00e2\u2020\u2019Vercel deploy"
+    },
+    {
+      "id": "ecom-checkout",
+      "label": "E-commerce Checkout",
+      "description": "Shopify Storefront API + Stripe Elements integration, GA4 purchase events"
+    },
+    {
+      "id": "openscreen",
+      "label": "OpenScreen",
+      "description": "Record component-level walkthroughs with motion blur + auto-zoom for client handoffs and case studies"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Client briefs, sitemap docs, design system notes, launch checklists",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Competitor site research, tech stack synthesis pre-build",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "vercel",
+      "label": "Vercel",
+      "detail": "Deployments, environment variables, domain management",
+      "status": "pending"
+    },
+    {
+      "id": "figma",
+      "label": "Figma",
+      "detail": "Design handoff \u00e2\u20ac\u201d wireframes \u00e2\u2020\u2019 components \u00e2\u2020\u2019 dev mode",
+      "status": "pending"
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "detail": "Source repo, PR reviews, CI/CD triggers",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@jack_clubs_bot \u00e2\u20ac\u201d build updates and launch confirmations",
+      "status": "connected"
+    },
+    {
+      "id": "openscreen",
+      "label": "OpenScreen",
+      "detail": "Desktop \u2014 screen recorder for web build demos and Upwork proposals",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6"
+    },
+    {
+      "name": "Vercel",
+      "status": "pending",
+      "detail": "Deployment target"
+    },
+    {
+      "name": "GitHub",
+      "status": "pending",
+      "detail": "Source control"
+    }
+  ],
+  "crons": [
+    {
+      "id": "lighthouse-weekly",
+      "label": "Lighthouse Audit",
+      "schedule": "0 9 * * 1",
+      "human": "Mondays at 09:00",
+      "lastRun": null,
+      "status": "idle"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 0,
+    "messagesTotal": 0,
+    "lastActive": "not yet run"
+  },
+  "whitelist": [
+    "severus-design-websitebuild",
+    "severus-design-redesign",
+    "severus-design-cms",
+    "severus-design-ecommerce",
+    "frontend-design-direction",
+    "devops",
+    "severus-design-launch",
+    "api-design"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 60,
+    "blocked_actions": [
+      "delete-files",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": [
+      "push-to-remote",
+      "external-api-write"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/jack-of-clubs.png"
+}

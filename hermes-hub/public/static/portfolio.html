@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Idris-Michael Bakare | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: #222;
+      background: #f5f7fa;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1a2e;
+      padding: 18px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Task 1: Styled name top-left */
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #e94560;
+      letter-spacing: 1px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Task 2: Navigation bar */
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    nav a:hover {
+      color: #e94560;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    /* Task 8: Home icon */
+    .home-icon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #e94560;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(233,69,96,0.4);
+      z-index: 200;
+      transition: transform 0.2s;
+    }
+    .home-icon:hover { transform: scale(1.1); }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 70px 80px;
+    }
+    section:nth-child(even) { background: #fff; }
+
+    h2.section-title {
+      font-size: 2rem;
+      color: #1a1a2e;
+      margin-bottom: 40px;
+      border-left: 5px solid #e94560;
+      padding-left: 15px;
+    }
+
+    /* ── ABOUT ME (Task 3) ── */
+    #about {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #eee;
+      padding: 80px;
+    }
+    #about img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #e94560;
+      flex-shrink: 0;
+    }
+    #about h1 {
+      font-size: 2.4rem;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    #about h3 {
+      color: #e94560;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+    #about p {
+      line-height: 1.8;
+      color: #ccc;
+      max-width: 600px;
+    }
+
+    /* ── SKILLS (Task 4) ── */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .skill-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 180px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .skill-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    .skill-card i {
+      font-size: 2rem;
+      color: #e94560;
+    }
+    .skill-card span {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    /* ── PROJECTS (Task 5) ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .project-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+    .project-card:hover { transform: translateY(-5px); }
+    .project-header {
+      background: linear-gradient(135deg, #e94560, #1a1a2e);
+      padding: 30px 25px;
+      text-align: center;
+    }
+    .project-header i {
+      font-size: 3rem;
+      color: #fff;
+    }
+    .project-body {
+      padding: 25px;
+    }
+    .project-body h3 {
+      font-size: 1.2rem;
+      color: #1a1a2e;
+      margin-bottom: 10px;
+    }
+    .project-body p {
+      color: #666;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+    .project-tag {
+      display: inline-block;
+      background: #f0f0f0;
+      color: #555;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 12px;
+      margin-right: 5px;
+    }
+
+    /* ── RECOMMENDATIONS (Task 6) ── */
+    #recommendations { background: #f5f7fa; }
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+    .rec-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      border-top: 4px solid #e94560;
+    }
+    .rec-card p {
+      color: #555;
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+    .rec-card .rec-author {
+      font-weight: 700;
+      color: #1a1a2e;
+      font-style: normal;
+    }
+    .rec-card .rec-role {
+      color: #e94560;
+      font-size: 0.85rem;
+    }
+
+    /* ── ADD RECOMMENDATION FORM ── */
+    .rec-form {
+      background: #fff;
+      border-radius: 14px;
+      padding: 35px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      max-width: 600px;
+    }
+    .rec-form h3 {
+      font-size: 1.3rem;
+      color: #1a1a2e;
+      margin-bottom: 20px;
+    }
+    .rec-form input,
+    .rec-form textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .rec-form input:focus,
+    .rec-form textarea:focus { border-color: #e94560; }
+    .rec-form textarea { height: 100px; resize: vertical; }
+    .rec-form button {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .rec-form button:hover { background: #c73652; }
+
+    /* ── POPUP (Task 9) ── */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .popup-overlay.active { display: flex; }
+    .popup-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .popup-box i {
+      font-size: 3rem;
+      color: #e94560;
+      margin-bottom: 15px;
+    }
+    .popup-box h3 {
+      font-size: 1.4rem;
+      color: #1a1a2e;
+      margin-bottom: 10px;
+    }
+    .popup-box p { color: #666; margin-bottom: 25px; }
+    .popup-box button {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    footer {
+      background: #1a1a2e;
+      color: #888;
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER: Task 1 (name) + Task 2 (nav) -->
+  <header>
+    <div class="logo">Idris-Michael Bakare</div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Project details</a>
+      <a href="#recommendations">Recommendations</a>
+    </nav>
+  </header>
+
+  <!-- Task 8: Home Icon -->
+  <a href="#" class="home-icon" title="Back to top">
+    <i class="fas fa-home"></i>
+  </a>
+
+  <!-- Task 3: About Me -->
+  <section id="about">
+    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=IdrisMichael&backgroundColor=b6e3f4" alt="Profile Photo" />
+    <div>
+      <h1>Idris-Michael Bakare</h1>
+      <h3>AI Developer &amp; Full-Stack Engineer</h3>
+      <p>
+        I am a passionate software engineer and AI developer with expertise in Python, Flask, and Watson NLP.
+        I specialise in building intelligent web applications that solve real-world problems.
+        Currently pursuing IBM's AI Developer Professional Certificate, I have hands-on experience
+        developing emotion detection systems, data pipelines, and deploying machine learning models
+        to production. I thrive at the intersection of technology and human impact.
+      </p>
+    </div>
+  </section>
+
+  <!-- Task 4: Skills (2 existing + 3 new = 5 total) -->
+  <section id="skills">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-grid">
+      <!-- 2 existing -->
+      <div class="skill-card">
+        <i class="fab fa-python"></i>
+        <span>Python</span>
+      </div>
+      <div class="skill-card">
+        <i class="fab fa-js-square"></i>
+        <span>JavaScript</span>
+      </div>
+      <!-- 3 new -->
+      <div class="skill-card">
+        <i class="fab fa-html5"></i>
+        <span>HTML &amp; CSS</span>
+      </div>
+      <div class="skill-card">
+        <i class="fas fa-flask"></i>
+        <span>Flask</span>
+      </div>
+      <div class="skill-card">
+        <i class="fas fa-database"></i>
+        <span>SQL</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Task 5: Projects -->
+  <section id="projects">
+    <h2 class="section-title">Project Details</h2>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-header">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div class="project-body">
+          <h3>Emotion Detector App</h3>
+          <p>An AI-powered web application that detects emotions (anger, joy, fear, disgust, sadness) from user-provided text using IBM Watson NLP, deployed with Flask.</p>
+          <span class="project-tag">Python</span>
+          <span class="project-tag">Flask</span>
+          <span class="project-tag">Watson NLP</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-header">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <div class="project-body">
+          <h3>Sales Data Dashboard</h3>
+          <p>An interactive data analytics dashboard built with Python and Pandas that visualises quarterly sales trends, customer segments, and revenue forecasts for retail businesses.</p>
+          <span class="project-tag">Python</span>
+          <span class="project-tag">Pandas</span>
+          <span class="project-tag">SQL</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-header">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="project-body">
+          <h3>AI Chatbot Assistant</h3>
+          <p>A conversational AI assistant integrated into a web interface, capable of answering FAQs, scheduling appointments, and guiding users through support workflows using NLP.</p>
+          <span class="project-tag">JavaScript</span>
+          <span class="project-tag">NLP</span>
+          <span class="project-tag">REST API</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Task 6 & 7: Recommendations -->
+  <section id="recommendations">
+    <h2 class="section-title">Recommendations</h2>
+    <div class="rec-grid" id="rec-list">
+      <div class="rec-card">
+        <p>"Idris-Michael is one of the most dedicated developers I have worked with. His ability to quickly grasp complex AI concepts and translate them into functional applications is truly impressive."</p>
+        <div class="rec-author">Dr. Sarah Thompson</div>
+        <div class="rec-role">Senior Data Scientist, TechCorp Inc.</div>
+      </div>
+      <div class="rec-card">
+        <p>"Working with Idris-Michael on our Flask deployment was a pleasure. He delivered clean, well-documented code on time and proactively resolved issues before they became problems."</p>
+        <div class="rec-author">James O'Brien</div>
+        <div class="rec-role">Lead Engineer, CloudBridge Solutions</div>
+      </div>
+      <div class="rec-card">
+        <p>"Idris-Michael's knowledge of Python and machine learning frameworks helped our team accelerate delivery by 30%. He is a collaborative team player with excellent communication skills."</p>
+        <div class="rec-author">Amara Nwosu</div>
+        <div class="rec-role">Product Manager, InnovateTech Africa</div>
+      </div>
+    </div>
+
+    <!-- Add new recommendation form -->
+    <div class="rec-form">
+      <h3><i class="fas fa-pen" style="color:#e94560;margin-right:8px;"></i>Leave a Recommendation</h3>
+      <input type="text" id="rec-name" placeholder="Your name and role (e.g. Jane Doe, Software Engineer)" />
+      <textarea id="rec-text" placeholder="Write your recommendation here..."></textarea>
+      <button onclick="submitRecommendation()">Submit Recommendation</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Idris-Michael Bakare. All rights reserved.</p>
+  </footer>
+
+  <!-- Task 9: Pop-up -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup-box">
+      <i class="fas fa-check-circle"></i>
+      <h3>Thank You!</h3>
+      <p>Thank you for leaving a recommendation!</p>
+      <button onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    function submitRecommendation() {
+      const name = document.getElementById('rec-name').value.trim();
+      const text = document.getElementById('rec-text').value.trim();
+
+      if (!name || !text) {
+        alert('Please fill in both fields.');
+        return;
+      }
+
+      // Task 7: Add new recommendation to the list
+      const recList = document.getElementById('rec-list');
+      const newCard = document.createElement('div');
+      newCard.className = 'rec-card';
+      newCard.innerHTML = `
+        <p>"${text}"</p>
+        <div class="rec-author">${name}</div>
+        <div class="rec-role">Peer Recommendation</div>
+      `;
+      recList.appendChild(newCard);
+
+      // Clear form
+      document.getElementById('rec-name').value = '';
+      document.getElementById('rec-text').value = '';
+
+      // Task 9: Show popup
+      document.getElementById('popup').classList.add('active');
+    }
+
+    function closePopup() {
+      document.getElementById('popup').classList.remove('active');
+    }
+  </script>
+
+</body>
+</html>

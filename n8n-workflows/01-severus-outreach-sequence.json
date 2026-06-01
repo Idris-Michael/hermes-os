@@ -1,0 +1,145 @@
+{
+  "name": "severus-outreach-sequence",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.prospect_url }}",
+        "options": { "onlyMainContent": true }
+      },
+      "id": "firecrawl-scrape",
+      "name": "Firecrawl — Scrape Prospect",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "notes": "Replace with Firecrawl MCP node when available. POST to https://api.firecrawl.dev/v1/scrape"
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a B2B lead scoring agent for Severus Connects. Score prospects on fit (GA4/Ads budget), intent (hiring signals, pain language), and accessibility (SMB not enterprise). Return JSON: { fit: 1-10, intent: 1-10, accessibility: 1-10, total: number, reason: string, proceed: boolean }"
+            },
+            {
+              "role": "user",
+              "content": "=Prospect URL: {{ $json.prospect_url }}\n\nScraped content:\n{{ $('Firecrawl — Scrape Prospect').item.json.content }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-score",
+      "name": "Claude — Score Prospect",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "leftValue": "={{ JSON.parse($json.content).total }}",
+              "rightValue": 21,
+              "operator": { "type": "number", "operation": "gte" }
+            }
+          ]
+        }
+      },
+      "id": "if-score",
+      "name": "IF score >= 21 (avg 7/10)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are writing a LinkedIn DM for Idris-Michael Bakare (Severus Connects). Rules: max 3 sentences, lead with a specific observation about their business, mention GA4 or Google Ads pain, end with a soft CTA (free 15-min audit call). Sound human. No emojis. No 'I noticed your profile'."
+            },
+            {
+              "role": "user",
+              "content": "=Write a first-touch LinkedIn DM to this prospect.\n\nProspect data: {{ $('Firecrawl — Scrape Prospect').item.json.content.substring(0, 2000) }}\n\nScore reason: {{ JSON.parse($('Claude — Score Prospect').item.json.content).reason }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-dm1",
+      "name": "Claude — Generate DM 1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "amount": 4,
+        "unit": "days"
+      },
+      "id": "wait-4d",
+      "name": "Wait 4 days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are writing a follow-up LinkedIn DM (no reply to first message). Reference the first message briefly, add one new piece of value (a quick win tip or stat), keep to 2 sentences max. No pressure. Soft close."
+            },
+            {
+              "role": "user",
+              "content": "=Write follow-up DM 2.\n\nOriginal DM: {{ $('Claude — Generate DM 1').item.json.content }}\n\nProspect context: {{ $('Firecrawl — Scrape Prospect').item.json.content.substring(0, 1000) }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-dm2",
+      "name": "Claude — Generate DM 2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "filePath": "=C:/Users/profs/Desktop/Sandbox/Outreach/{{ $now.format('yyyy-MM-dd') }}-{{ $('Manual Trigger').item.json.prospect_name || 'prospect' }}.md",
+        "fileContent": "=# Outreach Log\n\n**Prospect:** {{ $json.prospect_url }}\n**Score:** {{ JSON.parse($('Claude — Score Prospect').item.json.content).total }}/30\n**Reason:** {{ JSON.parse($('Claude — Score Prospect').item.json.content).reason }}\n\n## DM 1\n{{ $('Claude — Generate DM 1').item.json.content }}\n\n## DM 2\n{{ $('Claude — Generate DM 2').item.json.content }}\n\n**Sent:** {{ $now.toISOString() }}"
+      },
+      "id": "obsidian-log",
+      "name": "Log to Obsidian Vault",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1780, 200],
+      "notes": "Writes to Obsidian Vault/Outreach/. Create the folder in Obsidian first."
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Firecrawl — Scrape Prospect", "type": "main", "index": 0 }]] },
+    "Firecrawl — Scrape Prospect": { "main": [[{ "node": "Claude — Score Prospect", "type": "main", "index": 0 }]] },
+    "Claude — Score Prospect": { "main": [[{ "node": "IF score >= 21 (avg 7/10)", "type": "main", "index": 0 }]] },
+    "IF score >= 21 (avg 7/10)": { "main": [[{ "node": "Claude — Generate DM 1", "type": "main", "index": 0 }], []] },
+    "Claude — Generate DM 1": { "main": [[{ "node": "Wait 4 days", "type": "main", "index": 0 }]] },
+    "Wait 4 days": { "main": [[{ "node": "Claude — Generate DM 2", "type": "main", "index": 0 }]] },
+    "Claude — Generate DM 2": { "main": [[{ "node": "Log to Obsidian Vault", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "description": "Severus Connects outreach: scrape prospect → score (7+ proceed) → DM 1 → wait 4d → DM 2 → log to Obsidian" }
+}

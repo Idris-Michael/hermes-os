@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Severus Connects — System Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:    #C9A84C;
+  --gold15:  rgba(201,168,76,0.15);
+  --gold30:  rgba(201,168,76,0.30);
+  --gold60:  rgba(201,168,76,0.60);
+  --bg:      #141414;
+  --bg2:     #1a1a1a;
+  --bg3:     #202020;
+  --border:  rgba(255,255,255,0.08);
+  --text:    #e8e4d0;
+  --muted:   rgba(232,228,208,0.40);
+  --mono:    "JetBrains Mono", monospace;
+  --sidebar: 300px;
+}
+
+html, body {
+  width: 100%; height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  padding: 0 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.topbar-left {
+  display: flex; align-items: center; gap: 16px;
+}
+.brand {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+  color: var(--gold); text-transform: uppercase;
+}
+.topbar-sep { width: 1px; height: 16px; background: var(--border); }
+.topbar-meta {
+  font-size: 10px; color: var(--muted); letter-spacing: 0.06em;
+}
+
+/* workflow tabs */
+.wf-tabs {
+  display: flex; gap: 2px;
+}
+.wf-tab {
+  padding: 4px 12px;
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer; transition: all 0.15s;
+  letter-spacing: 0.06em;
+}
+.wf-tab:hover { color: var(--text); border-color: var(--border); }
+.wf-tab.active {
+  color: var(--gold);
+  background: var(--gold15);
+  border-color: var(--gold30);
+}
+
+/* ── MAIN LAYOUT ── */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── DIAGRAM AREA ── */
+.diagram-wrap {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+.diagram-scroll {
+  min-width: 1200px;
+  min-height: 100%;
+  position: relative;
+}
+
+/* ── LANE HEADERS ── */
+.lane-headers {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.lane-header {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 8px 12px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* ── CANVAS ── */
+.canvas {
+  position: relative;
+}
+.lane-bg {
+  position: absolute;
+  top: 0; bottom: 0;
+  border-right: 1px solid var(--border);
+  pointer-events: none;
+}
+.lane-bg:nth-child(odd) { background: rgba(255,255,255,0.01); }
+
+/* SVG connections */
+#svg-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5;
+}
+
+/* ── NODES ── */
+.node {
+  position: absolute;
+  z-index: 10;
+  min-width: 130px;
+  max-width: 160px;
+  padding: 8px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.node:hover {
+  border-color: rgba(255,255,255,0.2);
+}
+.node.highlighted {
+  border-color: var(--gold) !important;
+  background: var(--gold15) !important;
+  box-shadow: 0 0 0 1px var(--gold30), 0 4px 20px rgba(201,168,76,0.2);
+}
+.node.dimmed {
+  opacity: 0.2;
+}
+.node-name {
+  font-size: 11px; font-weight: 700; color: var(--text);
+  line-height: 1.2; margin-bottom: 3px;
+}
+.node-sub {
+  font-size: 9px; color: var(--muted);
+  line-height: 1.4; letter-spacing: 0.02em;
+}
+
+/* step number badge on edge */
+.edge-badge {
+  position: absolute;
+  z-index: 15;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.edge-badge.visible { opacity: 1; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar);
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg2);
+}
+.sidebar-section {
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-section-header {
+  padding: 8px 12px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.18em;
+  color: var(--muted); text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+/* FLOWS list */
+.flows-list {
+  overflow-y: auto;
+  max-height: 300px;
+}
+.flow-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+.flow-item:hover { background: rgba(255,255,255,0.03); }
+.flow-item.active {
+  background: var(--gold15);
+  border-left: 2px solid var(--gold);
+}
+.flow-item.active .flow-name { color: var(--gold); }
+.flow-name {
+  font-size: 11px; font-weight: 700; color: var(--text);
+  margin-bottom: 3px; line-height: 1.2;
+}
+.flow-desc {
+  font-size: 9px; color: var(--muted); line-height: 1.5;
+}
+.clear-btn {
+  display: block;
+  margin: 8px 12px;
+  padding: 5px 10px;
+  font-family: var(--mono); font-size: 9px;
+  color: var(--muted); background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px; cursor: pointer;
+  transition: all 0.12s; letter-spacing: 0.08em;
+}
+.clear-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+/* STEPS panel */
+.steps-panel {
+  flex: 1;
+  overflow-y: auto;
+}
+.steps-empty {
+  padding: 20px 12px;
+  font-size: 10px; color: var(--muted); line-height: 1.6;
+}
+.step-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 10px;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.step-item.show { opacity: 1; transform: translateY(0); }
+.step-num {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--gold); color: var(--bg);
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.step-body {}
+.step-route {
+  font-size: 10px; font-weight: 700; color: var(--text);
+  margin-bottom: 3px; line-height: 1.3;
+}
+.step-arrow { color: var(--gold); margin: 0 3px; }
+.step-to { color: var(--gold); }
+.step-data {
+  font-size: 9px; color: var(--muted); line-height: 1.5;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+/* SVG path */
+.flow-path {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.flow-path.dim {
+  stroke: rgba(255,255,255,0.06);
+  opacity: 1;
+}
+.flow-path.active {
+  opacity: 1;
+  stroke-dasharray: 5 3;
+  animation: dash 0.6s linear infinite;
+}
+
+@keyframes dash {
+  to { stroke-dashoffset: -16; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="brand">Severus Connects</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-meta">System Architecture Visualiser</div>
+  </div>
+  <div class="wf-tabs" id="wf-tabs"></div>
+</div>
+
+<div class="layout">
+  <div class="diagram-wrap" id="diagram-wrap">
+    <div class="diagram-scroll" id="diagram-scroll">
+      <div class="lane-headers" id="lane-headers"></div>
+      <div class="canvas" id="canvas">
+        <svg id="svg-canvas"></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-header">FLOWS</div>
+      <div class="flows-list" id="flows-list"></div>
+      <button class="clear-btn" id="clear-btn">Clear selection</button>
+    </div>
+    <div class="sidebar-section-header">STEPS</div>
+    <div class="steps-panel" id="steps-panel">
+      <div class="steps-empty" id="steps-empty">Select a flow to trace the data path through the system.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// ARCHITECTURE DATA
+// Each workflow has lanes + nodes positioned in those lanes
+// Lane keys map to column positions
+// ═══════════════════════════════════════
+
+const WORKFLOWS = [
+  {
+    id: "severus-os",
+    name: "Severus OS",
+    lanes: ["ACTORS", "DASHBOARD UI", "AI LAYER", "DATA STORE", "AGENTS", "EXTERNAL"],
+    nodes: [
+      { id: "user",          lane: 0, row: 0, name: "Idris (Operator)",    sub: "Local / Remote" },
+      { id: "tactical-ai",   lane: 1, row: 0, name: "TacticalAI Chat",      sub: "Overwatch dashboard" },
+      { id: "london-map",    lane: 1, row: 2, name: "London Map",            sub: "Prospect pin interface" },
+      { id: "kanban",        lane: 1, row: 4, name: "Kanban Board",          sub: "Task pipeline UI" },
+      { id: "gemini",        lane: 2, row: 0, name: "Gemini 2.0",            sub: "LLM · tool routing" },
+      { id: "polymarket",    lane: 2, row: 3, name: "Polymarket API",        sub: "Live market context" },
+      { id: "sqlite",        lane: 3, row: 1, name: "SQLite DB",             sub: "runs · clients · tasks" },
+      { id: "obsidian",      lane: 3, row: 3, name: "Obsidian Vault",        sub: "Knowledge base" },
+      { id: "crm",           lane: 3, row: 5, name: "Client CRM",            sub: "clients.json via API" },
+      { id: "agent-ga4",     lane: 4, row: 0, name: "GA4 Agent",             sub: "Severus Agent" },
+      { id: "agent-audit",   lane: 4, row: 2, name: "Audit Agent",           sub: "Severus Agent" },
+      { id: "agent-budget",  lane: 4, row: 4, name: "Budget Agent",          sub: "Severus Agent" },
+      { id: "agent-creative",lane: 5, row: 1, name: "Creative Agent",        sub: "Severus Agent" },
+    ],
+    flows: [
+      {
+        id: "ga4-audit",
+        name: "Run GA4 Audit",
+        desc: "User triggers full GA4 + ads audit via TacticalAI chat",
+        steps: [
+          { from: "user",         to: "tactical-ai",  data: "User sends audit request via chat input" },
+          { from: "tactical-ai",  to: "gemini",        data: "Prompt + Polymarket context injected into system prompt" },
+          { from: "gemini",       to: "agent-ga4",     data: "Gemini routes to GA4 Agent via tool call" },
+          { from: "agent-ga4",    to: "agent-audit",   data: "GA4 Agent chains into full Audit Agent pipeline" },
+          { from: "agent-audit",  to: "sqlite",        data: "Audit results written to runs table with timestamp" },
+          { from: "sqlite",       to: "kanban",        data: "Run record surfaces as Kanban task card" },
+          { from: "kanban",       to: "tactical-ai",   data: "Completion streamed back to TacticalAI chat" },
+        ]
+      },
+      {
+        id: "prospect-lookup",
+        name: "Prospect Lookup",
+        desc: "Pin click on London map loads client context into AI session",
+        steps: [
+          { from: "london-map",   to: "crm",           data: "Pin click fires client ID lookup via /api/clients" },
+          { from: "crm",          to: "sqlite",        data: "Client record fetched from clients.json" },
+          { from: "sqlite",       to: "tactical-ai",   data: "Client context injected into TacticalAI session" },
+          { from: "tactical-ai",  to: "gemini",        data: "Gemini generates prospect brief with market data" },
+          { from: "gemini",       to: "obsidian",      data: "Brief saved to Obsidian Vault as client note" },
+          { from: "polymarket",   to: "gemini",        data: "Top 8 live markets prepended to system prompt" },
+        ]
+      },
+      {
+        id: "market-brief",
+        name: "Market Intelligence Brief",
+        desc: "Live Polymarket signals fed into budget agent for bid strategy",
+        steps: [
+          { from: "polymarket",   to: "tactical-ai",   data: "Top 8 markets fetched every 60s via /api/polymarket" },
+          { from: "tactical-ai",  to: "gemini",        data: "Markets prepended to system prompt as live context" },
+          { from: "gemini",       to: "agent-budget",  data: "Budget Agent given market signals for bid strategy" },
+          { from: "agent-budget", to: "sqlite",        data: "Recommended budget allocation written to DB" },
+          { from: "sqlite",       to: "kanban",        data: "Budget task card created for review" },
+        ]
+      },
+    ]
+  },
+
+  {
+    id: "google-ads",
+    name: "Google Ads Restructure",
+    lanes: ["INPUT", "TRACKING", "AD PLATFORM", "CAMPAIGNS", "FEED", "REPORTING"],
+    nodes: [
+      { id: "client-brief",  lane: 0, row: 0, name: "Client Brief",       sub: "Goals · budget · KPIs" },
+      { id: "ga4-property",  lane: 1, row: 0, name: "GA4 Property",        sub: "Analytics tracking" },
+      { id: "gtm",           lane: 1, row: 2, name: "Google Tag Manager",  sub: "dataLayer · events" },
+      { id: "conv-actions",  lane: 1, row: 4, name: "Conversion Actions",  sub: "purchase · add_to_cart" },
+      { id: "gads-account",  lane: 2, row: 1, name: "Google Ads Account",  sub: "Restructured account" },
+      { id: "smart-bidding", lane: 2, row: 3, name: "Smart Bidding",       sub: "tROAS 300% target" },
+      { id: "attribution",   lane: 2, row: 5, name: "Attribution Model",   sub: "Data-driven · DDA" },
+      { id: "pmax",          lane: 3, row: 0, name: "PMax Campaign",       sub: "SC_PMax_AllProducts" },
+      { id: "shopping",      lane: 3, row: 2, name: "Smart Shopping",      sub: "SC_Shopping_TopSKUs" },
+      { id: "brand-search",  lane: 3, row: 4, name: "Brand Search",        sub: "SC_Brand_Exact" },
+      { id: "merchant",      lane: 4, row: 1, name: "Merchant Centre",     sub: "1,840 products" },
+      { id: "report",        lane: 5, row: 2, name: "Client Report",       sub: "ROAS 2.4× · CPA -38%" },
+    ],
+    flows: [
+      {
+        id: "full-restructure",
+        name: "Full Account Restructure",
+        desc: "End-to-end Google Ads rebuild — ROAS 0.9× → 2.4×",
+        steps: [
+          { from: "client-brief",  to: "ga4-property",  data: "Audit existing GA4, rebuild property from scratch" },
+          { from: "ga4-property",  to: "gtm",           data: "Install enhanced ecommerce dataLayer via GTM container" },
+          { from: "gtm",           to: "conv-actions",  data: "purchase event fires conversion action in Google Ads" },
+          { from: "conv-actions",  to: "smart-bidding", data: "Real purchase data unlocks tROAS Smart Bidding" },
+          { from: "gads-account",  to: "pmax",          data: "PMax campaign created with asset groups" },
+          { from: "merchant",      to: "pmax",          data: "Product feed synced — 1,840 products, titles optimised" },
+          { from: "smart-bidding", to: "report",        data: "30-day results: ROAS 0.9× → 2.4×, CPA -38%, CTR +62%" },
+        ]
+      },
+      {
+        id: "ga4-setup",
+        name: "GA4 Attribution Setup",
+        desc: "Link GA4 to Ads, import goals, apply data-driven attribution",
+        steps: [
+          { from: "ga4-property",  to: "gads-account",  data: "Link GA4 property to Google Ads — auto-tagging enabled" },
+          { from: "ga4-property",  to: "conv-actions",  data: "Import GA4 goals as conversion actions" },
+          { from: "conv-actions",  to: "attribution",   data: "Data-driven attribution model applied across campaigns" },
+          { from: "attribution",   to: "smart-bidding", data: "DDA signals feed Smart Bidding — no more blind bidding" },
+          { from: "smart-bidding", to: "pmax",          data: "PMax allocates budget dynamically across all channels" },
+        ]
+      },
+      {
+        id: "feed-optimise",
+        name: "Product Feed Optimisation",
+        desc: "Audit and rebuild Merchant Centre feed for Shopping + PMax",
+        steps: [
+          { from: "client-brief",  to: "merchant",      data: "Audit existing feed — missing GTINs, poor titles" },
+          { from: "merchant",      to: "shopping",      data: "Optimised feed powers Shopping campaign product tiles" },
+          { from: "merchant",      to: "pmax",          data: "Same feed used for PMax Shopping inventory" },
+          { from: "shopping",      to: "attribution",   data: "Shopping conversion data feeds attribution model" },
+          { from: "attribution",   to: "report",        data: "Channel attribution breakdown in client report" },
+        ]
+      },
+    ]
+  },
+
+  {
+    id: "n8n-automation",
+    name: "n8n Automations",
+    lanes: ["SOURCE", "TRIGGER", "ROUTER", "AI NODE", "CRM / COMMS", "OUTPUT"],
+    nodes: [
+      { id: "lead-source",   lane: 0, row: 0, name: "Lead Source",         sub: "Upwork · LinkedIn" },
+      { id: "deal-won",      lane: 0, row: 3, name: "Deal Won",             sub: "CRM status trigger" },
+      { id: "cron",          lane: 0, row: 5, name: "Monday 08:00 Cron",   sub: "Weekly report trigger" },
+      { id: "webhook",       lane: 1, row: 0, name: "Webhook Trigger",      sub: "POST endpoint" },
+      { id: "n8n-router",    lane: 2, row: 2, name: "n8n Router",           sub: "Branch · merge · filter" },
+      { id: "ai-classifier", lane: 3, row: 1, name: "AI Classifier",        sub: "Claude · lead scoring" },
+      { id: "audit-trigger", lane: 3, row: 4, name: "Audit Trigger",        sub: "Severus OS hook" },
+      { id: "crm-n8n",       lane: 4, row: 0, name: "CRM Update",           sub: "Status · score · stage" },
+      { id: "slack-notif",   lane: 4, row: 2, name: "Slack Notification",   sub: "DM to Idris" },
+      { id: "email-seq",     lane: 4, row: 4, name: "Email Sequence",       sub: "Proposal · onboarding" },
+      { id: "calendar",      lane: 4, row: 5, name: "Calendar Invite",      sub: "Calendly API" },
+      { id: "kanban-n8n",    lane: 5, row: 1, name: "Kanban Task",          sub: "Overwatch board" },
+      { id: "obsidian-n8n",  lane: 5, row: 3, name: "Obsidian Note",        sub: "Vault archive" },
+    ],
+    flows: [
+      {
+        id: "new-lead",
+        name: "New Lead Detected",
+        desc: "Upwork/LinkedIn inquiry → AI scoring → CRM + Kanban",
+        steps: [
+          { from: "lead-source",   to: "webhook",       data: "Upwork/LinkedIn lead fires POST to n8n webhook endpoint" },
+          { from: "webhook",       to: "n8n-router",    data: "Payload: name, company, source, message, contact" },
+          { from: "n8n-router",    to: "ai-classifier", data: "Claude classifies lead: service fit, budget signal, urgency" },
+          { from: "ai-classifier", to: "crm-n8n",       data: "Lead scored — status set to Qualified or Nurture" },
+          { from: "crm-n8n",       to: "slack-notif",   data: "Slack DM to Idris: lead summary + recommended action" },
+          { from: "crm-n8n",       to: "kanban-n8n",    data: "Kanban card created in New Leads column" },
+        ]
+      },
+      {
+        id: "onboard-client",
+        name: "Onboard New Client",
+        desc: "Deal Won triggers automated full onboarding pipeline",
+        steps: [
+          { from: "deal-won",      to: "n8n-router",    data: "Deal marked Won triggers onboarding flow" },
+          { from: "n8n-router",    to: "audit-trigger", data: "Full Severus OS audit triggered automatically" },
+          { from: "audit-trigger", to: "email-seq",     data: "Audit results → Claude generates + sends proposal doc" },
+          { from: "n8n-router",    to: "calendar",      data: "Kickoff call booked via Calendly API" },
+          { from: "n8n-router",    to: "obsidian-n8n",  data: "Client profile created in Obsidian Vault" },
+        ]
+      },
+      {
+        id: "weekly-report",
+        name: "Weekly Client Report",
+        desc: "Cron fires every Monday, generates and sends report",
+        steps: [
+          { from: "cron",          to: "n8n-router",    data: "Cron: every Monday 08:00, triggers report flow" },
+          { from: "n8n-router",    to: "audit-trigger", data: "Triggers GA4 + Ads audit for all active clients" },
+          { from: "audit-trigger", to: "ai-classifier", data: "Audit output passed to Claude for narrative generation" },
+          { from: "ai-classifier", to: "email-seq",     data: "Claude writes plain-English performance summary" },
+          { from: "ai-classifier", to: "obsidian-n8n",  data: "Report archived in Obsidian for audit trail" },
+          { from: "obsidian-n8n",  to: "kanban-n8n",    data: "Report card marked complete in Kanban" },
+        ]
+      },
+    ]
+  },
+
+  {
+    id: "client-onboarding",
+    name: "Client Onboarding",
+    lanes: ["PROSPECT", "SALES", "AUDIT TOOL", "DOCUMENTS", "TECH SETUP", "LIVE + RETAIN"],
+    nodes: [
+      { id: "prospect",       lane: 0, row: 1, name: "Prospect",           sub: "Upwork · LinkedIn" },
+      { id: "discovery-call", lane: 1, row: 0, name: "Discovery Call",     sub: "30-min Zoom" },
+      { id: "free-audit",     lane: 1, row: 3, name: "Free Audit Offer",   sub: "Lead magnet" },
+      { id: "sc-audit",       lane: 2, row: 1, name: "Severus Audit",      sub: "Automated GA4 + Ads" },
+      { id: "proposal",       lane: 3, row: 0, name: "Proposal Doc",       sub: "AI-generated PDF" },
+      { id: "creative-brief", lane: 3, row: 2, name: "Creative Brief",     sub: "From audit gaps" },
+      { id: "contract",       lane: 3, row: 4, name: "Contract Signed",    sub: "DocuSign" },
+      { id: "ga4-install",    lane: 4, row: 0, name: "GA4 Installation",   sub: "GTM · events · goals" },
+      { id: "ads-setup",      lane: 4, row: 3, name: "Ads Account Setup",  sub: "PMax · Shopping · Brand" },
+      { id: "campaign-live",  lane: 5, row: 1, name: "Campaign Live",      sub: "Smart Bidding unlocked" },
+      { id: "first-report",   lane: 5, row: 3, name: "First Report",       sub: "7-day post-launch" },
+      { id: "retention",      lane: 5, row: 5, name: "Retention Check",    sub: "30-day ROAS review" },
+    ],
+    flows: [
+      {
+        id: "full-onboard",
+        name: "Full Onboarding Flow",
+        desc: "Prospect to live campaign — end-to-end journey",
+        steps: [
+          { from: "prospect",      to: "discovery-call", data: "Inquiry → 30-min discovery call booked" },
+          { from: "discovery-call",to: "sc-audit",       data: "Severus OS runs automated audit of prospect's GA4 + Ads" },
+          { from: "sc-audit",      to: "proposal",       data: "Audit findings → Claude generates bespoke proposal PDF" },
+          { from: "proposal",      to: "contract",       data: "Proposal accepted → contract signed via DocuSign" },
+          { from: "contract",      to: "ga4-install",    data: "GA4 property rebuilt, GTM installed, events validated" },
+          { from: "contract",      to: "ads-setup",      data: "Google Ads account restructured — PMax + Shopping live" },
+          { from: "ga4-install",   to: "campaign-live",  data: "Conversion tracking verified → Smart Bidding unlocked" },
+          { from: "ads-setup",     to: "campaign-live",  data: "All campaigns activated with tROAS bid strategy" },
+          { from: "campaign-live", to: "first-report",   data: "7-day post-launch report auto-generated by Severus OS" },
+        ]
+      },
+      {
+        id: "audit-to-proposal",
+        name: "Audit → Proposal",
+        desc: "Free audit as lead magnet converts to paid engagement",
+        steps: [
+          { from: "prospect",      to: "free-audit",     data: "Free audit offered as lead magnet on Upwork profile" },
+          { from: "free-audit",    to: "sc-audit",       data: "Severus OS runs full automated audit" },
+          { from: "sc-audit",      to: "creative-brief", data: "Audit surfaces creative gaps → brief generated" },
+          { from: "sc-audit",      to: "proposal",       data: "Full findings packaged into proposal with ROI projections" },
+          { from: "proposal",      to: "discovery-call", data: "Proposal walkthrough call booked automatically" },
+        ]
+      },
+      {
+        id: "retention-loop",
+        name: "Retention Loop",
+        desc: "30-day check triggers upsell conversation if ROAS ≥ 2×",
+        steps: [
+          { from: "first-report",  to: "retention",      data: "30-day check: ROAS target met? Renewal triggered" },
+          { from: "retention",     to: "ads-setup",      data: "Upsell: new campaign brief → account expanded" },
+          { from: "ads-setup",     to: "campaign-live",  data: "New service launches with expanded campaign set" },
+          { from: "campaign-live", to: "first-report",   data: "Reporting cycle restarts for new service" },
+        ]
+      },
+    ]
+  },
+];
+
+// ═══════════════════════════════════════
+// LAYOUT CONFIG
+// ═══════════════════════════════════════
+const LANE_W   = 180;
+const NODE_H   = 52;
+const ROW_H    = 80;
+const CANVAS_PAD_TOP  = 24;
+const CANVAS_PAD_LEFT = 0;
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let activeWF   = WORKFLOWS[0];
+let activeFlow = null;
+const badges   = [];
+
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function nodeCenter(nodeEl) {
+  const canvas = document.getElementById('canvas');
+  const cr = canvas.getBoundingClientRect();
+  const nr = nodeEl.getBoundingClientRect();
+  return {
+    x: nr.left - cr.left + nr.width / 2,
+    y: nr.top  - cr.top  + nr.height / 2,
+  };
+}
+
+function nodePos(node) {
+  const x = CANVAS_PAD_LEFT + node.lane * LANE_W + (LANE_W - 140) / 2;
+  const y = CANVAS_PAD_TOP  + node.row  * ROW_H;
+  return { x, y };
+}
+
+function canvasHeight() {
+  const maxRow = Math.max(...activeWF.nodes.map(n => n.row));
+  return CANVAS_PAD_TOP + (maxRow + 1) * ROW_H + NODE_H + CANVAS_PAD_TOP;
+}
+
+// ═══════════════════════════════════════
+// RENDER WORKFLOW TABS
+// ═══════════════════════════════════════
+function renderTabs() {
+  const wrap = document.getElementById('wf-tabs');
+  wrap.innerHTML = WORKFLOWS.map(wf => `
+    <button class="wf-tab ${wf.id === activeWF.id ? 'active' : ''}" data-wf="${wf.id}">
+      ${wf.name}
+    </button>
+  `).join('');
+  wrap.querySelectorAll('.wf-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeWF = WORKFLOWS.find(w => w.id === btn.dataset.wf);
+      activeFlow = null;
+      render();
+    });
+  });
+}
+
+// ═══════════════════════════════════════
+// RENDER LANE HEADERS + BACKGROUND
+// ═══════════════════════════════════════
+function renderLanes() {
+  const headers = document.getElementById('lane-headers');
+  const canvas  = document.getElementById('canvas');
+  const scroll  = document.getElementById('diagram-scroll');
+
+  const totalW = activeWF.lanes.length * LANE_W;
+  scroll.style.minWidth = Math.max(totalW + 1, 900) + 'px';
+
+  headers.innerHTML = activeWF.lanes.map(l =>
+    `<div class="lane-header" style="width:${LANE_W}px;min-width:${LANE_W}px">${l}</div>`
+  ).join('');
+
+  // clear old lane bg divs
+  canvas.querySelectorAll('.lane-bg').forEach(el => el.remove());
+  const h = canvasHeight();
+  canvas.style.height = h + 'px';
+
+  activeWF.lanes.forEach((_, i) => {
+    const bg = document.createElement('div');
+    bg.className = 'lane-bg';
+    bg.style.left  = (i * LANE_W) + 'px';
+    bg.style.width = LANE_W + 'px';
+    canvas.insertBefore(bg, canvas.firstChild);
+  });
+}
+
+// ═══════════════════════════════════════
+// RENDER NODES
+// ═══════════════════════════════════════
+function renderNodes() {
+  // remove old nodes
+  document.querySelectorAll('.node').forEach(el => el.remove());
+  const canvas = document.getElementById('canvas');
+
+  const activeNodeIds = new Set();
+  if (activeFlow) {
+    activeFlow.steps.forEach(s => { activeNodeIds.add(s.from); activeNodeIds.add(s.to); });
+  }
+
+  activeWF.nodes.forEach(node => {
+    const { x, y } = nodePos(node);
+    const el = document.createElement('div');
+    el.className = 'node';
+    el.id = 'n-' + node.id;
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    el.style.width = '140px';
+
+    const isHighlighted = !activeFlow || activeNodeIds.has(node.id);
+    const isDimmed      = activeFlow  && !activeNodeIds.has(node.id);
+    if (isHighlighted && activeFlow) el.classList.add('highlighted');
+    if (isDimmed)                    el.classList.add('dimmed');
+
+    el.innerHTML = `<div class="node-name">${node.name}</div><div class="node-sub">${node.sub}</div>`;
+    canvas.appendChild(el);
+  });
+}
+
+// ═══════════════════════════════════════
+// RENDER SVG PATHS + BADGES
+// ═══════════════════════════════════════
+function renderPaths() {
+  const svg = document.getElementById('svg-canvas');
+  svg.innerHTML = '';
+  // clear old badges
+  badges.forEach(b => b.remove());
+  badges.length = 0;
+  const canvas = document.getElementById('canvas');
+
+  // draw all passive edges (dim) first
+  if (activeFlow) {
+    // get all edges across all flows in this WF
+    const allEdges = new Set();
+    activeWF.flows.forEach(fl => {
+      fl.steps.forEach(s => allEdges.add(s.from + '|' + s.to));
+    });
+    // draw dim lines for non-active edges
+    allEdges.forEach(key => {
+      const [from, to] = key.split('|');
+      const fEl = document.getElementById('n-' + from);
+      const tEl = document.getElementById('n-' + to);
+      if (!fEl || !tEl) return;
+      const inActiveFlow = activeFlow.steps.some(s => s.from === from && s.to === to);
+      if (inActiveFlow) return;
+      const fc = nodeCenter(fEl);
+      const tc = nodeCenter(tEl);
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', bezier(fc, tc));
+      path.setAttribute('class', 'flow-path dim');
+      svg.appendChild(path);
+    });
+  }
+
+  if (!activeFlow) {
+    // just draw all edges dimly
+    const allEdges = new Set();
+    activeWF.flows.forEach(fl => {
+      fl.steps.forEach(s => allEdges.add(s.from + '|' + s.to));
+    });
+    allEdges.forEach(key => {
+      const [from, to] = key.split('|');
+      const fEl = document.getElementById('n-' + from);
+      const tEl = document.getElementById('n-' + to);
+      if (!fEl || !tEl) return;
+      const fc = nodeCenter(fEl);
+      const tc = nodeCenter(tEl);
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', bezier(fc, tc));
+      path.setAttribute('class', 'flow-path dim');
+      svg.appendChild(path);
+    });
+    return;
+  }
+
+  // active flow paths + numbered badges
+  activeFlow.steps.forEach((step, i) => {
+    const fEl = document.getElementById('n-' + step.from);
+    const tEl = document.getElementById('n-' + step.to);
+    if (!fEl || !tEl) return;
+
+    const fc = nodeCenter(fEl);
+    const tc = nodeCenter(tEl);
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', bezier(fc, tc));
+    path.setAttribute('class', 'flow-path active');
+    svg.appendChild(path);
+
+    // midpoint badge
+    const mx = (fc.x + tc.x) / 2;
+    const my = (fc.y + tc.y) / 2 - 4;
+    const badge = document.createElement('div');
+    badge.className = 'edge-badge';
+    badge.textContent = String(i + 1);
+    badge.style.left = (mx - 9) + 'px';
+    badge.style.top  = (my - 9) + 'px';
+    canvas.appendChild(badge);
+    badges.push(badge);
+    setTimeout(() => badge.classList.add('visible'), i * 60 + 100);
+  });
+}
+
+function bezier(a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const cx1 = a.x + dx * 0.45;
+  const cy1 = a.y + dy * 0.05;
+  const cx2 = a.x + dx * 0.55;
+  const cy2 = a.y + dy * 0.95;
+  return `M ${a.x} ${a.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${b.x} ${b.y}`;
+}
+
+// ═══════════════════════════════════════
+// RENDER SIDEBAR FLOWS LIST
+// ═══════════════════════════════════════
+function renderFlowsList() {
+  const list = document.getElementById('flows-list');
+  list.innerHTML = activeWF.flows.map(fl => `
+    <div class="flow-item ${activeFlow?.id === fl.id ? 'active' : ''}" data-flow="${fl.id}">
+      <div class="flow-name">${fl.name}</div>
+      <div class="flow-desc">${fl.desc}</div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.flow-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const fl = activeWF.flows.find(f => f.id === el.dataset.flow);
+      activeFlow = activeFlow?.id === fl.id ? null : fl;
+      renderFlowsList();
+      renderNodes();
+      renderPaths();
+      renderSteps();
+    });
+  });
+}
+
+// ═══════════════════════════════════════
+// RENDER STEPS PANEL
+// ═══════════════════════════════════════
+function renderSteps() {
+  const panel = document.getElementById('steps-panel');
+  const empty = document.getElementById('steps-empty');
+
+  if (!activeFlow) {
+    empty.style.display = 'block';
+    panel.querySelectorAll('.step-item').forEach(el => el.remove());
+    return;
+  }
+  empty.style.display = 'none';
+  panel.querySelectorAll('.step-item').forEach(el => el.remove());
+
+  activeFlow.steps.forEach((step, i) => {
+    const fromNode = activeWF.nodes.find(n => n.id === step.from);
+    const toNode   = activeWF.nodes.find(n => n.id === step.to);
+    const el = document.createElement('div');
+    el.className = 'step-item';
+    el.id = 'step-' + i;
+    el.innerHTML = `
+      <div class="step-num">${i + 1}</div>
+      <div class="step-body">
+        <div class="step-route">
+          ${fromNode?.name ?? step.from}
+          <span class="step-arrow">→</span>
+          <span class="step-to">${toNode?.name ?? step.to}</span>
+        </div>
+        <div class="step-data">${step.data}</div>
+      </div>
+    `;
+    panel.appendChild(el);
+    setTimeout(() => el.classList.add('show'), i * 60 + 80);
+  });
+}
+
+// ═══════════════════════════════════════
+// CLEAR BUTTON
+// ═══════════════════════════════════════
+document.getElementById('clear-btn').addEventListener('click', () => {
+  activeFlow = null;
+  renderFlowsList();
+  renderNodes();
+  renderPaths();
+  renderSteps();
+});
+
+// ═══════════════════════════════════════
+// FULL RENDER
+// ═══════════════════════════════════════
+function render() {
+  renderTabs();
+  renderLanes();
+  renderNodes();
+  // paths need layout to be painted first
+  requestAnimationFrame(() => {
+    renderPaths();
+  });
+  renderFlowsList();
+  renderSteps();
+}
+
+window.addEventListener('resize', () => {
+  if (activeFlow) requestAnimationFrame(renderPaths);
+});
+
+render();
+</script>
+</body>
+</html>

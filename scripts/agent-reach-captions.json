@@ -1,0 +1,12 @@
+{
+  "01-pitch-readme.png": "The README -- one install, sixteen platforms. Mandarin original; English mirror in docs/.",
+  "02-package-pyproject.png": "pyproject.toml -- published to PyPI as agent-reach. Minimal core deps, optional MCP and browser extras.",
+  "03-api-surface.png": "agent_reach/__init__.py -- one public class, AgentReach. Everything else is pluggable channels.",
+  "04-support-matrix.png": "The support matrix -- seven zero-config channels, the rest configure with one sentence to the agent.",
+  "05-diagnostic-doctor.png": "agent-reach doctor -- one command reports which channels are healthy and which need attention.",
+  "06-cli-entrypoint.png": "agent_reach/cli.py -- install, doctor, configure, uninstall. The whole operator surface.",
+  "07-channels-registry.png": "channels/__init__.py -- each platform is one file. Swap a backend by editing one file.",
+  "08-channel-twitter.png": "channels/twitter.py -- a channel only declares its backend (bird CLI) and how to health-check it.",
+  "09-i18n-readme-zh.png": "The Mandarin README -- shipped from day one alongside the English mirror.",
+  "10-logo.png": "Agent-Reach mark -- the open-source identity used on GitHub and PyPI."
+}

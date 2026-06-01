@@ -1,0 +1,18 @@
+export const PANTHEON: Record<string, { model: string; file: string }> = {
+  "jack-of-clubs":     { model: "Qwen/Qwen3-Coder-Next:novita",         file: "C:/Users/profs/.claude/rules/ecc/pantheon/jack-of-clubs.md" },
+  "queen-of-clubs":    { model: "claude-opus-4-7",                      file: "C:/Users/profs/.claude/rules/ecc/pantheon/queen-of-clubs.md" },
+  "king-of-clubs":     { model: "deepseek-ai/DeepSeek-V4-Flash:novita", file: "C:/Users/profs/.claude/rules/ecc/pantheon/king-of-clubs.md" },
+  "ace-of-clubs":      { model: "deepseek-ai/DeepSeek-V4-Flash:novita", file: "C:/Users/profs/.claude/rules/ecc/pantheon/ace-of-clubs.md" },
+  "jack-of-diamonds":  { model: "claude-sonnet-4-6",                    file: "C:/Users/profs/.claude/rules/ecc/pantheon/jack-of-diamonds.md" },
+  "queen-of-diamonds": { model: "claude-sonnet-4-6",                    file: "C:/Users/profs/.claude/rules/ecc/pantheon/queen-of-diamonds.md" },
+  "king-of-diamonds":  { model: "deepseek-ai/DeepSeek-V4-Flash:novita", file: "C:/Users/profs/.claude/rules/ecc/pantheon/king-of-diamonds.md" },
+  "ace-of-diamonds":   { model: "Qwen/Qwen3.6-35B-A3B:featherless-ai",  file: "C:/Users/profs/.claude/rules/ecc/pantheon/ace-of-diamonds.md" },
+  "jack-of-hearts":    { model: "claude-sonnet-4-6",                    file: "C:/Users/profs/.claude/rules/ecc/pantheon/jack-of-hearts.md" },
+  "queen-of-hearts":   { model: "moonshotai/Kimi-K2.6:novita",          file: "C:/Users/profs/.claude/rules/ecc/pantheon/queen-of-hearts.md" },
+  "king-of-hearts":    { model: "moonshotai/Kimi-K2.6:novita",          file: "C:/Users/profs/.claude/rules/ecc/pantheon/king-of-hearts.md" },
+  "ace-of-hearts":     { model: "claude-opus-4-7",                      file: "C:/Users/profs/.claude/rules/ecc/pantheon/ace-of-hearts.md" },
+  "jack-of-spades":    { model: "claude-opus-4-7",                      file: "C:/Users/profs/.claude/rules/ecc/pantheon/jack-of-spades.md" },
+  "queen-of-spades":   { model: "Qwen/Qwen3.6-35B-A3B:featherless-ai",  file: "C:/Users/profs/.claude/rules/ecc/pantheon/queen-of-spades.md" },
+  "king-of-spades":    { model: "Qwen/Qwen3.6-35B-A3B:featherless-ai",  file: "C:/Users/profs/.claude/rules/ecc/pantheon/king-of-spades.md" },
+  "ace-of-spades":     { model: "Qwen/Qwen3.6-35B-A3B:featherless-ai",  file: "C:/Users/profs/.claude/rules/ecc/pantheon/ace-of-spades.md" },
+};

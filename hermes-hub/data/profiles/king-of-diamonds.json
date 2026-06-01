@@ -1,0 +1,159 @@
+{
+  "id": "king-of-diamonds",
+  "name": "KING OF DIAMONDS",
+  "suit": "diamonds",
+  "rank": "king",
+  "role": "Shopping & eComm Ads",
+  "tagline": "Feed optimisation, product campaigns, ROAS maximised. Built for DTC.",
+  "model": "huggingface/deepseek-ai/DeepSeek-V4-Flash:novita",
+  "modelLabel": "DEEPSEEK-V4-FLASH",
+  "modelColor": "#f59e0b",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#f59e0b",
+  "gateway": "telegram",
+  "gatewayHandle": "@king_diamonds_bot",
+  "soulFile": "data/souls/king-of-diamonds.md",
+  "skills": [
+    "severus-connects-shopping",
+    "ecom-ads-skill",
+    "severus-connects-performance",
+    "severus-connects-analytics",
+    "production-audit",
+    "verification-loop",
+    "mysql-patterns",
+    "api-design",
+    "severus-design-ecommerce"
+  ],
+  "tools": [
+    {
+      "id": "feed-optimiser",
+      "label": "Feed Optimiser",
+      "description": "Product title, description, GTIN, custom labels for Google Shopping"
+    },
+    {
+      "id": "pmax-builder",
+      "label": "PMax Builder",
+      "description": "Performance Max campaign structure, asset groups, audience signals"
+    },
+    {
+      "id": "roas-analysis",
+      "label": "ROAS Analysis",
+      "description": "Product-level ROAS breakdown, budget reallocation recommendations"
+    },
+    {
+      "id": "verification-loop",
+      "label": "Verification Loop",
+      "description": "Feed quality checks with iterative self-correction"
+    },
+    {
+      "id": "ecommerce-integration",
+      "label": "E-commerce Integration",
+      "description": "Shopify Storefront API, Stripe Elements, GA4 e-commerce events, cart/checkout build"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Feed notes, PMax logs, client eComm briefs, ROAS reports",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "google-merchant-center",
+      "label": "Google Merchant Center",
+      "detail": "Feed linked — product data, disapprovals, feed rules",
+      "status": "connected"
+    },
+    {
+      "id": "google-ads",
+      "label": "Google Ads",
+      "detail": "Shopping + PMax campaigns",
+      "status": "connected"
+    },
+    {
+      "id": "shopify",
+      "label": "Shopify",
+      "detail": "Product catalogue sync — OAuth pending",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@king_diamonds_bot — feed alerts and PMax reports",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6"
+    },
+    {
+      "name": "Google Merchant Center",
+      "status": "connected",
+      "detail": "Feed linked"
+    },
+    {
+      "name": "Shopify",
+      "status": "pending",
+      "detail": "OAuth pending"
+    }
+  ],
+  "crons": [
+    {
+      "id": "feed-check",
+      "label": "Product Feed Health",
+      "schedule": "0 8 * * 1-5",
+      "human": "Weekdays at 08:00",
+      "lastRun": "2026-05-15T08:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "pmax-review",
+      "label": "PMax Review",
+      "schedule": "0 16 * * 5",
+      "human": "Fridays at 16:00",
+      "lastRun": "2026-05-09T16:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 22,
+    "messagesTotal": 399,
+    "lastActive": "8h ago"
+  },
+  "whitelist": [
+    "severus-connects-shopping",
+    "ecom-ads-skill",
+    "severus-connects-performance",
+    "severus-connects-analytics",
+    "production-audit",
+    "verification-loop",
+    "mysql-patterns",
+    "api-design",
+    "severus-design-ecommerce"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": [
+      "external-api-write"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/king-of-diamonds.png"
+}

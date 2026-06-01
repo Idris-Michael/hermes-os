@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "rendervid": {
+      "command": "node",
+      "args": ["./rendervid/mcp/build/index.js"],
+      "type": "stdio"
+    },
+    "obsidian": {
+      "command": "npx",
+      "args": ["-y", "obsidian-mcp-server"],
+      "env": {
+        "OBSIDIAN_API_KEY": "your_obsidian_local_rest_api_key_here",
+        "OBSIDIAN_BASE_URL": "https://127.0.0.1:27124",
+        "OBSIDIAN_VERIFY_SSL": "false"
+      },
+      "type": "stdio"
+    },
+    "n8n-mcp": {
+      "command": "npx",
+      "args": ["-y", "n8n-mcp"],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true"
+      },
+      "type": "stdio"
+    },
+    "notebooklm-creative": {
+      "command": "node",
+      "args": ["./mcp-servers/notebooklm-creative/index.js"],
+      "type": "stdio"
+    }
+  }
+}
