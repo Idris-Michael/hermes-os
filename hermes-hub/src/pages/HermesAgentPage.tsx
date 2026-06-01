@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { RefreshCw, X, Plus } from "lucide-react";
 import WebGLBackground from "../components/WebGLBackground";
 import TelegramConsole from "../components/TelegramConsole";
+import AgentTriadNav from "../components/AgentTriadNav";
 import { useInterval } from "../hooks/useInterval";
 import { useProfiles, useSwarmLogs } from "../hooks/queries";
 import { useQueryClient } from "@tanstack/react-query";
@@ -222,6 +223,7 @@ export default function HermesAgentPage() {
     <div className="relative min-h-screen flex flex-col w-full text-white overflow-hidden">
       <WebGLBackground />
       <div className="relative z-10 flex flex-col w-full h-full bg-black/20 backdrop-blur-md">
+      <div className="px-6 pt-4"><AgentTriadNav /></div>
       {/* Hero Banner — cloaked figure under stone arch, blue-grey engraving style with dynamic HUD and mouse tracking */}
       <div 
         ref={heroRef}

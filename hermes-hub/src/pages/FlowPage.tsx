@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useProfiles } from "../hooks/queries";
+import AgentTriadNav from "../components/AgentTriadNav";
 
 interface Profile {
   id: string;
@@ -170,7 +171,9 @@ export default function FlowPage() {
   const selectedNode = selected ? getNode(selected) : null;
 
   return (
-    <div style={{ display: "flex", height: "100%", overflow: "hidden", background: "#070d07" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden", background: "#070d07" }}>
+      <div style={{ padding: "16px 16px 0 16px" }}><AgentTriadNav /></div>
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
 
       {/* Canvas */}
       <div
@@ -555,6 +558,7 @@ export default function FlowPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
