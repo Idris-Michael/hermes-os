@@ -1,0 +1,179 @@
+{
+  "id": "queen-of-diamonds",
+  "name": "QUEEN OF DIAMONDS",
+  "suit": "diamonds",
+  "rank": "queen",
+  "role": "Personal Brand Growth \u00c2\u00b7 @mikeb.io",
+  "tagline": "Grows Idris's personal account. Raw, technical, builder voice. Reels that stop the scroll.",
+  "model": "claude-sonnet-4-6",
+  "modelLabel": "SONNET 4.6",
+  "modelColor": "#00FF88",
+  "badge": "ACTIVE",
+  "synced": true,
+  "accentColor": "#00FF88",
+  "gateway": "hermes-hub",
+  "gatewayHandle": "@mikeb.io",
+  "soulFile": "data/souls/queen-of-diamonds.md",
+  "skills": [
+    "severus-social-copywriter",
+    "severus-social-contentstrategy",
+    "instagram-growth",
+    "persona-mikeb",
+    "hook-ab-testing",
+    "analytics-feedback",
+    "openshorts-clip-gen",
+    "openscreen-recording"
+  ],
+  "tools": [
+    {
+      "id": "generateScript",
+      "label": "Script Generator",
+      "description": "Generates 3 hook variants per slot via claude-sonnet-4-6 using MikeB persona voice"
+    },
+    {
+      "id": "heartbeat",
+      "label": "Heartbeat Scheduler",
+      "description": "Daily 7am trigger \u00e2\u20ac\u201d decides next post slot, runs generation chain"
+    },
+    {
+      "id": "hook-ab",
+      "label": "Hook A/B Testing",
+      "description": "Scores transformation/contrarian/curiosity-gap by sends+saves+watch_pct"
+    },
+    {
+      "id": "approval-queue",
+      "label": "Approval Queue",
+      "description": "Queues variants for human review in Overwatch /instagram panel"
+    },
+    {
+      "id": "openshorts",
+      "label": "OpenShorts",
+      "description": "Repurpose long-form @mikeb.io content into Instagram Reels and TikTok shorts"
+    },
+    {
+      "id": "openscreen",
+      "label": "OpenScreen",
+      "description": "Record polished Upwork portfolio walkthroughs with auto-zoom and cursor tracking"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "instagram-graph",
+      "label": "Meta Graph API",
+      "description": "Publish reels, pull reach/saves/sends/watch_time insights",
+      "status": "pending"
+    },
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Copy bank, top-performing scripts, content strategy notes",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "instagram-mikeb",
+      "label": "Instagram @mikeb.io",
+      "detail": "IG_BUSINESS_ID_MIKEB \u00e2\u20ac\u201d personal brand account",
+      "status": "pending"
+    },
+    {
+      "id": "gmail",
+      "label": "Gmail Notifications",
+      "detail": "michaelbakare92@gmail.com \u00e2\u20ac\u201d approval email with one-tap link",
+      "status": "connected"
+    },
+    {
+      "id": "hermes-hub",
+      "label": "Hermes Hub Dashboard",
+      "detail": "localhost:3000/instagram \u00e2\u20ac\u201d Queue panel for review",
+      "status": "connected"
+    },
+    {
+      "id": "openshorts",
+      "label": "OpenShorts",
+      "detail": "Docker \u00b7 :8000 \u2014 @mikeb.io clip generator",
+      "status": "pending"
+    },
+    {
+      "id": "openscreen",
+      "label": "OpenScreen",
+      "detail": "Desktop \u2014 Upwork demo recorder, portfolio walkthroughs",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6 \u00c2\u00b7 script generation"
+    },
+    {
+      "name": "Gemini TTS",
+      "status": "pending",
+      "detail": "GEMINI_API_KEY \u00c2\u00b7 voiceover generation"
+    },
+    {
+      "name": "Meta Graph API",
+      "status": "pending",
+      "detail": "META_IG_TOKEN \u00c2\u00b7 publish + insights"
+    },
+    {
+      "name": "HyperFrames V2",
+      "status": "connected",
+      "detail": "1080x1920 \u00c2\u00b7 instagram-follow block"
+    }
+  ],
+  "crons": [
+    {
+      "id": "ig-heartbeat-mikeb",
+      "label": "Instagram Heartbeat",
+      "schedule": "0 7 * * 1,3,5",
+      "human": "Mon/Wed/Fri at 07:00 UTC",
+      "lastRun": "2026-05-19T07:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "ig-insights-mikeb",
+      "label": "Pull Insights",
+      "schedule": "0 9 * * *",
+      "human": "Daily at 09:00 UTC",
+      "lastRun": "2026-05-19T09:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 0,
+    "messagesTotal": 0,
+    "lastActive": "not yet run"
+  },
+  "whitelist": [
+    "severus-social-copywriter",
+    "severus-social-contentstrategy",
+    "instagram-growth",
+    "persona-mikeb",
+    "hook-ab-testing",
+    "analytics-feedback"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions",
+      "modify-other-agents"
+    ],
+    "require_approval_for": [
+      "publish",
+      "send-email"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/queen-of-diamonds.png"
+}

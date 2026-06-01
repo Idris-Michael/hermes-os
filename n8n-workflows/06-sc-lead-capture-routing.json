@@ -1,0 +1,163 @@
+{
+  "name": "06-sc-lead-capture-routing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sc-lead",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-lead",
+      "name": "Webhook — Incoming Lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "notes": "POST JSON: { source, name, email, message, budget?, service_interest? }. Sources: linkedin, whatsapp, email, website-form, referral"
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Severus-Gateway, the lead qualification agent for Severus Connects. Analyse the incoming lead and return a JSON object with these fields:\n- score: 1-10 (fit score)\n- qualified: true/false (≥6 = qualified)\n- service_path: one of [analytics, shopping-ads, performance-ads, website-build, redesign, design-system, bundle-c, bundle-d, content-retainer, nurture]\n- budget_signal: low (<£800/mo) | medium (£800-£3k) | high (>£3k) | unknown\n- urgency: immediate | planning | exploring\n- disqualify_reason: null or string\n- recommended_next: intake | proposal | nurture | reject\n- notes: one sentence on why\n\nQualification criteria:\n- Budget signal medium or high = +2\n- Clear service need stated = +2\n- Has existing website/business = +1\n- Mentions timeline = +1\n- Vague or no budget = -1\n- Competitors or agencies mentioned (shopping around) = -1\n- Budget signal low = disqualify unless strategic exception\n\nRoute bundle-c if client mentions ads AND website. Route bundle-d if budget >£3k AND mentions full marketing stack. Route content-retainer if mentions hands-off social or done-for-you content."
+            },
+            {
+              "role": "user",
+              "content": "=Lead from {{ $json.source }}:\nName: {{ $json.name }}\nEmail: {{ $json.email }}\nMessage: {{ $json.message }}\nBudget: {{ $json.budget ?? 'not stated' }}\nService interest: {{ $json.service_interest ?? 'not stated' }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 500
+        }
+      },
+      "id": "claude-qualify",
+      "name": "Claude — Qualify & Score Lead",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const raw = $('Claude — Qualify & Score Lead').first().json.text;\nconst match = raw.match(/\\{[\\s\\S]*\\}/);\nconst parsed = match ? JSON.parse(match[0]) : { qualified: false, recommended_next: 'nurture', score: 0 };\nconst lead = $('Webhook — Incoming Lead').first().json;\nreturn [{ json: { ...lead, ...parsed, received_at: new Date().toISOString() } }];"
+      },
+      "id": "parse-score",
+      "name": "Code — Parse Score",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "id": "qualified-check",
+              "leftValue": "={{ $json.qualified }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "route-qualified",
+      "name": "Router — Qualified?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/sc-intake",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: 'Start intake for ' + $json.name, client_name: $json.name, client_email: $json.email, source: $json.source, service_path: $json.service_path, score: $json.score }) }}",
+        "options": {}
+      },
+      "id": "trigger-intake",
+      "name": "HTTP — Trigger Intake Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 200],
+      "notes": "Calls workflow 02-sc-intake webhook to begin client brief building"
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/sc-nurture",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $json.name, email: $json.email, source: $json.source, score: $json.score, service_path: $json.service_path, disqualify_reason: $json.disqualify_reason }) }}",
+        "options": {}
+      },
+      "id": "trigger-nurture",
+      "name": "HTTP — Trigger Nurture Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 420],
+      "notes": "Sends unqualified leads to 07-sc-lead-nurture workflow"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "databaseId": "={{ $vars.NOTION_LEADS_DB }}",
+        "title": "={{ $json.name + ' — ' + $json.source + ' (' + $json.score + '/10)' }}",
+        "propertiesUi": {
+          "propertyValues": [
+            { "key": "Email", "textValue": "={{ $json.email }}" },
+            { "key": "Source", "textValue": "={{ $json.source }}" },
+            { "key": "Score", "numberValue": "={{ $json.score }}" },
+            { "key": "Service Path", "textValue": "={{ $json.service_path }}" },
+            { "key": "Budget Signal", "textValue": "={{ $json.budget_signal }}" },
+            { "key": "Status", "textValue": "={{ $json.qualified ? 'Qualified' : 'Nurture' }}" },
+            { "key": "Notes", "textValue": "={{ $json.notes }}" },
+            { "key": "Received At", "textValue": "={{ $json.received_at }}" }
+          ]
+        }
+      },
+      "id": "notion-log",
+      "name": "Notion — Log Lead to CRM",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [1340, 300],
+      "notes": "Logs every lead regardless of qualification. Set NOTION_LEADS_DB in n8n Variables."
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "=🎯 *New Lead — {{ $json.qualified ? '✅ QUALIFIED' : '🟡 NURTURE' }}*\n\n*Name:* {{ $json.name }}\n*Source:* {{ $json.source }}\n*Score:* {{ $json.score }}/10\n*Path:* {{ $json.service_path }}\n*Budget:* {{ $json.budget_signal }}\n\n{{ $json.notes }}\n\n→ {{ $json.qualified ? 'Intake started' : 'Added to nurture' }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-alert",
+      "name": "Telegram — Notify Idris",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — Incoming Lead": { "main": [[{ "node": "Claude — Qualify & Score Lead", "type": "main", "index": 0 }]] },
+    "Claude — Qualify & Score Lead": { "main": [[{ "node": "Code — Parse Score", "type": "main", "index": 0 }]] },
+    "Code — Parse Score": { "main": [[{ "node": "Router — Qualified?", "type": "main", "index": 0 }]] },
+    "Router — Qualified?": {
+      "main": [
+        [{ "node": "HTTP — Trigger Intake Workflow", "type": "main", "index": 0 }],
+        [{ "node": "HTTP — Trigger Nurture Workflow", "type": "main", "index": 0 }]
+      ]
+    },
+    "HTTP — Trigger Intake Workflow": { "main": [[{ "node": "Notion — Log Lead to CRM", "type": "main", "index": 0 }]] },
+    "HTTP — Trigger Nurture Workflow": { "main": [[{ "node": "Notion — Log Lead to CRM", "type": "main", "index": 0 }]] },
+    "Notion — Log Lead to CRM": { "main": [[{ "node": "Telegram — Notify Idris", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Receives leads from any source (LinkedIn, WhatsApp, email, website form). Claude scores and qualifies. Qualified leads trigger intake. Unqualified go to nurture. Every lead logged to Notion CRM.",
+    "trigger": "Webhook POST /sc-lead",
+    "variables_required": ["NOTION_LEADS_DB", "TELEGRAM_CHAT_ID"],
+    "credentials_required": ["Anthropic API Key", "Telegram Bot Token", "Notion API Key"]
+  }
+}

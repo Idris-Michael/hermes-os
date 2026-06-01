@@ -1,0 +1,223 @@
+{
+  "name": "08-sc-invoice-payment",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sc-invoice",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-invoice",
+      "name": "Webhook — Trigger Invoice",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "notes": "POST JSON: { client_name, client_email, service_path, package_label, setup_fee, monthly_fee, currency, proposal_signed_date, work_start_date }. Called manually after proposal is signed, or triggered from workflow 05."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"invoice_initiated\", \"message\": \"Invoice sequence started\" }"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [460, 160]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Idris-Michael Bakare of Severus Connects. Write a professional, warm payment kick-off email to a new client. The email should:\n1. Confirm the engagement and express genuine enthusiasm\n2. State the setup fee clearly and explain what it covers\n3. Provide payment instructions (Stripe link placeholder)\n4. Set expectations: work begins within 48h of cleared payment\n5. Tell them what happens next (intake call or brief questionnaire)\n6. Be under 200 words, plain text, professional but human\n\nReturn only the email body (no subject line). Sign as Idris."
+            },
+            {
+              "role": "user",
+              "content": "=Client: {{ $json.client_name }}\nService: {{ $json.package_label }}\nSetup fee: {{ $json.currency }}{{ $json.setup_fee }}\nMonthly retainer: {{ $json.currency }}{{ $json.monthly_fee }}/mo\nWork start date: {{ $json.work_start_date }}"
+            }
+          ]
+        },
+        "options": { "maxTokens": 600 }
+      },
+      "id": "claude-email-body",
+      "name": "Claude — Write Payment Email",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [460, 420]
+    },
+    {
+      "parameters": {
+        "resource": "paymentLink",
+        "amount": "={{ $('Webhook — Trigger Invoice').first().json.setup_fee * 100 }}",
+        "currency": "={{ $('Webhook — Trigger Invoice').first().json.currency ?? 'gbp' }}",
+        "name": "={{ $('Webhook — Trigger Invoice').first().json.package_label + ' — Setup Fee' }}",
+        "metadata": {
+          "values": [
+            { "key": "client_name", "value": "={{ $('Webhook — Trigger Invoice').first().json.client_name }}" },
+            { "key": "client_email", "value": "={{ $('Webhook — Trigger Invoice').first().json.client_email }}" },
+            { "key": "service_path", "value": "={{ $('Webhook — Trigger Invoice').first().json.service_path }}" }
+          ]
+        },
+        "additionalFields": {
+          "after_completion": "redirect",
+          "after_completion_redirect_url": "https://severusconnects.com/thank-you"
+        }
+      },
+      "id": "stripe-payment-link",
+      "name": "Stripe — Create Payment Link",
+      "type": "n8n-nodes-base.stripe",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "notes": "Creates a Stripe payment link for setup fee. Requires Stripe API credential in n8n."
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook — Trigger Invoice').first().json.client_email }}",
+        "subject": "=✅ {{ $('Webhook — Trigger Invoice').first().json.package_label }} — Next Steps & Payment",
+        "message": "=Hi {{ $('Webhook — Trigger Invoice').first().json.client_name }},\n\n{{ $('Claude — Write Payment Email').first().json.text }}\n\n💳 Pay setup fee ({{ $('Webhook — Trigger Invoice').first().json.currency }}{{ $('Webhook — Trigger Invoice').first().json.setup_fee }}): {{ $json.url }}\n\nLooking forward to getting started.\n\nIdris\nSeverus Connects",
+        "options": {
+          "appendAttribution": false,
+          "bccList": "michaelbakare92@gmail.com"
+        }
+      },
+      "id": "gmail-payment",
+      "name": "Gmail — Send Payment Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "amount": 48,
+        "unit": "hours"
+      },
+      "id": "wait-48h",
+      "name": "Wait — 48 Hours",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1120, 300],
+      "notes": "If payment not received in 48h, send a polite reminder"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.stripe.com/v1/payment_links/{{ $('Stripe — Create Payment Link').first().json.id }}/payment_intents",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "options": {}
+      },
+      "id": "stripe-check-payment",
+      "name": "Stripe — Check Payment Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "id": "paid-check",
+              "leftValue": "={{ $json.data?.[0]?.status }}",
+              "rightValue": "succeeded",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "route-paid",
+      "name": "Router — Payment Cleared?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/sc-intake",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: 'Payment cleared — begin onboarding', client_name: $('Webhook — Trigger Invoice').first().json.client_name, client_email: $('Webhook — Trigger Invoice').first().json.client_email, service_path: $('Webhook — Trigger Invoice').first().json.service_path, paid: true }) }}",
+        "options": {}
+      },
+      "id": "trigger-onboarding",
+      "name": "HTTP — Trigger Onboarding (Intake)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 200],
+      "notes": "Triggers workflow 02-sc-intake to begin full client onboarding"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook — Trigger Invoice').first().json.client_email }}",
+        "subject": "=Quick reminder — {{ $('Webhook — Trigger Invoice').first().json.package_label }} payment",
+        "message": "=Hi {{ $('Webhook — Trigger Invoice').first().json.client_name }},\n\nJust a friendly nudge — your payment link is still open whenever you're ready:\n\n{{ $('Stripe — Create Payment Link').first().json.url }}\n\nLet me know if you have any questions or need to adjust anything.\n\nIdris\nSeverus Connects",
+        "options": { "appendAttribution": false }
+      },
+      "id": "gmail-reminder",
+      "name": "Gmail — 48h Payment Reminder",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1780, 420]
+    },
+    {
+      "parameters": {
+        "filePath": "=C:/Users/profs/Desktop/Sandbox/Severus Connects/Clients/{{ $('Webhook — Trigger Invoice').first().json.client_name.replace(/ /g,'_') }}/invoice-log.md",
+        "content": "=# Invoice Log — {{ $('Webhook — Trigger Invoice').first().json.client_name }}\n\n**Package:** {{ $('Webhook — Trigger Invoice').first().json.package_label }}\n**Setup Fee:** {{ $('Webhook — Trigger Invoice').first().json.currency }}{{ $('Webhook — Trigger Invoice').first().json.setup_fee }}\n**Monthly:** {{ $('Webhook — Trigger Invoice').first().json.currency }}{{ $('Webhook — Trigger Invoice').first().json.monthly_fee }}/mo\n**Stripe Link:** {{ $('Stripe — Create Payment Link').first().json.url }}\n**Email Sent:** {{ new Date().toISOString() }}\n**Status:** Awaiting payment\n",
+        "options": {}
+      },
+      "id": "obsidian-log",
+      "name": "Write — Obsidian Invoice Log",
+      "type": "n8n-nodes-base.writeFile",
+      "typeVersion": 1,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "=💰 *Invoice Sent*\n\n*Client:* {{ $('Webhook — Trigger Invoice').first().json.client_name }}\n*Package:* {{ $('Webhook — Trigger Invoice').first().json.package_label }}\n*Setup Fee:* {{ $('Webhook — Trigger Invoice').first().json.currency }}{{ $('Webhook — Trigger Invoice').first().json.setup_fee }}\n*Monthly:* {{ $('Webhook — Trigger Invoice').first().json.currency }}{{ $('Webhook — Trigger Invoice').first().json.monthly_fee }}/mo\n*Stripe Link:* {{ $('Stripe — Create Payment Link').first().json.url }}\n\nPayment check in 48h.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-invoice",
+      "name": "Telegram — Invoice Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2220, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — Trigger Invoice": {
+      "main": [
+        [
+          { "node": "Webhook Response", "type": "main", "index": 0 },
+          { "node": "Claude — Write Payment Email", "type": "main", "index": 0 },
+          { "node": "Stripe — Create Payment Link", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Stripe — Create Payment Link": { "main": [[{ "node": "Gmail — Send Payment Email", "type": "main", "index": 0 }]] },
+    "Claude — Write Payment Email": { "main": [[{ "node": "Gmail — Send Payment Email", "type": "main", "index": 0 }]] },
+    "Gmail — Send Payment Email": { "main": [[{ "node": "Wait — 48 Hours", "type": "main", "index": 0 }]] },
+    "Wait — 48 Hours": { "main": [[{ "node": "Stripe — Check Payment Status", "type": "main", "index": 0 }]] },
+    "Stripe — Check Payment Status": { "main": [[{ "node": "Router — Payment Cleared?", "type": "main", "index": 0 }]] },
+    "Router — Payment Cleared?": {
+      "main": [
+        [{ "node": "HTTP — Trigger Onboarding (Intake)", "type": "main", "index": 0 }],
+        [{ "node": "Gmail — 48h Payment Reminder", "type": "main", "index": 0 }]
+      ]
+    },
+    "HTTP — Trigger Onboarding (Intake)": { "main": [[{ "node": "Write — Obsidian Invoice Log", "type": "main", "index": 0 }]] },
+    "Gmail — 48h Payment Reminder": { "main": [[{ "node": "Write — Obsidian Invoice Log", "type": "main", "index": 0 }]] },
+    "Write — Obsidian Invoice Log": { "main": [[{ "node": "Telegram — Invoice Alert", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Triggered after proposal is signed. Creates Stripe payment link for setup fee. Sends branded payment email to client (BCC to Idris). Waits 48h, checks payment status. If cleared → triggers intake/onboarding. If not → sends polite reminder. Logs everything to Obsidian.",
+    "trigger": "Webhook POST /sc-invoice",
+    "variables_required": ["TELEGRAM_CHAT_ID"],
+    "credentials_required": ["Anthropic API Key", "Stripe API Key", "Gmail OAuth2", "Telegram Bot Token"]
+  }
+}

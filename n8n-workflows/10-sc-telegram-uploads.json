@@ -1,0 +1,183 @@
+{
+  "name": "sc-telegram-uploads",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram — Creative Channel listener",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "is-creative-channel",
+              "leftValue": "={{ String($json.message.chat.id) }}",
+              "rightValue": "={{ $env.TELEGRAM_CREATIVE_CHAT_ID }}",
+              "operator": { "type": "string", "operation": "equals" }
+            },
+            {
+              "id": "has-media",
+              "leftValue": "={{ Boolean($json.message.photo || $json.message.video || $json.message.document || $json.message.video_note) }}",
+              "rightValue": "true",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-creative-with-media",
+      "name": "Filter — Creative channel + has media",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $input.first().json.message;\nlet fileId = null;\nlet kind = null;\nlet mimeHint = 'application/octet-stream';\n\nif (msg.photo && Array.isArray(msg.photo) && msg.photo.length > 0) {\n  // Telegram sends multiple sizes; take the largest\n  const sorted = [...msg.photo].sort((a, b) => (b.file_size || 0) - (a.file_size || 0));\n  fileId = sorted[0].file_id;\n  kind = 'photo';\n  mimeHint = 'image/jpeg';\n} else if (msg.video) {\n  fileId = msg.video.file_id;\n  kind = 'video';\n  mimeHint = msg.video.mime_type || 'video/mp4';\n} else if (msg.video_note) {\n  fileId = msg.video_note.file_id;\n  kind = 'video_note';\n  mimeHint = 'video/mp4';\n} else if (msg.document) {\n  fileId = msg.document.file_id;\n  kind = 'document';\n  mimeHint = msg.document.mime_type || 'application/octet-stream';\n}\n\n// Caption parsing — operator can tag the asset:\n//   pillar=ga4-tip role=character shot=0 account=severus\n// Defaults if no caption supplied.\nconst caption = (msg.caption || '').trim();\nconst tags = {};\ncaption.split(/\\s+/).forEach(token => {\n  const [k, v] = token.split('=');\n  if (k && v) tags[k.toLowerCase()] = v;\n});\n\nconst account = tags.account || 'severus';\nconst pillar = tags.pillar || 'inbox';\nconst role = tags.role || (kind === 'photo' ? 'character' : 'clip');\nconst shotIndex = tags.shot !== undefined ? parseInt(tags.shot, 10) : null;\nconst date = new Date().toISOString().slice(0, 10);\nconst ts = Date.now();\n\n// Filename: <pillar>_<role>[_shot<N>]_<ts>.<ext>\nconst extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'video/mp4': 'mp4' };\nconst ext = extMap[mimeHint] || (kind === 'photo' ? 'jpg' : 'mp4');\nconst shotSuffix = shotIndex !== null ? `_shot${shotIndex}` : '';\nconst filename = `${pillar}_${role}${shotSuffix}_${ts}.${ext}`;\nconst relativePath = `severus-social/uploads/${account}/${date}/${filename}`;\n\nreturn [{\n  json: {\n    file_id: fileId,\n    kind,\n    mime: mimeHint,\n    filename,\n    relativePath,\n    account,\n    pillar,\n    role,\n    shotIndex,\n    caption,\n    chat_id: msg.chat.id,\n    message_id: msg.message_id,\n    from_username: msg.from?.username || 'unknown',\n  },\n}];"
+      },
+      "id": "parse-tags",
+      "name": "Parse caption tags + plan path",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.telegram.org/bot{{ $credentials.telegramApi.accessToken }}/getFile",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "file_id", "value": "={{ $json.file_id }}" }
+          ]
+        },
+        "options": { "timeout": 30000 }
+      },
+      "id": "telegram-getfile",
+      "name": "Telegram — getFile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 200],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.telegram.org/file/bot{{ $credentials.telegramApi.accessToken }}/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": { "responseFormat": "file" }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "telegram-download",
+      "name": "Telegram — download bytes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 200],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $env.HERMES_ROOT }}/{{ $('Parse caption tags + plan path').first().json.relativePath }}",
+        "dataPropertyName": "data",
+        "options": { "createDirectories": true }
+      },
+      "id": "fs-write",
+      "name": "Write to severus-social/uploads/",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "fileName": "={{ $env.HERMES_ROOT }}/severus-social/uploads/manifest.jsonl",
+        "dataPropertyName": "manifestLine",
+        "options": { "createDirectories": true }
+      },
+      "id": "manifest-append",
+      "name": "Append to manifest.jsonl",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const meta = $('Parse caption tags + plan path').first().json;\nconst entry = {\n  ts: new Date().toISOString(),\n  account: meta.account,\n  pillar: meta.pillar,\n  role: meta.role,\n  shotIndex: meta.shotIndex,\n  kind: meta.kind,\n  mime: meta.mime,\n  filename: meta.filename,\n  relativePath: meta.relativePath,\n  caption: meta.caption,\n  from: meta.from_username,\n  telegram_message_id: meta.message_id,\n};\nreturn [{ json: { ...meta, manifestLine: JSON.stringify(entry) + '\\n' } }];"
+      },
+      "id": "shape-manifest",
+      "name": "Shape manifest line",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 380]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse caption tags + plan path').first().json.chat_id }}",
+        "text": "=*Asset saved*\n\n`{{ $('Parse caption tags + plan path').first().json.relativePath }}`\n\nTagged:\n  pillar = {{ $('Parse caption tags + plan path').first().json.pillar }}\n  role = {{ $('Parse caption tags + plan path').first().json.role }}{{ $('Parse caption tags + plan path').first().json.shotIndex !== null ? '\\n  shot = ' + $('Parse caption tags + plan path').first().json.shotIndex : '' }}\n\nReady to use in next /assemble or /render call.",
+        "additionalFields": { "parse_mode": "Markdown" },
+        "replyToMessageId": "={{ $('Parse caption tags + plan path').first().json.message_id }}"
+      },
+      "id": "telegram-confirm",
+      "name": "Telegram — confirm saved",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1780, 200],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram — Creative Channel listener": {
+      "main": [[{ "node": "Filter — Creative channel + has media", "type": "main", "index": 0 }]]
+    },
+    "Filter — Creative channel + has media": {
+      "main": [
+        [{ "node": "Parse caption tags + plan path", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Parse caption tags + plan path": {
+      "main": [[
+        { "node": "Telegram — getFile", "type": "main", "index": 0 },
+        { "node": "Shape manifest line", "type": "main", "index": 0 }
+      ]]
+    },
+    "Telegram — getFile": {
+      "main": [[{ "node": "Telegram — download bytes", "type": "main", "index": 0 }]]
+    },
+    "Telegram — download bytes": {
+      "main": [[{ "node": "Write to severus-social/uploads/", "type": "main", "index": 0 }]]
+    },
+    "Write to severus-social/uploads/": {
+      "main": [[{ "node": "Telegram — confirm saved", "type": "main", "index": 0 }]]
+    },
+    "Shape manifest line": {
+      "main": [[{ "node": "Append to manifest.jsonl", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [
+    { "id": "severus-connects", "name": "Severus Connects" },
+    { "id": "telegram-uploads", "name": "Telegram Uploads" }
+  ]
+}

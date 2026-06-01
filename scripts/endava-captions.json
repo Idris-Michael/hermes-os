@@ -1,0 +1,10 @@
+{
+  "01-start-here.png": "START_HERE - portfolio index. The single page a reviewer opens first to navigate every dashboard in the set.",
+  "02-system-architecture.png": "System Architecture - end-to-end data flow from site through GTM, GA4, BigQuery, and Looker. Auth boundaries and failure modes annotated inline.",
+  "03-ads-dashboard.png": "Ads Dashboard - account-level KPI roll-up across Search, Performance Max, and Shopping. Single view for weekly client reviews.",
+  "04-google-ads-case-study.png": "Google Ads Case Study - SKAG decomposition into asset groups, negative-keyword hygiene, and bid-strategy migration. Before/after with rationale.",
+  "05-ads-restructure.png": "Ads Restructure - account skeleton redesign with budget reallocation and the audit log behind every decision.",
+  "06-ga4-attribution.png": "GA4 Attribution - data-driven model with consent mode v2, server-side measurement, and cross-channel conversion paths.",
+  "07-tech-stack-mastery.png": "Tech Stack Mastery - depth-of-knowledge scoring across measurement, paid media, and analytics. Honest, not aspirational.",
+  "08-codecrafthub-dashboard.png": "CodeCraftHub Dashboard - client-facing onboarding view. Demonstrates the white-label surface clients see during a 90-day engagement."
+}

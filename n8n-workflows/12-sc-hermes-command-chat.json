@@ -1,0 +1,288 @@
+{
+  "name": "12-sc-hermes-command-chat",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "FQ2nQyxA7HGbPB6h",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $json.message || {};\nconst text = (msg.text || '').trim();\nconst chatId = msg.chat?.id;\nconst from = msg.from?.username || msg.from?.first_name || 'User';\nreturn [{ json: { text, chatId, from } }];"
+      },
+      "id": "extract-message",
+      "name": "Extract Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 100,\n  \"system\": \"Classify the user message into exactly one intent word. Reply with ONLY the word, nothing else.\\n\\nIntents:\\nRENDER - requests to render a reel, video, or run the pipeline\\nVISION_ANALYZE - requests to analyze an image or creative\\nANALYTICS - questions about metrics, views, reach, performance\\nCOPYWRITE - requests for hooks, captions, ad copy, scripts\\nSTATUS - questions about system status, last run, recent activity\\nVAULT - requests for knowledge base info, brand guidelines, client info\\nCHAT - everything else\",\n  \"messages\": [{ \"role\": \"user\", \"content\": {{ JSON.stringify($json.text) }} }]\n}"
+      },
+      "id": "classify-intent",
+      "name": "Classify Intent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json;\nconst intent = (body.content?.[0]?.text || 'CHAT').trim().toUpperCase();\nconst validIntents = ['RENDER','VISION_ANALYZE','ANALYTICS','COPYWRITE','STATUS','VAULT','CHAT'];\nconst finalIntent = validIntents.includes(intent) ? intent : 'CHAT';\nreturn [{ json: { ...$('Extract Message').first().json, intent: finalIntent } }];"
+      },
+      "id": "parse-intent",
+      "name": "Parse Intent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [840, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            { "outputKey": "render", "conditions": { "options": { "caseSensitive": false }, "conditions": [{ "leftValue": "={{ $json.intent }}", "rightValue": "RENDER", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "vision", "conditions": { "options": { "caseSensitive": false }, "conditions": [{ "leftValue": "={{ $json.intent }}", "rightValue": "VISION_ANALYZE", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "analytics", "conditions": { "options": { "caseSensitive": false }, "conditions": [{ "leftValue": "={{ $json.intent }}", "rightValue": "ANALYTICS", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "copywrite", "conditions": { "options": { "caseSensitive": false }, "conditions": [{ "leftValue": "={{ $json.intent }}", "rightValue": "COPYWRITE", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "status", "conditions": { "options": { "caseSensitive": false }, "conditions": [{ "leftValue": "={{ $json.intent }}", "rightValue": "STATUS", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "vault", "conditions": { "options": { "caseSensitive": false }, "conditions": [{ "leftValue": "={{ $json.intent }}", "rightValue": "VAULT", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        },
+        "fallbackOutput": "extra"
+      },
+      "id": "route-intent",
+      "name": "Route Intent",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1040, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/api/heartbeat/on-demand",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "content-type", "value": "application/json" }] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"trigger\":\"telegram\",\"user\":\"{{ $json.from }}\"}"
+      },
+      "id": "trigger-render",
+      "name": "Trigger Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1280, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { ...$('Parse Intent').first().json, reply: '⚙️ Render pipeline triggered. You\\'ll get a Telegram approval request in ~2 minutes.' } }];"
+      },
+      "id": "render-reply",
+      "name": "Render Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1480, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { ...$('Parse Intent').first().json, reply: '📸 Vision analysis: Send me the image directly in Telegram and I\\'ll analyze it for you. Use the /analyze command followed by your image.' } }];"
+      },
+      "id": "vision-reply",
+      "name": "Vision Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1280, 220]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/instagram/recent",
+        "options": {}
+      },
+      "id": "fetch-analytics",
+      "name": "Fetch Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1280, 340]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json;\nconst summary = Array.isArray(data) && data.length > 0\n  ? `📊 Last ${Math.min(data.length, 3)} posts: ${data.slice(0,3).map(p => `${p.caption?.slice(0,30) || 'Post'}… — ${p.status || 'published'}`).join(' | ')}`\n  : '📊 No recent post data found. Check the Instagram tab in Hermes Hub.';\nreturn [{ json: { ...$('Parse Intent').first().json, reply: summary } }];"
+      },
+      "id": "analytics-reply",
+      "name": "Analytics Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1480, 340]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 400,\n  \"system\": \"You are a direct-response ad copywriter for Severus Connects, a London-based digital agency. Write 3 punchy Instagram hook variants. Format: numbered list, one per line. Max 15 words each. Gold standard hooks only.\",\n  \"messages\": [{ \"role\": \"user\", \"content\": {{ JSON.stringify($('Parse Intent').first().json.text) }} }]\n}"
+      },
+      "id": "copywrite-claude",
+      "name": "Copywrite Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1280, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $json;\nconst hooks = resp.content?.[0]?.text || 'Could not generate hooks.';\nreturn [{ json: { ...$('Parse Intent').first().json, reply: `✍️ Hook variants:\\n\\n${hooks}` } }];"
+      },
+      "id": "copywrite-reply",
+      "name": "Copywrite Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1480, 460]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:3000/api/status",
+        "options": {}
+      },
+      "id": "fetch-status",
+      "name": "Fetch Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1280, 580]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json;\nconst msg = data?.lastRun\n  ? `✅ Last run: ${data.lastRun} | Status: ${data.status || 'ok'} | Posts today: ${data.postsToday ?? 0}`\n  : '⚡ Hermes is running. No recent run data.';\nreturn [{ json: { ...$('Parse Intent').first().json, reply: msg } }];"
+      },
+      "id": "status-reply",
+      "name": "Status Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1480, 580]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $('Parse Intent').first().json.text;\nreturn [{ json: { ...$('Parse Intent').first().json, reply: `📚 Vault search for: \"${text}\"\\n\\nOpen Hermes Hub → Knowledge Base to query the full vault.` } }];"
+      },
+      "id": "vault-reply",
+      "name": "Vault Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1280, 700]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 300,\n  \"system\": \"You are Hermes Command, the AI core of Severus Connects agency. You help Idris manage Instagram automation, GA4 analytics, and AI ad campaigns. Be concise and direct. Max 3 sentences.\",\n  \"messages\": [{ \"role\": \"user\", \"content\": {{ JSON.stringify($('Parse Intent').first().json.text) }} }]\n}"
+      },
+      "id": "chat-claude",
+      "name": "Chat Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1280, 820]
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $json;\nconst reply = resp.content?.[0]?.text || 'I\\'m here. What do you need?';\nreturn [{ json: { ...$('Parse Intent').first().json, reply } }];"
+      },
+      "id": "chat-reply",
+      "name": "Chat Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1480, 820]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.reply }}",
+        "additionalFields": { "parse_mode": "HTML" }
+      },
+      "id": "send-reply",
+      "name": "Send Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1700, 460],
+      "credentials": {
+        "telegramApi": {
+          "id": "FQ2nQyxA7HGbPB6h",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": { "main": [[{ "node": "Extract Message", "type": "main", "index": 0 }]] },
+    "Extract Message": { "main": [[{ "node": "Classify Intent", "type": "main", "index": 0 }]] },
+    "Classify Intent": { "main": [[{ "node": "Parse Intent", "type": "main", "index": 0 }]] },
+    "Parse Intent": { "main": [[{ "node": "Route Intent", "type": "main", "index": 0 }]] },
+    "Route Intent": {
+      "main": [
+        [{ "node": "Trigger Render", "type": "main", "index": 0 }],
+        [{ "node": "Vision Reply", "type": "main", "index": 0 }],
+        [{ "node": "Fetch Analytics", "type": "main", "index": 0 }],
+        [{ "node": "Copywrite Claude", "type": "main", "index": 0 }],
+        [{ "node": "Fetch Status", "type": "main", "index": 0 }],
+        [{ "node": "Vault Reply", "type": "main", "index": 0 }],
+        [{ "node": "Chat Claude", "type": "main", "index": 0 }]
+      ]
+    },
+    "Trigger Render": { "main": [[{ "node": "Render Reply", "type": "main", "index": 0 }]] },
+    "Render Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] },
+    "Vision Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] },
+    "Fetch Analytics": { "main": [[{ "node": "Analytics Reply", "type": "main", "index": 0 }]] },
+    "Analytics Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] },
+    "Copywrite Claude": { "main": [[{ "node": "Copywrite Reply", "type": "main", "index": 0 }]] },
+    "Copywrite Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] },
+    "Fetch Status": { "main": [[{ "node": "Status Reply", "type": "main", "index": 0 }]] },
+    "Status Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] },
+    "Vault Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] },
+    "Chat Claude": { "main": [[{ "node": "Chat Reply", "type": "main", "index": 0 }]] },
+    "Chat Reply": { "main": [[{ "node": "Send Reply", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "1"
+}

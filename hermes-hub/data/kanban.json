@@ -1,0 +1,21 @@
+{
+  "columns": {
+    "BACKLOG": [
+      { "id": "k1", "title": "Set up GA4 property for client", "assignee": "severus-connects-analytics", "priority": "high" },
+      { "id": "k2", "title": "Design onboarding flow", "assignee": "severus-design-discovery", "priority": "medium" }
+    ],
+    "TO DO": [
+      { "id": "k3", "title": "Write performance audit report", "assignee": "severus-auditor", "priority": "high" },
+      { "id": "k4", "title": "Create Shopping Ads campaign structure", "assignee": "severus-connects-shopping", "priority": "medium" }
+    ],
+    "IN PROGRESS": [
+      { "id": "k5", "title": "Build client dashboard prototype", "assignee": "severus-design-frontend", "priority": "high" }
+    ],
+    "REVIEW": [
+      { "id": "k6", "title": "Outreach email sequence draft", "assignee": "severus-outreach", "priority": "low" }
+    ],
+    "DONE": [
+      { "id": "k7", "title": "Initial project setup", "assignee": "severus-gateway", "priority": "medium" }
+    ]
+  }
+}

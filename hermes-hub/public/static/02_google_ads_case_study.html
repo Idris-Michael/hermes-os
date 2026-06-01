@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: #0b1624;
+      font-family: "Bricolage Grotesque", sans-serif;
+    }
+
+    .scene {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* ─── SCENE 1: HOOK ─── */
+    #s1 {
+      background: #0b1624;
+      z-index: 1;
+    }
+    #s1-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    #s1-glow {
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.15) 0%, transparent 65%);
+      border-radius: 50%;
+    }
+    #s1-eyebrow {
+      position: absolute;
+      top: 140px; left: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 20px;
+      letter-spacing: 0.12em;
+      color: #C9A84C;
+      text-transform: uppercase;
+    }
+    #s1-roas-label {
+      position: absolute;
+      top: 320px; left: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      color: rgba(201,168,76,0.6);
+      text-transform: uppercase;
+    }
+    #s1-roas {
+      position: absolute;
+      top: 350px; left: 68px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 280px;
+      font-weight: 900;
+      line-height: 1;
+      color: #C9A84C;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    #s1-roas-x {
+      position: absolute;
+      top: 540px; left: 500px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 140px;
+      font-weight: 300;
+      color: rgba(201,168,76,0.4);
+      letter-spacing: -0.02em;
+    }
+    #s1-tagline {
+      position: absolute;
+      bottom: 180px; left: 80px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 44px;
+      font-weight: 300;
+      color: rgba(240,234,220,0.75);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      max-width: 700px;
+    }
+    #s1-rule {
+      position: absolute;
+      bottom: 160px; left: 80px;
+      width: 0px; height: 2px;
+      background: #C9A84C;
+    }
+    #s1-client-tag {
+      position: absolute;
+      bottom: 100px; left: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      color: rgba(201,168,76,0.5);
+      letter-spacing: 0.08em;
+    }
+    #s1-corner-tl {
+      position: absolute;
+      top: 50px; right: 80px;
+      width: 40px; height: 40px;
+      border-top: 2px solid rgba(201,168,76,0.4);
+      border-right: 2px solid rgba(201,168,76,0.4);
+    }
+    #s1-corner-br {
+      position: absolute;
+      bottom: 50px; right: 80px;
+      width: 40px; height: 40px;
+      border-bottom: 2px solid rgba(201,168,76,0.4);
+      border-right: 2px solid rgba(201,168,76,0.4);
+    }
+    #s1-scan {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1080px; height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent);
+    }
+
+    /* ─── SHARED SCREEN MOCKUP ─── */
+    .screen-wrap {
+      position: absolute;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.25),
+        0 24px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(201,168,76,0.08);
+    }
+    .screen-wrap img {
+      display: block;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .screen-chrome {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 22px;
+      background: #1c1c1e;
+      display: flex; align-items: center;
+      padding: 0 10px; gap: 5px;
+      z-index: 2;
+    }
+    .chrome-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .screen-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, transparent 60%);
+      pointer-events: none; z-index: 3;
+    }
+
+    /* ─── SCENE 2: PROBLEM ─── */
+    #s2 { background: #0b1624; z-index: 2; opacity: 0; }
+    #s2-eyebrow {
+      position: absolute;
+      top: 80px; left: 60px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 17px;
+      letter-spacing: 0.15em;
+      color: rgba(201,168,76,0.5);
+      text-transform: uppercase;
+    }
+    #s2-heading {
+      position: absolute;
+      top: 100px; left: 60px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 58px;
+      font-weight: 900;
+      color: #f0eedc;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      max-width: 430px;
+    }
+    #s2-divider {
+      position: absolute;
+      top: 370px; left: 60px;
+      width: 0; height: 2px;
+      background: rgba(201,168,76,0.4);
+    }
+    .prob-card {
+      position: absolute;
+      width: 420px;
+      padding: 20px 22px;
+      border: 1.5px solid rgba(201,168,76,0.18);
+      border-radius: 4px;
+      background: rgba(201,168,76,0.04);
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    #pc1 { top: 320px; left: 60px; }
+    #pc2 { top: 430px; left: 60px; }
+    #pc3 { top: 540px; left: 60px; }
+    .prob-icon {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px; color: #C9A84C;
+      flex-shrink: 0; padding-top: 2px;
+    }
+    .prob-title {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 22px; font-weight: 800;
+      color: #f0eedc; margin-bottom: 4px; line-height: 1.1;
+    }
+    .prob-body {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px; color: rgba(240,238,220,0.5); line-height: 1.5;
+    }
+    #s2-roas-row {
+      position: absolute;
+      top: 670px; left: 60px;
+      display: flex; align-items: baseline; gap: 16px;
+    }
+    #s2-roas-before {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 64px; font-weight: 900;
+      color: rgba(220,60,60,0.9);
+      letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+    }
+    #s2-roas-arrow {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 40px; color: rgba(201,168,76,0.35);
+    }
+    #s2-roas-after {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 64px; font-weight: 900;
+      color: rgba(201,168,76,0.25);
+      letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+    }
+    #s2-screen-wrap {
+      top: 40px; left: 520px;
+      width: 520px; height: 680px;
+    }
+    #s2-screen-label {
+      position: absolute;
+      bottom: 28px; left: 520px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px; letter-spacing: 0.12em;
+      color: rgba(201,168,76,0.3); text-transform: uppercase;
+    }
+
+    /* ─── SCENE 3: RESTRUCTURE ─── */
+    #s3 { background: #070e1a; z-index: 3; opacity: 0; }
+    #s3-bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.05) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    #s3-screen-wrap {
+      top: 40px; left: 520px;
+      width: 520px; height: 680px;
+    }
+    #s3-screen-label {
+      position: absolute;
+      bottom: 28px; left: 520px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px; letter-spacing: 0.12em;
+      color: rgba(201,168,76,0.3); text-transform: uppercase;
+    }
+    #s3-eyebrow {
+      position: absolute;
+      top: 80px; left: 60px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      letter-spacing: 0.15em;
+      color: rgba(201,168,76,0.55);
+      text-transform: uppercase;
+    }
+    #s3-heading {
+      position: absolute;
+      top: 100px; left: 60px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 54px;
+      font-weight: 900;
+      color: #f0eedc;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      max-width: 430px;
+    }
+    /* Architecture nodes — left column */
+    #s3-node-budget {
+      position: absolute;
+      top: 300px; left: 60px;
+      width: 180px; height: 60px;
+      border: 2px solid rgba(201,168,76,0.6);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(201,168,76,0.08);
+    }
+    #s3-node-budget span {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 16px;
+      color: #C9A84C;
+      letter-spacing: 0.05em;
+    }
+    #s3-line-v1 {
+      position: absolute;
+      top: 360px; left: 149px;
+      width: 2px; height: 0;
+      background: rgba(201,168,76,0.4);
+    }
+    /* PMax node */
+    #s3-node-pmax {
+      position: absolute;
+      top: 410px; left: 40px;
+      width: 200px; height: 80px;
+      border: 2px solid #C9A84C;
+      border-radius: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(201,168,76,0.12);
+      gap: 4px;
+    }
+    #s3-node-pmax .n-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(201,168,76,0.55);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #s3-node-pmax .n-title {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: #C9A84C;
+      letter-spacing: -0.01em;
+    }
+    /* Shopping node */
+    #s3-node-shopping {
+      position: absolute;
+      top: 410px; left: 265px;
+      width: 200px; height: 80px;
+      border: 2px solid rgba(201,168,76,0.55);
+      border-radius: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(201,168,76,0.07);
+      gap: 4px;
+    }
+    #s3-node-shopping .n-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(201,168,76,0.45);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #s3-node-shopping .n-title {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: rgba(201,168,76,0.75);
+      letter-spacing: -0.01em;
+    }
+    #s3-line-h {
+      position: absolute;
+      top: 448px; left: 240px;
+      width: 0; height: 2px;
+      background: rgba(201,168,76,0.35);
+    }
+    /* GA4 node — removed from diagram, shown via screen only */
+    #s3-node-ga4 {
+      position: absolute;
+      top: 410px; left: 490px;
+      width: 0; height: 0;
+      display: none;
+      border: 2px solid rgba(100,180,120,0.6);
+      border-radius: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(100,180,120,0.07);
+      gap: 4px;
+    }
+    #s3-node-ga4 .n-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(100,200,130,0.55);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #s3-node-ga4 .n-title {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: rgba(100,200,130,0.85);
+      letter-spacing: -0.01em;
+    }
+    #s3-line-h2 { display: none; }
+    /* Signal feeds below */
+    .s3-feed {
+      position: absolute;
+      height: 46px;
+      border: 1.5px solid rgba(201,168,76,0.2);
+      border-radius: 3px;
+      display: flex; align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+      background: rgba(201,168,76,0.03);
+    }
+    .s3-feed-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #C9A84C;
+      flex-shrink: 0;
+    }
+    .s3-feed span {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      color: rgba(240,238,220,0.6);
+      letter-spacing: 0.04em;
+    }
+    #sf1 { top: 600px; left: 40px; width: 200px; }
+    #sf2 { top: 600px; left: 260px; width: 200px; }
+    #sf3 { top: 660px; left: 40px; width: 200px; }
+    #sf4 { top: 660px; left: 260px; width: 200px; }
+    #s3-line-v2 { position: absolute; top: 490px; left: 139px; width: 2px; height: 0; background: rgba(201,168,76,0.3); }
+    #s3-line-v3 { position: absolute; top: 490px; left: 364px; width: 2px; height: 0; background: rgba(201,168,76,0.3); }
+
+    /* Result strip at bottom of s3 */
+    #s3-result-bar {
+      position: absolute;
+      bottom: 60px; left: 40px; width: 470px;
+      height: 100px;
+      border: 1.5px solid rgba(201,168,76,0.25);
+      border-radius: 4px;
+      background: rgba(201,168,76,0.05);
+      display: flex; align-items: center;
+      padding: 0 40px;
+      gap: 0;
+    }
+    .rb-item {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px;
+    }
+    .rb-sep {
+      width: 1px; height: 50px;
+      background: rgba(201,168,76,0.2);
+    }
+    .rb-value {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 40px;
+      font-weight: 900;
+      color: #C9A84C;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .rb-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(240,238,220,0.45);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── SCENE 4: GA4 ATTRIBUTION ─── */
+    #s4 { background: #0b1624; z-index: 4; opacity: 0; }
+    #s4-glow {
+      position: absolute;
+      top: 50%; right: -100px;
+      width: 600px; height: 600px;
+      transform: translateY(-50%);
+      background: radial-gradient(ellipse, rgba(100,200,130,0.12) 0%, transparent 65%);
+      border-radius: 50%;
+    }
+    /* Left col: eyebrow + heading + steps + insight — all within 460px */
+    #s4-eyebrow {
+      position: absolute;
+      top: 60px; left: 60px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      color: rgba(100,200,130,0.6);
+      text-transform: uppercase;
+    }
+    #s4-heading {
+      position: absolute;
+      top: 90px; left: 60px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 52px;
+      font-weight: 900;
+      color: #f0eedc;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      max-width: 420px;
+    }
+    /* Funnel steps — tighter, all 4 visible */
+    .funnel-step {
+      position: absolute;
+      left: 60px;
+      width: 430px;
+      height: 66px;
+      border-radius: 3px;
+      display: flex; align-items: center;
+      padding: 0 18px;
+      gap: 14px;
+    }
+    #fs1 { top: 228px; background: rgba(100,200,130,0.12); border: 1.5px solid rgba(100,200,130,0.5); }
+    #fs2 { top: 308px; background: rgba(201,168,76,0.10); border: 1.5px solid rgba(201,168,76,0.45); }
+    #fs3 { top: 388px; background: rgba(201,168,76,0.07); border: 1.5px solid rgba(201,168,76,0.3); }
+    #fs4 { top: 468px; background: rgba(201,168,76,0.05); border: 1.5px solid rgba(201,168,76,0.2); }
+    .fs-num {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      color: rgba(201,168,76,0.4);
+      letter-spacing: 0.05em;
+      min-width: 24px;
+    }
+    .fs-label {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      flex: 1;
+      letter-spacing: -0.01em;
+    }
+    #fs1 .fs-label { color: rgba(100,220,140,0.9); }
+    #fs2 .fs-label { color: rgba(240,238,220,0.85); }
+    #fs3 .fs-label { color: rgba(240,238,220,0.75); }
+    #fs4 .fs-label { color: rgba(240,238,220,0.65); }
+    .fs-tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: rgba(240,238,220,0.38);
+      letter-spacing: 0.04em;
+    }
+    .fs-arrow {
+      position: absolute;
+      left: 92px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 16px;
+      color: rgba(201,168,76,0.22);
+    }
+    #fa1 { top: 295px; }
+    #fa2 { top: 375px; }
+    #fa3 { top: 455px; }
+    #s4-insight {
+      position: absolute;
+      top: 568px; left: 60px;
+      width: 430px;
+      padding: 18px 22px;
+      border-left: 3px solid #C9A84C;
+      background: rgba(201,168,76,0.05);
+      border-radius: 0 3px 3px 0;
+    }
+    #s4-insight p {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 19px;
+      font-weight: 300;
+      color: rgba(240,238,220,0.7);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    #s4-insight strong { font-weight: 800; color: #C9A84C; }
+    /* GA4 screen — right side, tall panel */
+    #s4-screen-wrap {
+      top: 40px; left: 520px;
+      width: 520px; height: 680px;
+    }
+    #s4-screen-label {
+      position: absolute;
+      bottom: 28px; left: 520px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px; letter-spacing: 0.12em;
+      color: rgba(100,200,130,0.3); text-transform: uppercase;
+    }
+
+    /* ─── SCENE 5: RESULTS ─── */
+    #s5 { background: #070e1a; z-index: 5; opacity: 0; }
+    #s5-gold-sweep {
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.08), transparent);
+    }
+    #s5-eyebrow {
+      position: absolute;
+      top: 80px; left: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      letter-spacing: 0.15em;
+      color: rgba(201,168,76,0.55);
+      text-transform: uppercase;
+    }
+    #s5-heading {
+      position: absolute;
+      top: 115px; left: 80px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 72px;
+      font-weight: 900;
+      color: #f0eedc;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    /* Hero stat */
+    #s5-hero-label {
+      position: absolute;
+      top: 270px; left: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      letter-spacing: 0.14em;
+      color: rgba(201,168,76,0.5);
+      text-transform: uppercase;
+    }
+    #s5-hero-val {
+      position: absolute;
+      top: 295px; left: 76px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 220px;
+      font-weight: 900;
+      line-height: 1;
+      color: #C9A84C;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    #s5-hero-sub {
+      position: absolute;
+      top: 510px; left: 80px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: rgba(240,238,220,0.55);
+      letter-spacing: -0.01em;
+    }
+    #s5-rule {
+      position: absolute;
+      top: 590px; left: 80px;
+      width: 0; height: 2px;
+      background: rgba(201,168,76,0.35);
+    }
+    /* Supporting stats */
+    .s5-stat {
+      position: absolute;
+      display: flex; flex-direction: column;
+      gap: 6px;
+    }
+    #ss1 { top: 640px; left: 80px; }
+    #ss2 { top: 640px; left: 370px; }
+    #ss3 { top: 640px; left: 660px; }
+    .s5-stat-val {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 72px;
+      font-weight: 900;
+      color: rgba(240,238,220,0.9);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .s5-stat-unit {
+      font-size: 40px;
+      color: #C9A84C;
+      font-weight: 300;
+    }
+    .s5-stat-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 15px;
+      color: rgba(240,238,220,0.4);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #s5-corner {
+      position: absolute;
+      bottom: 60px; right: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(201,168,76,0.25);
+      letter-spacing: 0.08em;
+      text-align: right;
+    }
+    #s5-bg-ghost {
+      position: absolute;
+      bottom: -60px; right: -20px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 400px;
+      font-weight: 900;
+      color: rgba(201,168,76,0.025);
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    /* ─── SCENE 6: CTA ─── */
+    #s6 { background: #050c16; z-index: 6; opacity: 0; }
+    #s6-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1000px; height: 1000px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.12) 0%, transparent 60%);
+      border-radius: 50%;
+    }
+    #s6-rule-top {
+      position: absolute;
+      top: 0; left: 0;
+      width: 0; height: 3px;
+      background: #C9A84C;
+    }
+    #s6-eyebrow {
+      position: absolute;
+      top: 180px; left: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      letter-spacing: 0.2em;
+      color: rgba(201,168,76,0.45);
+      text-transform: uppercase;
+    }
+    #s6-name {
+      position: absolute;
+      top: 220px; left: 74px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 130px;
+      font-weight: 900;
+      color: #f0eedc;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    #s6-name-gold {
+      color: #C9A84C;
+    }
+    #s6-services {
+      position: absolute;
+      top: 530px; left: 80px;
+      display: flex;
+      gap: 0;
+    }
+    .s6-svc {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 20px;
+      color: rgba(240,238,220,0.5);
+      letter-spacing: 0.06em;
+    }
+    .s6-svc-sep {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 20px;
+      color: rgba(201,168,76,0.35);
+      margin: 0 16px;
+    }
+    #s6-cta-rule {
+      position: absolute;
+      top: 600px; left: 80px;
+      width: 0; height: 2px;
+      background: #C9A84C;
+    }
+    #s6-cta {
+      position: absolute;
+      top: 638px; left: 80px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: rgba(240,238,220,0.55);
+      letter-spacing: -0.01em;
+    }
+    #s6-upwork-tag {
+      position: absolute;
+      bottom: 100px; left: 80px;
+      padding: 12px 24px;
+      border: 1.5px solid rgba(201,168,76,0.3);
+      border-radius: 3px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 17px;
+      color: #C9A84C;
+      letter-spacing: 0.08em;
+    }
+    #s6-corner-tl {
+      position: absolute;
+      top: 80px; right: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(201,168,76,0.2);
+      letter-spacing: 0.1em;
+    }
+    #s6-corner-br {
+      position: absolute;
+      bottom: 80px; right: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      color: rgba(201,168,76,0.2);
+      letter-spacing: 0.1em;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div
+    id="root"
+    data-composition-id="google-ads-case-study"
+    data-width="1080"
+    data-height="1080"
+    data-start="0"
+    data-duration="38"
+  >
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SCENE 1: HOOK — 0-4s                   -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="s1" class="scene">
+      <div id="s1-grid"></div>
+      <div id="s1-glow"></div>
+      <div id="s1-scan"></div>
+      <div id="s1-corner-tl"></div>
+      <div id="s1-corner-br"></div>
+      <div id="s1-eyebrow">Case Study — DTC eCommerce</div>
+      <div id="s1-roas-label">ROAS</div>
+      <div id="s1-roas">2.4</div>
+      <div id="s1-roas-x">×</div>
+      <div id="s1-rule"></div>
+      <div id="s1-tagline">Google Ads restructure.<br>Performance Max + Shopping.<br>Clean GA4 attribution.</div>
+      <div id="s1-client-tag">// DTC_ECOMM · 30_DAY_WINDOW · LONDON</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SCENE 2: PROBLEM — 4-10s               -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="s2" class="scene">
+      <!-- LEFT: copy -->
+      <div id="s2-eyebrow">The Problem</div>
+      <div id="s2-heading">Fragmented.<br>Untracked.<br>Wasted.</div>
+      <div id="s2-divider"></div>
+      <div id="pc1" class="prob-card">
+        <span class="prob-icon">[01]</span>
+        <div><div class="prob-title">No Attribution</div>
+        <div class="prob-body">GA4 not connected. Conversions firing on every pageview.</div></div>
+      </div>
+      <div id="pc2" class="prob-card">
+        <span class="prob-icon">[02]</span>
+        <div><div class="prob-title">Keyword Chaos</div>
+        <div class="prob-body">Broad match cannibalising branded terms. CPCs 4× higher.</div></div>
+      </div>
+      <div id="pc3" class="prob-card">
+        <span class="prob-icon">[03]</span>
+        <div><div class="prob-title">Zero Structure</div>
+        <div class="prob-body">One campaign, all products. No signals, no segmentation.</div></div>
+      </div>
+      <div id="s2-roas-row">
+        <div id="s2-roas-before">0.9×</div>
+        <div id="s2-roas-arrow">→</div>
+        <div id="s2-roas-after">2.4×</div>
+      </div>
+      <!-- RIGHT: screen mockup -->
+      <div id="s2-screen-wrap" class="screen-wrap">
+        <div class="screen-chrome">
+          <div class="chrome-dot" style="background:#ea4335"></div>
+          <div class="chrome-dot" style="background:#fbbc04"></div>
+          <div class="chrome-dot" style="background:#34a853"></div>
+        </div>
+        <img src="assets/ads-dashboard.png" alt="Google Ads before state" style="padding-top:22px; height:calc(100% - 22px); width:100%; object-fit:cover; object-position:top;" />
+        <div class="screen-overlay"></div>
+      </div>
+      <div id="s2-screen-label">// BEFORE RESTRUCTURE</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SCENE 3: RESTRUCTURE — 10-18s          -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="s3" class="scene">
+      <div id="s3-bg-grid"></div>
+      <!-- LEFT: architecture diagram -->
+      <div id="s3-eyebrow">The Architecture</div>
+      <div id="s3-heading">PMax + Shopping.<br>Clean signals.</div>
+      <div id="s3-node-budget"><span>CAMPAIGN BUDGET</span></div>
+      <div id="s3-line-v1"></div>
+      <div id="s3-node-pmax">
+        <span class="n-label">Campaign A</span>
+        <span class="n-title">Performance Max</span>
+      </div>
+      <div id="s3-line-h"></div>
+      <div id="s3-node-shopping">
+        <span class="n-label">Campaign B</span>
+        <span class="n-title">Smart Shopping</span>
+      </div>
+      <div id="s3-line-v2"></div>
+      <div id="s3-line-v3"></div>
+      <div id="sf1" class="s3-feed"><div class="s3-feed-dot"></div><span>Search Intent</span></div>
+      <div id="sf2" class="s3-feed"><div class="s3-feed-dot"></div><span>Display Reach</span></div>
+      <div id="sf3" class="s3-feed"><div class="s3-feed-dot"></div><span>Shopping Feed</span></div>
+      <div id="sf4" class="s3-feed"><div class="s3-feed-dot" style="background:#64c882"></div><span>Conv. Signals</span></div>
+      <div id="s3-result-bar">
+        <div class="rb-item"><div class="rb-value">30d</div><div class="rb-label">Window</div></div>
+        <div class="rb-sep"></div>
+        <div class="rb-item"><div class="rb-value">4</div><div class="rb-label">Campaigns</div></div>
+        <div class="rb-sep"></div>
+        <div class="rb-item"><div class="rb-value">100%</div><div class="rb-label">Clean</div></div>
+      </div>
+      <!-- RIGHT: screen mockup (after state) -->
+      <div id="s3-screen-wrap" class="screen-wrap">
+        <div class="screen-chrome">
+          <div class="chrome-dot" style="background:#ea4335"></div>
+          <div class="chrome-dot" style="background:#fbbc04"></div>
+          <div class="chrome-dot" style="background:#34a853"></div>
+        </div>
+        <img src="assets/ads-restructure.png" alt="Google Ads after restructure" style="padding-top:22px; height:calc(100% - 22px); width:100%; object-fit:cover; object-position:top;" />
+        <div class="screen-overlay"></div>
+      </div>
+      <div id="s3-screen-label">// AFTER RESTRUCTURE</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SCENE 4: GA4 ATTRIBUTION — 18-25s      -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="s4" class="scene">
+      <div id="s4-glow"></div>
+      <!-- LEFT: funnel steps -->
+      <div id="s4-eyebrow">GA4 Attribution Stack</div>
+      <div id="s4-heading">Every click.<br>Every conversion.</div>
+      <div id="fs1" class="funnel-step">
+        <span class="fs-num">01</span>
+        <span class="fs-label">GA4 Property Rebuilt</span>
+        <span class="fs-tag">events + ecommerce</span>
+      </div>
+      <div id="fa1" class="fs-arrow">↓</div>
+      <div id="fs2" class="funnel-step">
+        <span class="fs-num">02</span>
+        <span class="fs-label">Google Ads Linked</span>
+        <span class="fs-tag">auto-tagging + GCLID</span>
+      </div>
+      <div id="fa2" class="fs-arrow">↓</div>
+      <div id="fs3" class="funnel-step">
+        <span class="fs-num">03</span>
+        <span class="fs-label">Conversion Actions Set</span>
+        <span class="fs-tag">purchase + add-to-cart</span>
+      </div>
+      <div id="fa3" class="fs-arrow">↓</div>
+      <div id="fs4" class="funnel-step">
+        <span class="fs-num">04</span>
+        <span class="fs-label">Smart Bidding Unlocked</span>
+        <span class="fs-tag">tROAS: 300%</span>
+      </div>
+      <div id="s4-insight">
+        <p>Without clean attribution, <strong>Smart Bidding is blind.</strong> GA4 gave the algorithm the signal it needed.</p>
+      </div>
+      <!-- RIGHT: GA4 screen mockup -->
+      <div id="s4-screen-wrap" class="screen-wrap">
+        <div class="screen-chrome">
+          <div class="chrome-dot" style="background:#ea4335"></div>
+          <div class="chrome-dot" style="background:#fbbc04"></div>
+          <div class="chrome-dot" style="background:#34a853"></div>
+        </div>
+        <img src="assets/ga4-attribution.png" alt="GA4 attribution dashboard" style="padding-top:22px; height:calc(100% - 22px); width:100%; object-fit:cover; object-position:top;" />
+        <div class="screen-overlay" style="background:linear-gradient(135deg,rgba(100,200,130,0.06) 0%,transparent 60%);"></div>
+      </div>
+      <div id="s4-screen-label">// GA4 · PROPERTY 387204119</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SCENE 5: RESULTS — 25-33s              -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="s5" class="scene">
+      <div id="s5-bg-ghost">2.4</div>
+      <div id="s5-gold-sweep"></div>
+      <div id="s5-eyebrow">Results — 30 Day Window</div>
+      <div id="s5-heading">The numbers.</div>
+      <div id="s5-hero-label">ROAS After</div>
+      <div id="s5-hero-val" data-target="2.4">0.0</div>
+      <div id="s5-hero-sub">up from 0.9× at campaign start</div>
+      <div id="s5-rule"></div>
+      <div id="ss1" class="s5-stat">
+        <div class="s5-stat-val"><span data-count-target="38">0</span><span class="s5-stat-unit">%</span></div>
+        <div class="s5-stat-label">CPA Reduction</div>
+      </div>
+      <div id="ss2" class="s5-stat">
+        <div class="s5-stat-val"><span data-count-target="62">0</span><span class="s5-stat-unit">%</span></div>
+        <div class="s5-stat-label">CTR Increase</div>
+      </div>
+      <div id="ss3" class="s5-stat">
+        <div class="s5-stat-val"><span data-count-target="167">0</span><span class="s5-stat-unit">%</span></div>
+        <div class="s5-stat-label">ROAS Lift</div>
+      </div>
+      <div id="s5-corner">SEVERUS CONNECTS // CASE STUDY 001</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SCENE 6: CTA — 33-38s                  -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="s6" class="scene">
+      <div id="s6-glow"></div>
+      <div id="s6-rule-top"></div>
+      <div id="s6-corner-tl">SC_001</div>
+      <div id="s6-eyebrow">London Digital Marketing Agency</div>
+      <div id="s6-name">Severus<br><span id="s6-name-gold">Connects</span></div>
+      <div id="s6-services">
+        <span class="s6-svc">GA4 Analytics</span>
+        <span class="s6-svc-sep">·</span>
+        <span class="s6-svc">AI Shopping Ads</span>
+        <span class="s6-svc-sep">·</span>
+        <span class="s6-svc">AI Performance Ads</span>
+      </div>
+      <div id="s6-cta-rule"></div>
+      <div id="s6-cta">Results-first. Built on AI.</div>
+      <div id="s6-upwork-tag">Available on Upwork</div>
+      <div id="s6-corner-br">severusconnects.com</div>
+    </div>
+
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+
+    // ─── SCENE 1: HOOK (0–4s) ───────────────────────────────────────
+    // BG pulse
+    tl.to("#s1-glow", { scale: 1.15, opacity: 0.7, duration: 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.1);
+    // Scan sweep
+    tl.fromTo("#s1-scan", { x: -1080 }, { x: 1080, duration: 0.8, ease: "power2.inOut" }, 0.1);
+    // Eyebrow
+    tl.fromTo("#s1-eyebrow", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.3);
+    // Corner accents
+    tl.fromTo("#s1-corner-tl", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, 0.4);
+    tl.fromTo("#s1-corner-br", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, 0.5);
+    // ROAS label
+    tl.fromTo("#s1-roas-label", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.55);
+    // Big number SLAM
+    tl.fromTo("#s1-roas", { opacity: 0, scale: 1.4, x: -30 }, { opacity: 1, scale: 1, x: 0, duration: 0.5, ease: "expo.out" }, 0.65);
+    tl.fromTo("#s1-roas-x", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.85);
+    // Rule draws
+    tl.fromTo("#s1-rule", { width: 0 }, { width: 600, duration: 0.5, ease: "power2.out" }, 1.0);
+    // Tagline fades
+    tl.fromTo("#s1-tagline", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.1);
+    tl.fromTo("#s1-client-tag", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, 1.5);
+    // Ambient pulse on number
+    tl.to("#s1-roas", { scale: 1.02, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 2 }, 1.8);
+
+    // ─── TRANSITION 1→2: blur crossfade at 4s ───────────────────────
+    const T12 = 4.0;
+    tl.to("#s1", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.5, ease: "power2.inOut" }, T12);
+    tl.fromTo("#s2", { opacity: 0, filter: "blur(10px)", scale: 0.97 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.5, ease: "power2.inOut" }, T12 + 0.1);
+
+    // ─── SCENE 2: PROBLEM (4–10s) ───────────────────────────────────
+    const S2 = T12 + 0.2;
+    // Left copy
+    tl.fromTo("#s2-eyebrow", { opacity: 0, y: -15 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, S2);
+    tl.fromTo("#s2-heading", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, S2 + 0.1);
+    tl.fromTo("#s2-divider", { width: 0 }, { width: 430, duration: 0.5, ease: "power2.out" }, S2 + 0.45);
+    tl.fromTo("#pc1", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, S2 + 0.65);
+    tl.fromTo("#pc2", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, S2 + 0.85);
+    tl.fromTo("#pc3", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, S2 + 1.05);
+    tl.fromTo("#s2-roas-row", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.3)" }, S2 + 1.5);
+    // Right screen — slides in from right + Ken Burns
+    tl.fromTo("#s2-screen-wrap", { opacity: 0, x: 60, rotationY: 8 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.7, ease: "expo.out", transformPerspective: 1200 }, S2 + 0.3);
+    tl.to("#s2-screen-wrap img", { scale: 1.04, duration: 5.5, ease: "none" }, S2 + 0.5);
+    tl.fromTo("#s2-screen-label", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, S2 + 0.9);
+    // Ambient: screen subtle float
+    tl.to("#s2-screen-wrap", { y: -6, duration: 2.0, ease: "sine.inOut", yoyo: true, repeat: 2 }, S2 + 1.5);
+
+    // ─── TRANSITION 2→3: zoom through at 10s ────────────────────────
+    const T23 = 10.0;
+    tl.to("#s2", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, T23);
+    tl.fromTo("#s3", { opacity: 0, scale: 0.5, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, T23 + 0.15);
+
+    // ─── SCENE 3: RESTRUCTURE (10–18s) ──────────────────────────────
+    const S3 = T23 + 0.25;
+    // Left diagram
+    tl.fromTo("#s3-eyebrow", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, S3);
+    tl.fromTo("#s3-heading", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, S3 + 0.1);
+    tl.fromTo("#s3-node-budget", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.4)" }, S3 + 0.5);
+    tl.fromTo("#s3-line-v1", { height: 0 }, { height: 50, duration: 0.25, ease: "power2.out" }, S3 + 0.85);
+    tl.fromTo("#s3-node-pmax", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, S3 + 1.05);
+    tl.fromTo("#s3-line-h", { width: 0 }, { width: 65, duration: 0.2, ease: "power2.out" }, S3 + 1.35);
+    tl.fromTo("#s3-node-shopping", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, S3 + 1.5);
+    tl.fromTo("#s3-line-v2", { height: 0 }, { height: 80, duration: 0.25, ease: "power2.out" }, S3 + 1.85);
+    tl.fromTo("#s3-line-v3", { height: 0 }, { height: 80, duration: 0.25, ease: "power2.out" }, S3 + 1.95);
+    tl.fromTo("#sf1", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, S3 + 2.1);
+    tl.fromTo("#sf2", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, S3 + 2.25);
+    tl.fromTo("#sf3", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, S3 + 2.4);
+    tl.fromTo("#sf4", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, S3 + 2.55);
+    tl.fromTo("#s3-result-bar", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, S3 + 2.9);
+    // Right screen — slides in from right
+    tl.fromTo("#s3-screen-wrap", { opacity: 0, x: 60, rotationY: 8 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.7, ease: "expo.out", transformPerspective: 1200 }, S3 + 0.3);
+    tl.to("#s3-screen-wrap img", { scale: 1.04, duration: 7, ease: "none" }, S3 + 0.5);
+    tl.fromTo("#s3-screen-label", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, S3 + 0.8);
+    tl.to("#s3-screen-wrap", { y: -8, duration: 2.5, ease: "sine.inOut", yoyo: true, repeat: 2 }, S3 + 2.0);
+    // PMax node ambient gold pulse
+    tl.to("#s3-node-pmax", { boxShadow: "0 0 24px rgba(201,168,76,0.35)", duration: 0.9, ease: "sine.inOut", yoyo: true, repeat: 3 }, S3 + 3.5);
+
+    // ─── TRANSITION 3→4: blur crossfade at 18s ──────────────────────
+    const T34 = 18.0;
+    tl.to("#s3", { filter: "blur(10px)", opacity: 0, duration: 0.45, ease: "power2.inOut" }, T34);
+    tl.fromTo("#s4", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power2.inOut" }, T34 + 0.1);
+
+    // ─── SCENE 4: GA4 ATTRIBUTION (18–25s) ──────────────────────────
+    const S4 = T34 + 0.2;
+    // Left funnel
+    tl.fromTo("#s4-eyebrow", { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, S4);
+    tl.fromTo("#s4-heading", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, S4 + 0.1);
+    tl.fromTo("#fs1", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, S4 + 0.5);
+    tl.fromTo("#fa1", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, S4 + 0.82);
+    tl.fromTo("#fs2", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, S4 + 0.9);
+    tl.fromTo("#fa2", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, S4 + 1.22);
+    tl.fromTo("#fs3", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, S4 + 1.3);
+    tl.fromTo("#fa3", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, S4 + 1.62);
+    tl.fromTo("#fs4", { opacity: 0, x: -25 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, S4 + 1.7);
+    tl.fromTo("#s4-insight", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, S4 + 2.4);
+    // Right GA4 screen
+    tl.fromTo("#s4-screen-wrap", { opacity: 0, x: 60, rotationY: 8 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.7, ease: "expo.out", transformPerspective: 1200 }, S4 + 0.25);
+    tl.to("#s4-screen-wrap img", { scale: 1.04, duration: 6.5, ease: "none" }, S4 + 0.5);
+    tl.fromTo("#s4-screen-label", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, S4 + 0.7);
+    // Ambient: glow breathes + screen floats
+    tl.to("#s4-glow", { scale: 1.2, opacity: 0.8, duration: 1.5, ease: "sine.inOut", yoyo: true, repeat: 2 }, S4 + 1.0);
+    tl.to("#s4-screen-wrap", { y: -8, duration: 2.2, ease: "sine.inOut", yoyo: true, repeat: 2 }, S4 + 1.8);
+
+    // ─── TRANSITION 4→5: zoom through at 25s (PEAK) ─────────────────
+    const T45 = 25.0;
+    tl.to("#s4", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, T45);
+    tl.fromTo("#s5", { opacity: 0, scale: 0.5, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, T45 + 0.15);
+
+    // ─── SCENE 5: RESULTS (25–33s) ──────────────────────────────────
+    const S5 = T45 + 0.2;
+    // Gold sweep
+    tl.fromTo("#s5-gold-sweep", { x: "-100%" }, { x: "200%", duration: 1.0, ease: "power2.inOut" }, S5);
+    tl.fromTo("#s5-bg-ghost", { opacity: 0 }, { opacity: 1, duration: 1.0, ease: "power1.out" }, S5);
+    tl.fromTo("#s5-eyebrow", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, S5 + 0.1);
+    tl.fromTo("#s5-heading", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, S5 + 0.2);
+    tl.fromTo("#s5-hero-label", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none" }, S5 + 0.5);
+    // Hero ROAS count up
+    tl.fromTo("#s5-hero-val", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, S5 + 0.6);
+    tl.to("#s5-hero-val", {
+      duration: 1.8,
+      ease: "power1.out",
+      overwrite: "auto",
+      onUpdate: function() {
+        const prog = this.progress();
+        const val = (0.0 + (2.4 - 0.0) * prog).toFixed(1);
+        document.getElementById("s5-hero-val").textContent = val;
+      }
+    }, S5 + 1.1);
+    tl.fromTo("#s5-hero-sub", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, S5 + 1.2);
+    tl.fromTo("#s5-rule", { width: 0 }, { width: 920, duration: 0.6, ease: "power2.out" }, S5 + 1.6);
+    // Supporting stats count up
+    const countUp = (selector, target, startT) => {
+      tl.fromTo(selector, { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.4)" }, startT);
+      tl.to(selector, {
+        duration: 1.4,
+        ease: "power1.out",
+        onUpdate: function() {
+          const el = document.querySelector(selector + " [data-count-target]");
+          if (el) {
+            const t = parseInt(el.dataset.countTarget);
+            el.textContent = Math.round(t * this.progress());
+          }
+        }
+      }, startT + 0.2);
+    };
+    countUp("#ss1", 38, S5 + 2.0);
+    countUp("#ss2", 62, S5 + 2.2);
+    countUp("#ss3", 167, S5 + 2.4);
+    tl.fromTo("#s5-corner", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "none" }, S5 + 3.0);
+    // Ambient: bg ghost slow scale
+    tl.to("#s5-bg-ghost", { scale: 1.05, duration: 7, ease: "none" }, S5);
+
+    // ─── TRANSITION 5→6: color dip to black at 33s ──────────────────
+    const T56 = 33.0;
+    tl.to("#s5", { opacity: 0, duration: 0.3, ease: "power2.in" }, T56);
+    tl.fromTo("#s6", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, T56 + 0.35);
+
+    // ─── SCENE 6: CTA (33–38s) ──────────────────────────────────────
+    const S6 = T56 + 0.5;
+    // Rule sweeps across top
+    tl.fromTo("#s6-rule-top", { width: 0 }, { width: 1080, duration: 0.7, ease: "power2.out" }, S6);
+    tl.fromTo("#s6-corner-tl", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none" }, S6 + 0.3);
+    // Glow breathes in
+    tl.fromTo("#s6-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "power2.out" }, S6 + 0.2);
+    tl.fromTo("#s6-eyebrow", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, S6 + 0.5);
+    // Name slams in
+    tl.fromTo("#s6-name", { opacity: 0, scale: 0.85, x: -20 }, { opacity: 1, scale: 1, x: 0, duration: 0.55, ease: "expo.out" }, S6 + 0.65);
+    tl.fromTo("#s6-services", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, S6 + 1.0);
+    tl.fromTo("#s6-cta-rule", { width: 0 }, { width: 600, duration: 0.45, ease: "power2.out" }, S6 + 1.3);
+    tl.fromTo("#s6-cta", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, S6 + 1.6);
+    tl.fromTo("#s6-upwork-tag", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.4)" }, S6 + 1.9);
+    tl.fromTo("#s6-corner-br", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, S6 + 2.2);
+    // Final fade to black
+    tl.to("#s6", { opacity: 0, duration: 0.8, ease: "power2.in" }, 37.2);
+
+    window.__timelines["google-ads-case-study"] = tl;
+  </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1080px; height: 608px;
+    background: #f1f3f4;
+    font-family: "Google Sans", "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #202124;
+    overflow: hidden;
+  }
+  .top-nav {
+    height: 48px; background: #fff;
+    border-bottom: 1px solid #dadce0;
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 16px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; }
+  .nav-logo-icon {
+    width: 32px; height: 32px; background: #1a73e8; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 700;
+  }
+  .nav-logo-text { font-size: 16px; font-weight: 500; color: #1a73e8; }
+  .nav-account {
+    margin-left: auto; font-size: 12px; color: #5f6368;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-avatar {
+    width: 28px; height: 28px; border-radius: 50%; background: #1a73e8;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 600;
+  }
+  .sidebar {
+    position: absolute; top: 48px; left: 0;
+    width: 200px; height: calc(608px - 48px);
+    background: #fff; border-right: 1px solid #dadce0;
+    padding: 8px 0;
+  }
+  .sb-item {
+    padding: 10px 20px; font-size: 13px; color: #5f6368;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sb-item.active {
+    color: #1a73e8; background: #e8f0fe;
+    border-right: 3px solid #1a73e8; font-weight: 500;
+  }
+  .sb-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .main {
+    position: absolute; top: 48px; left: 200px;
+    right: 0; bottom: 0; padding: 16px; overflow: hidden;
+  }
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .page-title { font-size: 20px; font-weight: 400; }
+  .date-range {
+    font-size: 12px; color: #5f6368; border: 1px solid #dadce0;
+    padding: 6px 12px; border-radius: 4px; background: #fff;
+  }
+  .success-banner {
+    background: #e6f4ea; border: 1px solid #ceead6; border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: #137333;
+  }
+  .summary-row { display: flex; gap: 12px; margin-bottom: 14px; }
+  .summary-card {
+    flex: 1; background: #fff; border: 1px solid #dadce0;
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .sc-label { font-size: 11px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .sc-value { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 4px; }
+  .sc-delta { font-size: 11px; }
+  .sc-delta.pos { color: #34a853; }
+  .sc-delta.neg { color: #ea4335; }
+  .sc-roas-good { border-color: #34a853; background: #e6f4ea; }
+  .sc-roas-good .sc-value { color: #137333; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .table-wrap {
+    background: #fff; border: 1px solid #dadce0;
+    border-radius: 8px; overflow: hidden;
+  }
+  .table-header {
+    display: flex; align-items: center; padding: 12px 16px;
+    border-bottom: 1px solid #dadce0; font-size: 13px;
+    font-weight: 500; gap: 8px;
+  }
+  .th-badge { background: #e6f4ea; color: #137333; font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+  th {
+    text-align: left; padding: 10px 16px; color: #5f6368;
+    font-weight: 500; font-size: 11px; background: #f8f9fa;
+    border-bottom: 1px solid #e8eaed; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  td { padding: 10px 16px; border-bottom: 1px solid #f1f3f4; }
+  tr:last-child td { border-bottom: none; }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .status-dot.active { background: #34a853; }
+  .cell-green { color: #137333; font-weight: 600; }
+  .cell-blue { color: #1a73e8; font-weight: 600; }
+  .cell-bold { font-weight: 600; }
+  .type-badge {
+    display: inline-block; font-size: 10px; padding: 2px 7px;
+    border-radius: 10px; font-weight: 500; margin-left: 6px;
+    vertical-align: middle;
+  }
+  .badge-pmax { background: #e8f0fe; color: #1a73e8; }
+  .badge-shopping { background: #fef7e0; color: #b06000; }
+  .badge-search { background: #e6f4ea; color: #137333; }
+  .badge-remarketing { background: #fce8e6; color: #c5221f; }
+</style>
+</head>
+<body>
+<div class="top-nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">G</div>
+    <span class="nav-logo-text">Google Ads</span>
+  </div>
+  <span style="color:#5f6368; font-size:13px;">DTC Ecommerce Brand · Account #481-220-7734</span>
+  <div class="nav-account">
+    <span style="color:#137333; font-weight:500;">✓ Restructure complete</span>
+    <div class="nav-avatar">IB</div>
+  </div>
+</div>
+<div class="sidebar">
+  <div class="sb-item" style="padding:12px 20px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#9aa0a6; font-weight:600;">Campaigns</div>
+  <div class="sb-item active"><span class="sb-dot"></span>All campaigns</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#1a73e8"></span>Performance Max</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#fbbc04"></span>Shopping</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#34a853"></span>Search</div>
+  <div style="border-top:1px solid #e8eaed; margin:8px 0;"></div>
+  <div class="sb-item"><span class="sb-dot" style="background:#5f6368"></span>Audiences</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#5f6368"></span>Keywords</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#34a853"></span>Conversions ✓</div>
+  <div class="sb-item"><span class="sb-dot" style="background:#34a853"></span>Attribution ✓</div>
+</div>
+<div class="main">
+  <div class="page-header">
+    <div class="page-title">All campaigns</div>
+    <div class="date-range">Aug 1 – Aug 31, 2024 ▾</div>
+  </div>
+  <div class="success-banner">
+    ✓ <strong>Conversion tracking healthy.</strong> All campaigns reporting accurate data. Smart Bidding signals active.
+  </div>
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="sc-label">Cost</div>
+      <div class="sc-value">£3,890</div>
+      <div class="sc-delta pos">▼ 8% more efficient</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Conversions</div>
+      <div class="sc-value">226</div>
+      <div class="sc-delta pos">▲ 169% vs prev period</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Conv. Value</div>
+      <div class="sc-value">£9,336</div>
+      <div class="sc-delta pos">▲ 145% vs prev period</div>
+    </div>
+    <div class="summary-card sc-roas-good">
+      <div class="sc-label">ROAS</div>
+      <div class="sc-value">2.40×</div>
+      <div class="sc-delta pos">▲ Up from 0.90×</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">CTR</div>
+      <div class="sc-value">1.95%</div>
+      <div class="sc-delta pos">▲ 62% vs prev period</div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      Campaigns
+      <span class="th-badge">4 active</span>
+      <span style="margin-left:auto; color:#5f6368; font-size:12px; font-weight:400;">Sorted by: Conv. Value ↓</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campaign</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Budget</th>
+          <th>CTR</th>
+          <th>Conv.</th>
+          <th>Conv. Value</th>
+          <th>ROAS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cell-bold">SC_PMax_AllProducts</td>
+          <td><span class="type-badge badge-pmax">PMax</span></td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£80/day</td>
+          <td class="cell-green">2.1%</td>
+          <td class="cell-green">142</td>
+          <td class="cell-green">£5,892</td>
+          <td class="cell-green">2.61×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">SC_Shopping_TopSKUs</td>
+          <td><span class="type-badge badge-shopping">Shopping</span></td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£40/day</td>
+          <td class="cell-green">1.8%</td>
+          <td>64</td>
+          <td>£2,496</td>
+          <td class="cell-green">2.22×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">SC_Search_Brand</td>
+          <td><span class="type-badge badge-search">Search</span></td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£20/day</td>
+          <td class="cell-blue">4.2%</td>
+          <td>14</td>
+          <td>£728</td>
+          <td class="cell-blue">2.47×</td>
+        </tr>
+        <tr>
+          <td class="cell-bold">SC_Remarketing_Buyers</td>
+          <td><span class="type-badge badge-remarketing">Display</span></td>
+          <td><span class="status-dot active"></span>Active</td>
+          <td>£10/day</td>
+          <td>0.9%</td>
+          <td>6</td>
+          <td>£220</td>
+          <td>1.83×</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

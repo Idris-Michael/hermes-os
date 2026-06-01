@@ -1,0 +1,19 @@
+{
+  // Hermes OS — jcodemunch project config
+  "tool_profile": "standard",
+  "compact_schemas": true,
+  "extra_ignore_patterns": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/dist/**",
+    "**/.next/**",
+    "**/build/**",
+    "**/.agents/skills/seedance*/**",
+    "**/notebooklm-py/**",
+    "**/*.exe",
+    "**/*.mp4",
+    "**/*.mp3"
+  ],
+  // Index only source dirs — not executables, media, or build artefacts
+  "max_folder_files": 5000
+}

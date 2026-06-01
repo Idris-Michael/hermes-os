@@ -1,0 +1,148 @@
+{
+  "id": "king-of-hearts",
+  "name": "KING OF HEARTS",
+  "suit": "hearts",
+  "rank": "king",
+  "role": "Ad Copywriter",
+  "tagline": "Headlines that sell. Copy that converts. No filler, no fluff.",
+  "model": "huggingface/deepseek-ai/DeepSeek-V4-Flash:novita",
+  "modelLabel": "DEEPSEEK-V4-FLASH",
+  "modelColor": "#ec4899",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#ec4899",
+  "gateway": "telegram",
+  "gatewayHandle": "@king_hearts_bot",
+  "soulFile": "data/souls/king-of-hearts.md",
+  "skills": [
+    "severus-social-copywriter",
+    "severus-social-strategy",
+    "ecom-ads-skill",
+    "advising-ui-ux-layouts",
+    "frontend-design-direction",
+    "continuous-learning-v2",
+    "strategic-compact",
+    "iterative-retrieval",
+    "voicebox-tts"
+  ],
+  "tools": [
+    {
+      "id": "ad-copy",
+      "label": "Ad Copy Generator",
+      "description": "Platform-specific headlines, primary text, descriptions, CTAs"
+    },
+    {
+      "id": "copy-variants",
+      "label": "Copy Variants",
+      "description": "A/B test variants \u00e2\u20ac\u201d hook A / hook B / angle C"
+    },
+    {
+      "id": "fatigue-detection",
+      "label": "Fatigue Detection",
+      "description": "Identifies stale creative copy, flags rotation candidates"
+    },
+    {
+      "id": "iterative-retrieval",
+      "label": "Iterative Retrieval",
+      "description": "Pulls best-performing copy patterns from vault for reference"
+    },
+    {
+      "id": "voicebox-tts",
+      "label": "Voicebox TTS",
+      "description": "Convert ad scripts to voice \u2014 Chatterbox Turbo for emotional delivery, Kokoro for fast drafts"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Copy bank, winning headlines, swipe file, client tone guides",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "notion",
+      "label": "Notion",
+      "detail": "Copy bank workspace \u00e2\u20ac\u201d stores and retrieves ad copy library",
+      "status": "connected"
+    },
+    {
+      "id": "gmail",
+      "label": "Gmail",
+      "detail": "michaelbakare92@gmail.com \u00e2\u20ac\u201d copy delivery and client comms",
+      "status": "connected"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@king_hearts_bot \u00e2\u20ac\u201d copy requests and fatigue alerts",
+      "status": "connected"
+    },
+    {
+      "id": "voicebox",
+      "label": "Voicebox",
+      "detail": "Local \u00b7 :17493 \u2014 ad script \u2192 voice draft in seconds",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6"
+    },
+    {
+      "name": "Notion",
+      "status": "connected",
+      "detail": "Copy bank"
+    },
+    {
+      "name": "Gmail",
+      "status": "connected",
+      "detail": "michaelbakare92@gmail.com"
+    }
+  ],
+  "crons": [
+    {
+      "id": "fatigue-check",
+      "label": "Ad Fatigue Check",
+      "schedule": "0 14 * * 3,5",
+      "human": "Wed & Fri at 14:00",
+      "lastRun": "2026-05-14T14:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 44,
+    "messagesTotal": 830,
+    "lastActive": "2h ago"
+  },
+  "whitelist": [
+    "severus-social-copywriter",
+    "severus-social-strategy",
+    "ecom-ads-skill",
+    "advising-ui-ux-layouts",
+    "frontend-design-direction",
+    "continuous-learning-v2",
+    "strategic-compact",
+    "iterative-retrieval"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": []
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/king-of-hearts.png"
+}

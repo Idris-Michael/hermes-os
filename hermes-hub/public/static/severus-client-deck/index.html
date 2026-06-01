@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Severus Connects — Client Presentation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-dim: rgba(201,168,76,0.18);
+    --gold-border: rgba(201,168,76,0.28);
+    --navy: #0d1117;
+    --surface: #111620;
+    --surface2: #161c28;
+    --text: #e8e4d0;
+    --text-dim: rgba(232,228,208,0.45);
+    --text-muted: rgba(232,228,208,0.22);
+    --border: rgba(255,255,255,0.07);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--navy);
+    font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+    color: var(--text);
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .slide.active {
+    opacity: 1; pointer-events: auto;
+  }
+
+  /* ── NAV BAR ── */
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 44px;
+    background: rgba(13,17,23,0.96);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    z-index: 999;
+    backdrop-filter: blur(8px);
+  }
+  #nav-brand {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+    color: var(--gold);
+  }
+  #nav-dots {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .nav-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .nav-dot.active {
+    background: var(--gold);
+    transform: scale(1.4);
+  }
+  #nav-controls {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .nav-btn {
+    padding: 4px 14px;
+    font-family: inherit; font-size: 9px; letter-spacing: 0.15em;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px; cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-btn:hover { color: var(--gold); border-color: var(--gold-border); }
+  #nav-counter {
+    font-size: 9px; letter-spacing: 0.15em; color: var(--text-muted);
+  }
+
+  /* ── DOT GRID BG ── */
+  .dot-bg {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(201,168,76,0.1) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+  }
+  .glow-center {
+    position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
+    width: 1200px; height: 900px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ── CORNER MARKS ── */
+  .corner { position: absolute; width: 24px; height: 24px; }
+  .corner-tl { top: 24px; left: 24px; border-top: 1.5px solid var(--gold-border); border-left: 1.5px solid var(--gold-border); }
+  .corner-tr { top: 24px; right: 24px; border-top: 1.5px solid var(--gold-border); border-right: 1.5px solid var(--gold-border); }
+  .corner-bl { bottom: 56px; left: 24px; border-bottom: 1.5px solid var(--gold-border); border-left: 1.5px solid var(--gold-border); }
+  .corner-br { bottom: 56px; right: 24px; border-bottom: 1.5px solid var(--gold-border); border-right: 1.5px solid var(--gold-border); }
+
+  /* ── TYPOGRAPHY ── */
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.3em; color: rgba(201,168,76,0.55);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .h1 {
+    font-size: 72px; font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.01em; color: var(--text);
+  }
+  .h1 span { color: var(--gold); }
+  .h2 {
+    font-size: 42px; font-weight: 700; line-height: 1.15;
+    color: var(--text);
+  }
+  .h2 span { color: var(--gold); }
+  .h3 {
+    font-size: 22px; font-weight: 700; color: var(--text);
+    margin-bottom: 8px;
+  }
+  .body { font-size: 15px; line-height: 1.8; color: var(--text-dim); }
+  .gold-line {
+    height: 1px; background: rgba(201,168,76,0.35);
+    margin: 24px 0;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+  }
+  .card.gold {
+    border-color: var(--gold-border);
+    background: var(--gold-dim);
+  }
+  .card-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.25em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 10px;
+  }
+
+  /* ── PILL / CHIP ── */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--gold-border);
+    border-radius: 20px;
+    font-size: 11px; color: var(--text-dim);
+    background: var(--gold-dim);
+  }
+  .chip::before {
+    content: ''; display: block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--gold);
+  }
+
+  /* ── STAT ── */
+  .stat-val {
+    font-size: 48px; font-weight: 700; color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted);
+    text-transform: uppercase; margin-top: 6px;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #0a0d12;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    font-size: 12px; line-height: 1.8;
+    color: rgba(232,228,208,0.7);
+    overflow-x: auto;
+  }
+  .code-block .c-key { color: #C9A84C; }
+  .code-block .c-val { color: #7ec8a4; }
+  .code-block .c-str { color: #e8a87c; }
+  .code-block .c-cmt { color: rgba(232,228,208,0.25); }
+
+  /* ── AGENT CARD ── */
+  .agent-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+  .agent-card:hover { border-color: var(--gold-border); }
+  .agent-name {
+    font-size: 11px; font-weight: 700; color: var(--gold);
+    margin-bottom: 4px; letter-spacing: 0.08em;
+  }
+  .agent-desc {
+    font-size: 10px; color: var(--text-dim); line-height: 1.5;
+  }
+
+  /* ── SKILL TAG ── */
+  .skill-tag {
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 10px; color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ── IFRAME WRAPPER ── */
+  .iframe-slide {
+    flex: 1;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    padding-bottom: 44px;
+  }
+  .iframe-topbar {
+    height: 40px; flex-shrink: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 20px;
+    gap: 12px;
+  }
+  .iframe-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+  .iframe-url {
+    font-size: 9px; color: var(--text-muted); letter-spacing: 0.06em;
+  }
+  .iframe-wrap {
+    flex: 1; overflow: hidden; position: relative;
+  }
+  .iframe-wrap iframe {
+    width: 100%; height: 100%; border: none;
+    display: block;
+  }
+  .iframe-overlay-msg {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px;
+    background: var(--surface);
+  }
+  .iframe-overlay-msg .io-icon {
+    font-size: 48px; color: var(--gold-border);
+  }
+  .iframe-overlay-msg p {
+    font-size: 13px; color: var(--text-dim); text-align: center; line-height: 1.7;
+  }
+  .open-btn {
+    padding: 10px 28px;
+    font-family: inherit; font-size: 11px; letter-spacing: 0.15em;
+    color: var(--navy);
+    background: var(--gold);
+    border: none; border-radius: 4px; cursor: pointer;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+  .open-btn:hover { opacity: 0.88; }
+
+  /* ── VIDEO SLIDE ── */
+  .video-wrap {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    background: #000; padding-bottom: 44px;
+  }
+  .video-wrap video {
+    max-width: 100%; max-height: 100%;
+    display: block;
+  }
+
+  /* ── RULE ITEM ── */
+  .rule-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .rule-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--gold); color: #111;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .rule-body h4 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .rule-body p  { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ── FLOW ROW ── */
+  .flow-row {
+    display: flex; align-items: center; gap: 0;
+    flex-wrap: wrap;
+  }
+  .flow-node {
+    padding: 8px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 11px; color: var(--text);
+    white-space: nowrap;
+  }
+  .flow-node.hi {
+    border-color: var(--gold-border);
+    background: var(--gold-dim);
+    color: var(--gold);
+  }
+  .flow-arrow {
+    font-size: 14px; color: var(--gold);
+    padding: 0 8px;
+  }
+
+  /* ── SLIDE LAYOUTS ── */
+  .slide-center {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 60px; padding-bottom: 104px;
+    position: relative;
+  }
+  .slide-split {
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+    padding: 60px; gap: 60px; padding-bottom: 104px;
+    align-items: start; position: relative; overflow-y: auto;
+  }
+  .slide-wide {
+    flex: 1; display: flex; flex-direction: column;
+    padding: 52px 64px; padding-bottom: 104px;
+    position: relative; overflow-y: auto;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+  .flex-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .flex-col { display: flex; flex-direction: column; gap: 12px; }
+  .mt8 { margin-top: 8px; }
+  .mt16 { margin-top: 16px; }
+  .mt24 { margin-top: 24px; }
+  .mt32 { margin-top: 32px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 1 — TITLE
+═══════════════════════════════════════════════ -->
+<div class="slide active" id="s1">
+  <div class="dot-bg"></div>
+  <div class="glow-center"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="slide-center">
+    <div class="eyebrow">Client Presentation · 2026</div>
+    <div class="h1">SEVERUS<br><span>CONNECTS</span></div>
+    <div class="gold-line" style="width:320px;margin:28px auto"></div>
+    <div class="body" style="max-width:560px">
+      Agentic intelligence for performance marketing.<br>
+      AI agents, automated workflows, and data-driven ad management — built for results.
+    </div>
+    <div class="flex-row mt32" style="justify-content:center">
+      <div class="chip">GA4 Analytics</div>
+      <div class="chip">AI Shopping Ads</div>
+      <div class="chip">AI Performance Ads</div>
+      <div class="chip">Workflow Automation</div>
+    </div>
+    <div style="margin-top:40px;font-size:10px;color:var(--text-muted);letter-spacing:0.2em">
+      IDRIS-MICHAEL BAKARE · LONDON, UK
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 2 — THE PROBLEM
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="dot-bg"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="slide-split">
+    <div>
+      <div class="eyebrow">The Problem</div>
+      <div class="h2">Most agencies <span>guess.</span><br>We measure.</div>
+      <div class="gold-line"></div>
+      <div class="flex-col">
+        <div class="rule-item">
+          <div class="rule-num">1</div>
+          <div class="rule-body">
+            <h4>Broken tracking = wasted budget</h4>
+            <p>Most Google Ads accounts have GA4 misconfigured. Smart Bidding starves without clean conversion data — you're burning spend on guesswork.</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">2</div>
+          <div class="rule-body">
+            <h4>Account structure kills performance</h4>
+            <p>Legacy campaign structures, duplicate keywords, and no PMax strategy leave 30–50% of budget wasted on irrelevant traffic.</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">3</div>
+          <div class="rule-body">
+            <h4>No system = no scale</h4>
+            <p>Manual reporting, scattered data, and no automation means the agency doesn't scale — results plateau and insight lags.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow">What We Deliver</div>
+      <div class="flex-col mt8">
+        <div class="card gold">
+          <div class="card-label">Result</div>
+          <div class="stat-val">2.4×</div>
+          <div class="stat-label">ROAS delivered for e-commerce client</div>
+        </div>
+        <div class="card gold">
+          <div class="card-label">Result</div>
+          <div class="stat-val">-38%</div>
+          <div class="stat-label">CPA reduction in 30 days</div>
+        </div>
+        <div class="card gold">
+          <div class="card-label">Result</div>
+          <div class="stat-val">+62%</div>
+          <div class="stat-label">CTR improvement post-restructure</div>
+        </div>
+        <div class="card" style="margin-top:4px">
+          <div class="card-label">Starting Point</div>
+          <div class="body" style="font-size:12px">Client was at 0.9× ROAS with broken GA4 tracking, no Smart Bidding data, and a flat campaign structure. Rebuilt from scratch in 2 weeks.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 3 — ARCHITECTURE VIDEO
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="iframe-topbar">
+    <div class="iframe-title">SYSTEM OVERVIEW</div>
+    <div class="iframe-url">How Severus Connects works — 45s walkthrough</div>
+  </div>
+  <div class="video-wrap">
+    <video controls src="../severus-arch-video/severus-arch-video.mp4"></video>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 4 — WORKFLOW VISUALISER
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="iframe-slide">
+    <div class="iframe-topbar">
+      <div class="iframe-title">INTERACTIVE WORKFLOW VISUALISER</div>
+      <div class="iframe-url">Live architecture diagram · click any workflow tab</div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe src="../severus-flow-visualiser/index.html"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 5 — OVERWATCH DASHBOARD
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="iframe-slide">
+    <div class="iframe-topbar">
+      <div class="iframe-title">SEVERUS OVERWATCH — LIVE DASHBOARD</div>
+      <div class="iframe-url">localhost:3000 · kanban · CRM · run history · vault</div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe src="http://localhost:3000" id="overwatch-frame"></iframe>
+      <div class="iframe-overlay-msg" id="overwatch-msg" style="display:none">
+        <div class="io-icon">⚡</div>
+        <p>Overwatch dashboard runs on a local server.<br>Start it first, then click below.</p>
+        <button class="open-btn" onclick="loadOverwatch()">Connect to localhost:3000</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 6 — WEBSITE
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="iframe-slide">
+    <div class="iframe-topbar">
+      <div class="iframe-title">SEVERUS CONNECTS — WEBSITE</div>
+      <div class="iframe-url">severus-connects · React · Vite · Tailwind</div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe src="http://localhost:5174" id="website-frame"></iframe>
+      <div class="iframe-overlay-msg" id="website-msg" style="display:none">
+        <div class="io-icon">🌐</div>
+        <p>Website runs on a local dev server.<br>Start it, then click below.</p>
+        <button class="open-btn" onclick="loadWebsite()">Connect to localhost:5174</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 7 — SEVERUS OS: AGENT SYSTEM
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="dot-bg"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="slide-wide">
+    <div class="eyebrow">Severus OS — Under the Hood</div>
+    <div class="h2 mt8">The <span>AI agents</span> running the system</div>
+    <div class="gold-line"></div>
+    <div class="grid-3 mt8">
+      <div class="agent-card">
+        <div class="agent-name">audit-google</div>
+        <div class="agent-desc">74-check Google Ads audit. Evaluates conversion tracking, wasted spend, PMax, bidding, and Quality Score. Outputs scored report with action plan.</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">creative-strategist</div>
+        <div class="agent-desc">Reads brand profile + audit data to generate structured campaign concepts and messaging pillars across Meta, Google, LinkedIn, and TikTok.</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">copy-writer</div>
+        <div class="agent-desc">Platform-compliant ad copy — headlines, CTAs, primary text — within exact character limits. Validates before writing.</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">audit-tracking</div>
+        <div class="agent-desc">Pixel install, server-side tracking, event config, and attribution audit across LinkedIn, TikTok, and Microsoft platforms.</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">audit-budget</div>
+        <div class="agent-desc">Budget allocation, bidding strategies, learning phase health, and audience targeting audit across LinkedIn, TikTok, and Microsoft.</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name">visual-designer</div>
+        <div class="agent-desc">Constructs image generation prompts from brand brief, calls generation scripts for each platform, organises outputs into ad-assets/ directories.</div>
+      </div>
+    </div>
+    <div class="mt24">
+      <div class="eyebrow" style="margin-bottom:12px">How an audit request flows</div>
+      <div class="flow-row">
+        <div class="flow-node hi">You (chat)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">TacticalAI</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node hi">Gemini 2.0</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node hi">audit-google agent</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">SQLite DB</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node hi">Scored report</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 8 — CLAUDE.MD + RULES SYSTEM
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="dot-bg"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="slide-split">
+    <div>
+      <div class="eyebrow">CLAUDE.md — The Brain's Rulebook</div>
+      <div class="h2">The AI follows <span>rules,</span> not vibes</div>
+      <div class="gold-line"></div>
+      <div class="body" style="margin-bottom:20px">Every Claude agent in Severus OS runs against a strict instruction file. This makes the AI deterministic — it behaves the same way every time, no hallucination drift.</div>
+      <div class="flex-col">
+        <div class="rule-item">
+          <div class="rule-num">1</div>
+          <div class="rule-body"><h4>Think Before Acting</h4><p>State assumptions. Ask when uncertain. Push back when a simpler path exists.</p></div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">2</div>
+          <div class="rule-body"><h4>Surgical Changes Only</h4><p>Touch only what's needed. Never refactor adjacent code. Match the existing system.</p></div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">3</div>
+          <div class="rule-body"><h4>Goal-Driven Execution</h4><p>Define success criteria first. Loop until verified. Don't follow steps blindly.</p></div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">4</div>
+          <div class="rule-body"><h4>Token Budgets Are Hard Limits</h4><p>4,000 tokens per task. Surfaces the breach. Never silently overruns.</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow">Sample: audit-google agent config</div>
+      <div class="code-block mt8">
+<span class="c-cmt">---</span>
+<span class="c-key">name</span>: <span class="c-val">audit-google</span>
+<span class="c-key">description</span>: >
+  Google Ads audit specialist.
+  74 checks across conversion tracking,
+  wasted spend, structure, keywords,
+  Quality Score, PMax, bidding.
+<span class="c-key">model</span>: <span class="c-val">sonnet</span>
+<span class="c-key">maxTurns</span>: <span class="c-val">20</span>
+<span class="c-key">tools</span>: <span class="c-str">Read, Bash, Write, Glob, Grep</span>
+<span class="c-cmt">---</span>
+
+<span class="c-cmt"># Behavior: reads 3 reference files</span>
+<span class="c-cmt"># before evaluating any check</span>
+<span class="c-cmt"># outputs: scored report + action plan</span>
+      </div>
+      <div class="eyebrow mt24" style="margin-bottom:12px">Skills installed (55+)</div>
+      <div class="flex-row">
+        <span class="skill-tag">hyperframes</span>
+        <span class="skill-tag">ads-google</span>
+        <span class="skill-tag">n8n</span>
+        <span class="skill-tag">impeccable</span>
+        <span class="skill-tag">remotion</span>
+        <span class="skill-tag">firecrawl</span>
+        <span class="skill-tag">playwright</span>
+        <span class="skill-tag">obsidian-cli</span>
+        <span class="skill-tag">claude-mem</span>
+        <span class="skill-tag">pro-workflow</span>
+        <span class="skill-tag">ads-meta</span>
+        <span class="skill-tag">ads-linkedin</span>
+        <span class="skill-tag">ads-tiktok</span>
+        <span class="skill-tag">daily</span>
+        <span class="skill-tag">gsap</span>
+        <span class="skill-tag">smithery-ai-cli</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 9 — N8N AUTOMATION STACK
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="dot-bg"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="slide-wide">
+    <div class="eyebrow">n8n Automation Layer</div>
+    <div class="h2">Nothing falls through <span>the cracks</span></div>
+    <div class="gold-line"></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label" style="margin-bottom:14px">Automation 1 — Lead Intake</div>
+        <div class="flow-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="flow-node hi">Upwork / LinkedIn message</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node">Webhook trigger fires</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">Claude AI scores lead (fit · budget · urgency)</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node">CRM updated + Kanban card created</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">Slack DM to Idris — instant notification</div>
+        </div>
+      </div>
+      <div>
+        <div class="card-label" style="margin-bottom:14px">Automation 2 — Client Onboarding</div>
+        <div class="flow-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="flow-node hi">Deal Won in CRM</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node">Onboarding pipeline triggers</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node">DocuSign contract + GA4 install brief sent</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">Severus OS runs first audit automatically</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">Proposal PDF generated by Claude AI</div>
+        </div>
+      </div>
+      <div>
+        <div class="card-label" style="margin-bottom:14px">Automation 3 — Weekly Report</div>
+        <div class="flow-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="flow-node">Monday 08:00 cron fires</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">GA4 + Ads data pulled for all clients</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node">Claude generates plain-English summary</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">Report emailed to client automatically</div>
+        </div>
+      </div>
+      <div>
+        <div class="card-label" style="margin-bottom:14px">Automation 4 — Retention Loop</div>
+        <div class="flow-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="flow-node">30-day post-launch trigger</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">ROAS check: if ≥ 2× → upsell prompt</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node">Upsell email sequence triggered</div>
+          <div class="flow-arrow" style="padding:0 0 0 14px">↓</div>
+          <div class="flow-node hi">Kanban task: "Book retention call"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 10 — NEXT STEPS / CTA
+═══════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="dot-bg"></div>
+  <div class="glow-center"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="slide-center">
+    <div class="eyebrow">What Happens Next</div>
+    <div class="h2">Ready to run your<br><span>first audit?</span></div>
+    <div class="gold-line" style="width:280px;margin:24px auto"></div>
+    <div class="grid-3 mt16" style="text-align:left;max-width:860px">
+      <div class="card">
+        <div class="card-label">Week 1</div>
+        <div class="h3" style="font-size:16px;margin-bottom:8px">Free Audit</div>
+        <div class="body" style="font-size:12px">Severus OS audits your GA4 setup and Google Ads account. You get a scored report with exact issues and quick wins — no commitment.</div>
+      </div>
+      <div class="card gold">
+        <div class="card-label">Week 2</div>
+        <div class="h3" style="font-size:16px;margin-bottom:8px">Proposal</div>
+        <div class="body" style="font-size:12px">Based on audit findings, Claude generates a bespoke proposal. Fixed scope, fixed price, clear outcome targets — ROAS, CPA, CTR.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Week 3–6</div>
+        <div class="h3" style="font-size:16px;margin-bottom:8px">Execution</div>
+        <div class="body" style="font-size:12px">GA4 rebuilt. Ads restructured. Automations live. Weekly reports delivered automatically. You see results, not just activity.</div>
+      </div>
+    </div>
+    <div class="flex-row mt32" style="justify-content:center;gap:24px">
+      <div style="text-align:center">
+        <div style="font-size:10px;letter-spacing:0.2em;color:var(--text-muted);margin-bottom:6px">EMAIL</div>
+        <div style="font-size:14px;color:var(--gold)">michaelbakare92@gmail.com</div>
+      </div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-size:10px;letter-spacing:0.2em;color:var(--text-muted);margin-bottom:6px">UPWORK</div>
+        <div style="font-size:14px;color:var(--gold)">upwork.com/agencies/severus-connects</div>
+      </div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-size:10px;letter-spacing:0.2em;color:var(--text-muted);margin-bottom:6px">LOCATION</div>
+        <div style="font-size:14px;color:var(--gold)">London, UK · Remote Global</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════ -->
+<div id="nav">
+  <div id="nav-brand">SEVERUS CONNECTS</div>
+  <div id="nav-dots"></div>
+  <div id="nav-controls">
+    <span id="nav-counter">1 / 10</span>
+    <button class="nav-btn" onclick="prev()">← PREV</button>
+    <button class="nav-btn" onclick="next()">NEXT →</button>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  { id:'s1',  label:'Title' },
+  { id:'s2',  label:'Problem' },
+  { id:'s3',  label:'Overview Video' },
+  { id:'s4',  label:'Flow Visualiser' },
+  { id:'s5',  label:'Overwatch Dashboard' },
+  { id:'s6',  label:'Website' },
+  { id:'s7',  label:'Agent System' },
+  { id:'s8',  label:'CLAUDE.md + Skills' },
+  { id:'s9',  label:'n8n Automations' },
+  { id:'s10', label:'Next Steps' },
+];
+
+let current = 0;
+
+const dotsEl = document.getElementById('nav-dots');
+const counterEl = document.getElementById('nav-counter');
+
+SLIDES.forEach((s, i) => {
+  const d = document.createElement('div');
+  d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  d.title = s.label;
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+function goTo(n) {
+  document.getElementById(SLIDES[current].id).classList.remove('active');
+  dotsEl.children[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, SLIDES.length - 1));
+  document.getElementById(SLIDES[current].id).classList.add('active');
+  dotsEl.children[current].classList.add('active');
+  counterEl.textContent = (current + 1) + ' / ' + SLIDES.length;
+}
+
+function next() { goTo(current + 1); }
+function prev() { goTo(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev(); }
+});
+
+// Overwatch iframe fallback
+const owFrame = document.getElementById('overwatch-frame');
+const owMsg   = document.getElementById('overwatch-msg');
+owFrame.onerror = () => { owFrame.style.display='none'; owMsg.style.display='flex'; };
+setTimeout(() => {
+  try {
+    if (!owFrame.contentDocument) { owFrame.style.display='none'; owMsg.style.display='flex'; }
+  } catch(e) { /* cross-origin — probably loaded fine */ }
+}, 2000);
+
+function loadOverwatch() {
+  owMsg.style.display = 'none';
+  owFrame.style.display = 'block';
+  owFrame.src = 'http://localhost:3000';
+}
+
+// Website iframe fallback
+const wsFrame = document.getElementById('website-frame');
+const wsMsg   = document.getElementById('website-msg');
+wsFrame.onerror = () => { wsFrame.style.display='none'; wsMsg.style.display='flex'; };
+setTimeout(() => {
+  try {
+    if (!wsFrame.contentDocument) { wsFrame.style.display='none'; wsMsg.style.display='flex'; }
+  } catch(e) { /* cross-origin — probably loaded fine */ }
+}, 2000);
+
+function loadWebsite() {
+  wsMsg.style.display = 'none';
+  wsFrame.style.display = 'block';
+  wsFrame.src = 'http://localhost:5174';
+}
+</script>
+</body>
+</html>

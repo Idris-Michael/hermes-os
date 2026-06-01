@@ -1,0 +1,164 @@
+{
+  "id": "jack-of-spades",
+  "name": "JACK OF SPADES",
+  "suit": "spades",
+  "rank": "jack",
+  "role": "Bundle Orchestrator",
+  "tagline": "Runs the complete machine. Design + Ads + Content — one client, one journey, zero gaps.",
+  "model": "claude-opus-4-7",
+  "modelLabel": "CLAUDE-OPUS-4.7",
+  "modelColor": "#D4A017",
+  "badge": "ACTIVE",
+  "synced": true,
+  "accentColor": "#D4A017",
+  "gateway": "telegram",
+  "gatewayHandle": "@jack_spades_bot",
+  "soulFile": "data/souls/jack-of-spades.md",
+  "skills": [
+    "severus-bundle-designplusads",
+    "severus-bundle-complete",
+    "severus-gateway",
+    "council",
+    "autonomous-ai-agents",
+    "severus-proposer",
+    "severus-design-websitebuild",
+    "severus-connects-analytics",
+    "severus-connects-performance",
+    "severus-social-contentretainer",
+    "strategic-compact"
+  ],
+  "tools": [
+    {
+      "id": "bundle-router",
+      "label": "Bundle Router",
+      "description": "Detects Package C/D signals, builds multi-track project plan, assigns agents per phase"
+    },
+    {
+      "id": "quality-gate-enforcer",
+      "label": "Quality Gate Enforcer",
+      "description": "Blocks phase progression until all gates pass — site live, GA4 verified, feed approved"
+    },
+    {
+      "id": "bundle-pitch",
+      "label": "Bundle Pitch Deck",
+      "description": "Package C and D proposal generation with deliverables, timeline, and pricing"
+    },
+    {
+      "id": "monthly-strategy-call",
+      "label": "Monthly Strategy Call",
+      "description": "First Monday agenda builder — cross-channel metrics, decisions, next 30-day plan"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Client journey tracking, quality gate logs, bundle project docs",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Full client brief synthesis, competitor research, monthly review preparation",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "gmail",
+      "label": "Gmail",
+      "detail": "michaelbakare92@gmail.com — bundle client communications and approvals",
+      "status": "connected"
+    },
+    {
+      "id": "notion",
+      "label": "Notion",
+      "detail": "Bundle client CRM — phase tracker, deliverables checklist, revenue pipeline",
+      "status": "connected"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@jack_spades_bot — escalations, quality gate failures, phase completions",
+      "status": "connected"
+    },
+    {
+      "id": "calendly",
+      "label": "Calendly",
+      "detail": "Monthly strategy call booking for bundle clients",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-opus-4-7 — orchestration and complex decisions"
+    },
+    {
+      "name": "Gmail",
+      "status": "connected",
+      "detail": "michaelbakare92@gmail.com"
+    },
+    {
+      "name": "Notion",
+      "status": "connected",
+      "detail": "Bundle CRM workspace"
+    }
+  ],
+  "crons": [
+    {
+      "id": "bundle-pipeline-review",
+      "label": "Bundle Pipeline Review",
+      "schedule": "0 9 * * 1",
+      "human": "Mondays at 09:00",
+      "lastRun": null,
+      "status": "idle"
+    },
+    {
+      "id": "monthly-strategy",
+      "label": "Monthly Strategy Prep",
+      "schedule": "0 8 1 * *",
+      "human": "1st of month at 08:00",
+      "lastRun": null,
+      "status": "idle"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 0,
+    "messagesTotal": 0,
+    "lastActive": "not yet run"
+  },
+  "whitelist": [
+    "severus-bundle-designplusads",
+    "severus-bundle-complete",
+    "severus-gateway",
+    "council",
+    "autonomous-ai-agents",
+    "severus-proposer",
+    "severus-design-websitebuild",
+    "severus-connects-analytics",
+    "severus-connects-performance",
+    "severus-social-contentretainer",
+    "strategic-compact"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 100,
+    "blocked_actions": [
+      "delete-files"
+    ],
+    "require_approval_for": [
+      "send-email",
+      "external-api-write",
+      "modify-agent-permissions"
+    ]
+  },
+  "permissions": {
+    "level": "UNRESTRICTED",
+    "can_install_skills": true,
+    "can_modify_agents": true,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/jack-of-spades.png"
+}

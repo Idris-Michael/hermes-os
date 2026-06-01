@@ -1,0 +1,195 @@
+{
+  "id": "queen-of-hearts",
+  "name": "QUEEN OF HEARTS",
+  "suit": "hearts",
+  "rank": "queen",
+  "role": "UGC & Video Producer",
+  "tagline": "Turns products into stories. AI-generated UGC at scale, no studio required.",
+  "model": "huggingface/deepseek-ai/DeepSeek-V4-Flash:novita",
+  "modelLabel": "DEEPSEEK-V4-FLASH",
+  "modelColor": "#ec4899",
+  "badge": "LOCAL EDITS",
+  "synced": false,
+  "accentColor": "#ec4899",
+  "gateway": "telegram",
+  "gatewayHandle": "@queen_hearts_bot",
+  "soulFile": "data/souls/queen-of-hearts.md",
+  "workflow": [
+    "Character & Product Sheet",
+    "Storyboard",
+    "IPA \u00e2\u2020\u2019 GPT Image 2",
+    "HeyGen (avatar/lip-sync)",
+    "Seedance 2.0 (b-roll)",
+    "HyperFrames (composite \u00e2\u2020\u2019 variants \u00e2\u2020\u2019 MP4)"
+  ],
+  "skills": [
+    "seedance-2-0-ai-ugc",
+    "severus-social-video",
+    "severus-social-publisher",
+    "media",
+    "motion-ui",
+    "frontend-slides",
+    "frontend-design-direction",
+    "strategic-compact",
+    "openshorts-clip-gen",
+    "voicebox-tts"
+  ],
+  "tools": [
+    {
+      "id": "ugc-pipeline",
+      "label": "UGC Pipeline",
+      "description": "Full 5-phase production: Character Sheet \u00e2\u2020\u2019 Storyboard \u00e2\u2020\u2019 IPA \u00e2\u2020\u2019 HeyGen \u00e2\u2020\u2019 Seedance \u00e2\u2020\u2019 HyperFrames"
+    },
+    {
+      "id": "storyboard",
+      "label": "Storyboard Generator",
+      "description": "Scene-by-scene storyboards with tool assignments (HeyGen/Seedance/HyperFrames)"
+    },
+    {
+      "id": "ipa-prompts",
+      "label": "IPA Prompt Writer",
+      "description": "GPT Image 2 prompts split by tool destination (HeyGen avatar vs Seedance b-roll)"
+    },
+    {
+      "id": "hyperframes-composer",
+      "label": "HyperFrames Composer",
+      "description": "HTML/GSAP video compositions \u00e2\u20ac\u201d captions, transitions, 3-variant batch render"
+    },
+    {
+      "id": "openshorts",
+      "label": "OpenShorts",
+      "description": "Long-form \u2192 9:16 clip generator \u00b7 AI face tracking \u00b7 auto subtitles \u00b7 UGC actor pipeline"
+    },
+    {
+      "id": "voicebox-tts",
+      "label": "Voicebox TTS",
+      "description": "7 local TTS engines \u00b7 voice cloning \u00b7 paralinguistic tags \u00b7 zero API cost"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "UGC briefs, character sheets, storyboards, client content notes",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "heygen",
+      "label": "HeyGen Pro",
+      "detail": "$74/mo \u00e2\u20ac\u201d 1,500 credits, unlimited photo avatars, 4K, lip-sync",
+      "status": "pending"
+    },
+    {
+      "id": "seedance",
+      "label": "Seedance 2.0",
+      "detail": "UGC b-roll API \u00e2\u20ac\u201d lifestyle, product, motion sequences",
+      "status": "connected"
+    },
+    {
+      "id": "hyperframes",
+      "label": "HyperFrames",
+      "detail": "HTML video compositor \u00e2\u20ac\u201d captions, variants, MP4 export",
+      "status": "connected"
+    },
+    {
+      "id": "tiktok",
+      "label": "TikTok",
+      "detail": "Creator account \u00e2\u20ac\u201d organic + paid short-form publish",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@queen_hearts_bot \u00e2\u20ac\u201d UGC briefs and batch requests",
+      "status": "connected"
+    },
+    {
+      "id": "openshorts",
+      "label": "OpenShorts",
+      "detail": "Docker \u00b7 :8000 \u2014 clip jobs, UGC shorts, face-tracking 9:16 export",
+      "status": "pending"
+    },
+    {
+      "id": "voicebox",
+      "label": "Voicebox",
+      "detail": "Local \u00b7 :17493 \u2014 Kokoro/Chatterbox/Qwen3-TTS voice synthesis",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "HuggingFace Router",
+      "status": "connected",
+      "detail": "DeepSeek V4 Flash via Novita \u00e2\u20ac\u201d set HF_TOKEN"
+    },
+    {
+      "name": "GPT Image 2",
+      "status": "connected",
+      "detail": "IPA reference image generation (operator-run)"
+    },
+    {
+      "name": "HeyGen Pro",
+      "status": "pending",
+      "detail": "1,500 credits/mo \u00c2\u00b7 Unlimited Photo Avatars \u00c2\u00b7 4K \u00c2\u00b7 $74/mo"
+    },
+    {
+      "name": "Seedance API",
+      "status": "connected",
+      "detail": "UGC 2.0 b-roll pipeline"
+    },
+    {
+      "name": "HyperFrames",
+      "status": "connected",
+      "detail": "Compositing, captions, batch variant render"
+    },
+    {
+      "name": "TikTok",
+      "status": "pending",
+      "detail": "Creator account"
+    }
+  ],
+  "crons": [
+    {
+      "id": "ugc-batch",
+      "label": "UGC Batch Generation",
+      "schedule": "0 11 * * 2",
+      "human": "Tuesdays at 11:00",
+      "lastRun": "2026-05-12T11:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 19,
+    "messagesTotal": 338,
+    "lastActive": "1d ago"
+  },
+  "whitelist": [
+    "seedance-2-0-ai-ugc",
+    "severus-social-video",
+    "severus-social-publisher",
+    "media",
+    "motion-ui",
+    "frontend-slides",
+    "frontend-design-direction",
+    "strategic-compact"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": []
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/queen-of-hearts.png"
+}

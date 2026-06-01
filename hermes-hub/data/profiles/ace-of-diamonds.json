@@ -1,0 +1,173 @@
+{
+  "id": "ace-of-diamonds",
+  "name": "ACE OF DIAMONDS",
+  "suit": "diamonds",
+  "rank": "ace",
+  "role": "Business Development",
+  "tagline": "Finds the next client before you know you need one. Proposals that close.",
+  "model": "huggingface/Qwen/Qwen3.6:novita",
+  "modelLabel": "QWEN-3.6",
+  "modelColor": "#f59e0b",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#f59e0b",
+  "gateway": "telegram",
+  "gatewayHandle": "@ace_diamonds_bot",
+  "soulFile": "data/souls/ace-of-diamonds.md",
+  "skills": [
+    "severus-proposer",
+    "severus-outreach",
+    "severus-intake",
+    "severus-gateway",
+    "council",
+    "strategic-compact",
+    "iterative-retrieval",
+    "continuous-learning-v2",
+    "severus-bundle-designplusads",
+    "severus-bundle-complete"
+  ],
+  "tools": [
+    {
+      "id": "proposal-generator",
+      "label": "Proposal Generator",
+      "description": "Client proposals, pricing decks, scope of work documents"
+    },
+    {
+      "id": "outreach-sequences",
+      "label": "Outreach Sequences",
+      "description": "Cold email sequences, LinkedIn DM scripts, follow-up cadences"
+    },
+    {
+      "id": "intake-form",
+      "label": "Client Intake",
+      "description": "Discovery questionnaires, onboarding checklists"
+    },
+    {
+      "id": "council",
+      "label": "Agent Council",
+      "description": "Coordinates cross-persona responses to complex briefs"
+    },
+    {
+      "id": "bundle-pitch",
+      "label": "Bundle Pitch",
+      "description": "Package C (Design + Ads) and Package D (Complete) pitch decks, scope, and pricing"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Prospect notes, proposal drafts, client history, deal pipeline",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Industry research, client background synthesis before outreach",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "gmail",
+      "label": "Gmail",
+      "detail": "michaelbakare92@gmail.com — outreach, proposals, follow-ups",
+      "status": "connected"
+    },
+    {
+      "id": "notion",
+      "label": "Notion",
+      "detail": "CRM workspace — contacts, deal stages, notes",
+      "status": "connected"
+    },
+    {
+      "id": "calendly",
+      "label": "Calendly",
+      "detail": "Discovery call booking — pending setup",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@ace_diamonds_bot — prospect alerts and pipeline updates",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-opus-4-7"
+    },
+    {
+      "name": "Gmail",
+      "status": "connected",
+      "detail": "michaelbakare92@gmail.com"
+    },
+    {
+      "name": "Notion",
+      "status": "connected",
+      "detail": "CRM workspace"
+    },
+    {
+      "name": "Calendly",
+      "status": "pending",
+      "detail": "Booking link"
+    }
+  ],
+  "crons": [
+    {
+      "id": "prospect-scan",
+      "label": "Prospect Pipeline Scan",
+      "schedule": "0 9 * * 1,3",
+      "human": "Mon & Wed at 09:00",
+      "lastRun": "2026-05-13T09:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "follow-up",
+      "label": "Follow-up Reminder",
+      "schedule": "0 11 * * 2,4",
+      "human": "Tue & Thu at 11:00",
+      "lastRun": "2026-05-14T11:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 28,
+    "messagesTotal": 524,
+    "lastActive": "4h ago"
+  },
+  "whitelist": [
+    "severus-proposer",
+    "severus-outreach",
+    "severus-intake",
+    "severus-gateway",
+    "council",
+    "strategic-compact",
+    "iterative-retrieval",
+    "continuous-learning-v2",
+    "severus-bundle-designplusads",
+    "severus-bundle-complete"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": [
+      "send-email",
+      "external-api-write"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/ace-of-diamonds.png"
+}

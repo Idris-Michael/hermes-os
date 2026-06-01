@@ -1,0 +1,172 @@
+{
+  "id": "ace-of-clubs",
+  "name": "ACE OF CLUBS",
+  "suit": "clubs",
+  "rank": "ace",
+  "role": "Systems & Automation",
+  "tagline": "Automates the repeatable. Pipelines that run while you sleep.",
+  "model": "huggingface/deepseek-ai/DeepSeek-V4-Flash:novita",
+  "modelLabel": "DEEPSEEK-V4-FLASH",
+  "modelColor": "#2dd4bf",
+  "badge": "LOCAL EDITS",
+  "synced": false,
+  "accentColor": "#2dd4bf",
+  "gateway": "telegram",
+  "gatewayHandle": "@ace_clubs_bot",
+  "soulFile": "data/souls/ace-of-clubs.md",
+  "skills": [
+    "severus-gateway",
+    "autonomous-ai-agents",
+    "devops",
+    "severus-design-launch",
+    "mcp-server-patterns",
+    "backend-patterns",
+    "api-design",
+    "dmux-workflows",
+    "agent-introspection-debugging",
+    "python-patterns",
+    "severus-design-cms"
+  ],
+  "tools": [
+    {
+      "id": "automation-builder",
+      "label": "Automation Builder",
+      "description": "n8n workflow design, trigger/action mapping, error handling"
+    },
+    {
+      "id": "mcp-server",
+      "label": "MCP Server Patterns",
+      "description": "Custom MCP server scaffolding, tool registration, JSON-RPC"
+    },
+    {
+      "id": "pipeline-health",
+      "label": "Pipeline Health Monitor",
+      "description": "Cron health checks, failure detection, auto-retry logic"
+    },
+    {
+      "id": "backend-patterns",
+      "label": "Backend Patterns",
+      "description": "API design, webhook handling, queue-based architecture"
+    },
+    {
+      "id": "cms-integration",
+      "label": "CMS Integration",
+      "description": "Contentful/Sanity/Hygraph setup, custom schemas, ISR, webhook→Vercel deploys"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Architecture diagrams, automation docs, system runbooks",
+      "status": "connected"
+    },
+    {
+      "id": "lmstudio",
+      "label": "LM Studio",
+      "description": "Local model inference at localhost:1234 for private pipelines",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "n8n",
+      "label": "n8n",
+      "detail": "Workflow builder — pending deployment",
+      "status": "pending"
+    },
+    {
+      "id": "supabase",
+      "label": "Supabase",
+      "detail": "PostgreSQL DB + Auth + Realtime — pending setup",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@ace_clubs_bot — pipeline alerts and automation triggers",
+      "status": "connected"
+    },
+    {
+      "id": "huggingface-router",
+      "label": "HuggingFace Router",
+      "description": "DeepSeek V4 Flash via Novita for agent pipelines",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "DeepSeek API",
+      "status": "connected",
+      "detail": "deepseek-r1 via OpenRouter"
+    },
+    {
+      "name": "n8n",
+      "status": "pending",
+      "detail": "Workflow builder"
+    },
+    {
+      "name": "Telegram",
+      "status": "connected",
+      "detail": "@ace_clubs_bot"
+    },
+    {
+      "name": "Supabase",
+      "status": "pending",
+      "detail": "DB pending setup"
+    }
+  ],
+  "crons": [
+    {
+      "id": "pipeline-health",
+      "label": "Pipeline Health Check",
+      "schedule": "0 7 * * 1-5",
+      "human": "Weekdays at 07:00",
+      "lastRun": "2026-05-15T07:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "monthly-roadmap",
+      "label": "Monthly Roadmap Review",
+      "schedule": "0 9 1 * *",
+      "human": "1st of month at 09:00",
+      "lastRun": "2026-05-01T09:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 17,
+    "messagesTotal": 304,
+    "lastActive": "2d ago"
+  },
+  "whitelist": [
+    "severus-gateway",
+    "autonomous-ai-agents",
+    "devops",
+    "severus-design-launch",
+    "mcp-server-patterns",
+    "backend-patterns",
+    "api-design",
+    "dmux-workflows",
+    "agent-introspection-debugging",
+    "python-patterns",
+    "severus-design-cms"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": []
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/ace-of-clubs.png"
+}

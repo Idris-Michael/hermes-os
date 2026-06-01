@@ -1,0 +1,174 @@
+{
+  "id": "jack-of-diamonds",
+  "name": "JACK OF DIAMONDS",
+  "suit": "diamonds",
+  "rank": "jack",
+  "role": "Agency Social Growth \u00c2\u00b7 @severus_connects",
+  "tagline": "Grows the agency account. Expert voice, real numbers, every post ends with a service signal.",
+  "model": "claude-sonnet-4-6",
+  "modelLabel": "SONNET 4.6",
+  "modelColor": "#7C3AED",
+  "badge": "ACTIVE",
+  "synced": true,
+  "accentColor": "#7C3AED",
+  "gateway": "hermes-hub",
+  "gatewayHandle": "@severus_connects",
+  "soulFile": "data/souls/jack-of-diamonds.md",
+  "skills": [
+    "severus-social-copywriter",
+    "severus-social-contentstrategy",
+    "instagram-growth",
+    "persona-severus",
+    "hook-ab-testing",
+    "analytics-feedback",
+    "severus-social-contentretainer",
+    "openshorts-clip-gen"
+  ],
+  "tools": [
+    {
+      "id": "generateScript",
+      "label": "Script Generator",
+      "description": "Generates 3 hook variants per slot using Severus agency persona \u00e2\u20ac\u201d metric-forward, credibility-first"
+    },
+    {
+      "id": "heartbeat",
+      "label": "Heartbeat Scheduler",
+      "description": "Daily 7am trigger \u00e2\u20ac\u201d Tue/Thu cadence for agency account"
+    },
+    {
+      "id": "case-study-builder",
+      "label": "Case Study Builder",
+      "description": "Client result \u00e2\u2020\u2019 before/after numbers \u00e2\u2020\u2019 reel format"
+    },
+    {
+      "id": "approval-queue",
+      "label": "Approval Queue",
+      "description": "Queues variants for human review \u00e2\u20ac\u201d includes editable caption and CTA"
+    },
+    {
+      "id": "content-retainer",
+      "label": "Content Retainer",
+      "description": "30-day calendar, 70/20/10 mix, Starter/Growth/Pro tiers, TikTok + LinkedIn + email add-ons"
+    },
+    {
+      "id": "openshorts",
+      "label": "OpenShorts",
+      "description": "Clip long-form client content into viral 9:16 reels for agency Instagram/TikTok pipeline"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "instagram-graph",
+      "label": "Meta Graph API",
+      "description": "Publish reels, pull reach/DM-sends/saves/watch_time insights for agency account",
+      "status": "pending"
+    },
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Client results bank, GA4 tip library, case study drafts, agency copy vault",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "instagram-severus",
+      "label": "Instagram @severus_connects",
+      "detail": "IG_BUSINESS_ID_SEVERUS \u00e2\u20ac\u201d agency brand account",
+      "status": "pending"
+    },
+    {
+      "id": "gmail",
+      "label": "Gmail Notifications",
+      "detail": "michaelbakare92@gmail.com \u00e2\u20ac\u201d approval email with one-tap approve link",
+      "status": "connected"
+    },
+    {
+      "id": "hermes-hub",
+      "label": "Hermes Hub Dashboard",
+      "detail": "localhost:3000/instagram \u00e2\u20ac\u201d Queue panel for review",
+      "status": "connected"
+    },
+    {
+      "id": "openshorts",
+      "label": "OpenShorts",
+      "detail": "Docker \u00b7 :8000 \u2014 long-form \u2192 viral short clip engine",
+      "status": "pending"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6 \u00c2\u00b7 script generation"
+    },
+    {
+      "name": "Gemini TTS",
+      "status": "pending",
+      "detail": "GEMINI_API_KEY \u00c2\u00b7 voiceover generation"
+    },
+    {
+      "name": "Meta Graph API",
+      "status": "pending",
+      "detail": "META_IG_TOKEN \u00c2\u00b7 publish + insights"
+    },
+    {
+      "name": "HyperFrames V2",
+      "status": "connected",
+      "detail": "1080x1920 \u00c2\u00b7 clean data-chart + process blocks"
+    }
+  ],
+  "crons": [
+    {
+      "id": "ig-heartbeat-severus",
+      "label": "Instagram Heartbeat",
+      "schedule": "0 7 * * 2,4",
+      "human": "Tue/Thu at 07:00 UTC",
+      "lastRun": "2026-05-15T07:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "ig-insights-severus",
+      "label": "Pull Insights",
+      "schedule": "0 9 * * *",
+      "human": "Daily at 09:00 UTC",
+      "lastRun": "2026-05-19T09:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 0,
+    "messagesTotal": 0,
+    "lastActive": "not yet run"
+  },
+  "whitelist": [
+    "severus-social-copywriter",
+    "severus-social-contentstrategy",
+    "instagram-growth",
+    "persona-severus",
+    "hook-ab-testing",
+    "analytics-feedback",
+    "severus-social-contentretainer"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions",
+      "modify-other-agents"
+    ],
+    "require_approval_for": [
+      "publish",
+      "send-email"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/jack-of-diamonds.png"
+}

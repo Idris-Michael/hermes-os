@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idris-Michael Bakare — Portfolio · Endava</title>
+<style>
+:root {
+  --gold:#C9A84C; --gold15:rgba(201,168,76,.15); --gold30:rgba(201,168,76,.30);
+  --bg:#0e0e0e; --bg2:#141414; --bg3:#1a1a1a; --bg4:#202020;
+  --border:rgba(255,255,255,.07); --border2:rgba(201,168,76,.25);
+  --text:#e8e4d0; --muted:rgba(232,228,208,.45); --mono:'JetBrains Mono',monospace;
+  --green:#4ade80; --red:#f87171; --blue:#60a5fa; --purple:#c084fc; --teal:#2dd4bf;
+}
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
+
+/* ── HEADER ── */
+header{background:var(--bg2);border-bottom:1px solid var(--border2);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:36px;height:36px;border:2px solid var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;color:var(--gold);font-size:15px}
+.logo-text h1{font-size:15px;font-weight:700;letter-spacing:.3px}
+.logo-text p{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:1px}
+.header-right{display:flex;align-items:center;gap:16px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.status-label{font-size:11px;color:var(--green);font-family:var(--mono);font-weight:500}
+.endava-badge{background:var(--gold15);border:1px solid var(--border2);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--gold);font-family:var(--mono)}
+
+/* ── LAYOUT ── */
+.container{max-width:1280px;margin:0 auto;padding:36px 40px}
+
+/* ── DEMO FLOW ── */
+.flow-section{background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.03));border:1px solid var(--border2);border-radius:14px;padding:28px 32px;margin-bottom:36px}
+.flow-section h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);font-family:var(--mono);margin-bottom:20px}
+.flow-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.flow-step{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;cursor:pointer;transition:all .18s}
+.flow-step:hover{border-color:var(--gold30);background:var(--bg4)}
+.flow-step.clickable:hover{border-color:var(--gold);box-shadow:0 0 16px var(--gold15)}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#000;font-weight:800;font-size:11px;font-family:var(--mono);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.step-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.step-tag{font-size:10px;font-weight:600;font-family:var(--mono);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:8px}
+.tag-open{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.tag-say{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid var(--border2)}
+.tag-show{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:var(--mono);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* ── DEMO GRID ── */
+.demo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+.demo-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .2s;cursor:pointer;text-decoration:none;display:block}
+.demo-card:hover{border-color:var(--gold30);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.demo-card-top{height:6px}
+.demo-card-body{padding:18px 20px}
+.demo-card-icon{font-size:22px;margin-bottom:10px}
+.demo-card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+.demo-card-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.demo-card-tags{display:flex;flex-wrap:wrap;gap:5px}
+.dtag{font-size:10px;font-weight:600;font-family:var(--mono);border-radius:4px;padding:2px 7px;border:1px solid}
+.dtag.gold{color:var(--gold);border-color:rgba(201,168,76,.3);background:var(--gold15)}
+.dtag.green{color:var(--green);border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.08)}
+.dtag.blue{color:var(--blue);border-color:rgba(96,165,250,.25);background:rgba(96,165,250,.08)}
+.dtag.purple{color:var(--purple);border-color:rgba(192,132,252,.25);background:rgba(192,132,252,.08)}
+.dtag.teal{color:var(--teal);border-color:rgba(45,212,191,.25);background:rgba(45,212,191,.08)}
+.dtag.red{color:var(--red);border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.08)}
+.demo-card-footer{padding:10px 20px 14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.open-btn{font-size:10px;font-weight:700;font-family:var(--mono);color:var(--gold);display:flex;align-items:center;gap:5px}
+.open-btn svg{width:12px;height:12px}
+.card-type{font-size:10px;color:var(--muted);font-family:var(--mono)}
+
+/* ── AGENT GRID ── */
+.agent-section{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:36px}
+.agent-block{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.agent-block-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;font-family:var(--mono);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.agent-block-title span{width:8px;height:8px;border-radius:50%;display:inline-block}
+.agent-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.agent-item:last-child{border-bottom:none}
+.agent-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.agent-info h5{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.agent-info p{font-size:11px;color:var(--muted);line-height:1.5}
+.perm-badge{font-size:9px;font-weight:700;font-family:var(--mono);border-radius:3px;padding:1px 6px;display:inline-block;margin-top:4px}
+.perm-unres{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.perm-white{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+
+/* ── SKILLS & PROTOCOLS ── */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+.skill-block{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.skill-block h4{font-size:12px;font-weight:700;color:var(--purple);font-family:var(--mono);margin-bottom:4px}
+.skill-block .sk-trig{font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:10px;font-style:italic}
+.skill-block p{font-size:11.5px;color:var(--muted);line-height:1.6}
+.md-file{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);margin-bottom:6px;font-family:var(--mono);font-size:11px;color:var(--text)}
+.md-file .md-icon{color:var(--gold);font-size:13px}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:28px 40px;border-top:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">SC</div>
+    <div class="logo-text">
+      <h1>Idris-Michael Bakare</h1>
+      <p>Founder · Severus Connects · AI Consultant</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span class="status-label">SYSTEMS LIVE</span>
+    <div class="endava-badge">ENDAVA — Solution Developer Interview</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- DEMO FLOW -->
+  <div class="flow-section">
+    <h2>▸ Interview Demo Flow — Run in This Order</h2>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-title">This Hub</div>
+        <div class="step-desc">Open this page. Walk her through the portfolio overview. Set the scene — agency platform, not a side project.</div>
+        <span class="step-tag tag-say">SAY IT</span>
+      </div>
+      <div class="flow-step clickable" onclick="window.open('01_system_architecture.html')">
+        <div class="step-num">2</div>
+        <div class="step-title">System Architecture</div>
+        <div class="step-desc">Open the live flow visualiser. Walk through the 4-layer architecture, agent network, and n8n event flow visually.</div>
+        <span class="step-tag tag-open">OPEN → 01_system_architecture</span>
+      </div>
+      <div class="flow-step clickable" onclick="window.open('02_ads_dashboard.html')">
+        <div class="step-num">3</div>
+        <div class="step-title">Google Ads Case Study</div>
+        <div class="step-desc">Show real client results — campaign dashboard, GA4 attribution, quality gate proof. Structured problem → structured solution.</div>
+        <span class="step-tag tag-open">OPEN → 02_ads_dashboard</span>
+      </div>
+      <div class="flow-step clickable" onclick="window.open('06_codecrafthub_dashboard.html')">
+        <div class="step-num">4</div>
+        <div class="step-title">CodeCraftHub</div>
+        <div class="step-desc">Live e-learning platform. Next.js + Flask + React. Demonstrates full-stack delivery from design system through to deployment.</div>
+        <span class="step-tag tag-open">OPEN → 06_codecrafthub</span>
+      </div>
+      <div class="flow-step clickable" onclick="window.open('05_tech_stack_mastery.html')">
+        <div class="step-num">5</div>
+        <div class="step-title">Deep Technical Q&A</div>
+        <div class="step-desc">If she goes deep — SDLC, troubleshooting, agentic AI — switch here. Your complete system reference. Personal tab only.</div>
+        <span class="step-tag tag-show">YOUR REFERENCE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE DEMOS -->
+  <div class="section-label">Live Demos & Projects</div>
+  <div class="demo-grid">
+
+    <a class="demo-card" onclick="window.open('01_system_architecture.html')" href="#">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#C9A84C,#8B6914)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">⚡</div>
+        <div class="demo-card-title">Severus Connects — System Architecture</div>
+        <div class="demo-card-desc">Live interactive visualiser of the full 4-layer agentic platform. Gateway orchestrator, 8 WHITELIST agents, n8n event-driven fabric, memory systems. Built from real production files.</div>
+        <div class="demo-card-tags">
+          <span class="dtag gold">Event-driven</span>
+          <span class="dtag green">8 Agents</span>
+          <span class="dtag blue">MCP · 43 tools</span>
+          <span class="dtag teal">n8n × 8 workflows</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn">Open Demo <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></span>
+        <span class="card-type">LIVE · HTML</span>
+      </div>
+    </a>
+
+    <a class="demo-card" onclick="window.open('02_ads_dashboard.html')" href="#">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#4ade80,#16a34a)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">📊</div>
+        <div class="demo-card-title">Google Ads — Campaign Dashboard</div>
+        <div class="demo-card-desc">Real client campaign performance dashboard. Conversion tracking, ROAS analysis, Shopping vs Performance Max breakdown. Includes the n8n quality gate that blocked a premature launch — protecting £4K+ in ad spend.</div>
+        <div class="demo-card-tags">
+          <span class="dtag green">Google Ads</span>
+          <span class="dtag teal">GA4</span>
+          <span class="dtag gold">Quality Gate</span>
+          <span class="dtag blue">ROAS</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn">Open Demo <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></span>
+        <span class="card-type">LIVE · HTML</span>
+      </div>
+    </a>
+
+    <a class="demo-card" onclick="window.open('03_ads_restructure.html')" href="#">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#60a5fa,#2563eb)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">🔧</div>
+        <div class="demo-card-title">Google Ads — Account Restructure</div>
+        <div class="demo-card-desc">Before/after account restructure view. Demonstrates structured problem-solving: audit, diagnose, redesign campaign hierarchy, implement quality gates. The methodology Endava uses on client engagements.</div>
+        <div class="demo-card-tags">
+          <span class="dtag blue">Audit</span>
+          <span class="dtag gold">Restructure</span>
+          <span class="dtag green">Campaign architecture</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn">Open Demo <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></span>
+        <span class="card-type">LIVE · HTML</span>
+      </div>
+    </a>
+
+    <a class="demo-card" onclick="window.open('04_ga4_attribution.html')" href="#">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#2dd4bf,#0d9488)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">📈</div>
+        <div class="demo-card-title">GA4 — Attribution & Conversion Architecture</div>
+        <div class="demo-card-desc">Full GA4 implementation: measurement ID binding, conversion event schema, cross-channel attribution model, DebugView validation flow. The telemetry layer that underpins every campaign decision.</div>
+        <div class="demo-card-tags">
+          <span class="dtag teal">GA4</span>
+          <span class="dtag green">Attribution</span>
+          <span class="dtag blue">Conversion tracking</span>
+          <span class="dtag gold">Telemetry</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn">Open Demo <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></span>
+        <span class="card-type">LIVE · HTML</span>
+      </div>
+    </a>
+
+    <a class="demo-card" onclick="window.open('06_codecrafthub_dashboard.html')" href="#">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#c084fc,#7c3aed)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">🎓</div>
+        <div class="demo-card-title">CodeCraftHub — E-Learning Platform</div>
+        <div class="demo-card-desc">Full-stack e-learning platform. Next.js 14 + TypeScript frontend, Python/Flask REST API backend, Tailwind design system. CRUD operations, user dashboard, course management. Deployed to production.</div>
+        <div class="demo-card-tags">
+          <span class="dtag purple">Next.js 14</span>
+          <span class="dtag blue">TypeScript</span>
+          <span class="dtag gold">Flask API</span>
+          <span class="dtag green">Full-stack</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn">Open Demo <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></span>
+        <span class="card-type">LIVE · HTML</span>
+      </div>
+    </a>
+
+    <div class="demo-card" style="cursor:default;opacity:.85">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#f87171,#b91c1c)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">🗺️</div>
+        <div class="demo-card-title">Severus Overwatch II — Live Dashboard</div>
+        <div class="demo-card-desc">Real-time agency command centre. Kanban board (5-column drag-and-drop), London tactical map (MapLibre + live flight data + TfL JamCam feeds), OpenSwarm agent panel, Gemini Tactical AI. React + Framer Motion.</div>
+        <div class="demo-card-tags">
+          <span class="dtag red">Kanban</span>
+          <span class="dtag blue">MapLibre</span>
+          <span class="dtag purple">Gemini AI</span>
+          <span class="dtag teal">Live data</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn" style="color:var(--muted)">Requires local server · React/Vite</span>
+        <span class="card-type">React · Vite</span>
+      </div>
+    </div>
+
+    <div class="demo-card" style="cursor:default;opacity:.85">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#a78bfa,#6d28d9)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">🐝</div>
+        <div class="demo-card-title">OpenSwarm — Multi-Agent Orchestrator</div>
+        <div class="demo-card-desc">Open-source autonomous AI agent orchestrator. Runs Claude, GPT, Codex, and local models (Ollama/LMStudio). Picks up Linear issues, runs Worker/Reviewer pipelines, reports to Discord, retains memory via LanceDB.</div>
+        <div class="demo-card-tags">
+          <span class="dtag purple">Claude · GPT · Codex</span>
+          <span class="dtag gold">LanceDB</span>
+          <span class="dtag teal">Linear · Discord</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn" style="color:var(--muted)">Requires Node.js runtime</span>
+        <span class="card-type">TypeScript · npm</span>
+      </div>
+    </div>
+
+    <div class="demo-card" style="cursor:default;opacity:.85">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#34d399,#059669)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">🌐</div>
+        <div class="demo-card-title">Agent-Reach — Internet Layer for AI Agents</div>
+        <div class="demo-card-desc">MCP server giving AI agents web capabilities: YouTube subtitles, Twitter/X, Reddit, LinkedIn, RSS, GitHub, WeChat, Bilibili, Xiaohongshu, Weibo — without API keys. One-install universal internet access for any agent runtime.</div>
+        <div class="demo-card-tags">
+          <span class="dtag green">MCP Server</span>
+          <span class="dtag teal">12 platforms</span>
+          <span class="dtag blue">Python</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn" style="color:var(--muted)">Python package · pip install</span>
+        <span class="card-type">Python · MCP</span>
+      </div>
+    </div>
+
+    <div class="demo-card" style="cursor:default;opacity:.85">
+      <div class="demo-card-top" style="background:linear-gradient(90deg,#fbbf24,#d97706)"></div>
+      <div class="demo-card-body">
+        <div class="demo-card-icon">🧠</div>
+        <div class="demo-card-title">Agentic Stack — Portable Brain Harness</div>
+        <div class="demo-card-desc">Infrastructure-agnostic agent brain. Adapters for Claude Code, Hermes, Cursor, Windsurf, OpenCode, OpenClaw, Pi, Antigravity, Standalone Python. Same memory, skills, and permission enforcement across all runtimes.</div>
+        <div class="demo-card-tags">
+          <span class="dtag gold">9 adapters</span>
+          <span class="dtag purple">RBAC hooks</span>
+          <span class="dtag green">Dream cycle</span>
+          <span class="dtag teal">Portable</span>
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <span class="open-btn" style="color:var(--muted)">Filesystem · .agent/ harness</span>
+        <span class="card-type">Python · Multi-runtime</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AGENT NETWORK -->
+  <div class="section-label">Agent Network — Permission Architecture</div>
+  <div class="agent-section">
+
+    <div class="agent-block">
+      <div class="agent-block-title"><span style="background:#f87171"></span> Unrestricted Orchestrators</div>
+      <div class="agent-item">
+        <div class="agent-icon">🔀</div>
+        <div class="agent-info">
+          <h5>Hermes-Gateway</h5>
+          <p>Meta-orchestrator. Manages OpenClaw instances, distributes auth tokens, approves new skills, enforces rate limits across all sub-agents. Can modify any agent's permission file. Runs with minimal human oversight.</p>
+          <span class="perm-badge perm-unres">UNRESTRICTED · Meta-layer</span>
+        </div>
+      </div>
+      <div class="agent-item">
+        <div class="agent-icon">⚡</div>
+        <div class="agent-info">
+          <h5>Severus-Gateway</h5>
+          <p>Agency operations orchestrator. Lead routing, client journey management, phase tracking (Lead→Intake→Brief→Proposal→Setup→Reporting), bottleneck removal, sub-agent handoffs.</p>
+          <span class="perm-badge perm-unres">UNRESTRICTED · Orchestrator</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-block">
+      <div class="agent-block-title"><span style="background:#4ade80"></span> Severus Connects — Client Delivery</div>
+      <div class="agent-item">
+        <div class="agent-icon">📋</div>
+        <div class="agent-info">
+          <h5>Severus-Connects-Intake</h5>
+          <p>Discovery: firecrawl research, defuddle content extraction, NotebookLM brief (500+ words), json-canvas context map. Quality gate: brief complete before handoff.</p>
+          <span class="perm-badge perm-white">WHITELIST · Research + Vault tools</span>
+        </div>
+      </div>
+      <div class="agent-item">
+        <div class="agent-icon">📊</div>
+        <div class="agent-info">
+          <h5>Severus-Connects-Analytics</h5>
+          <p>GA4 implementation, conversion event schema, measurement verification, 5-day quality gate coordination with n8n WF-03.</p>
+          <span class="perm-badge perm-white">WHITELIST · Analytics tools</span>
+        </div>
+      </div>
+      <div class="agent-item">
+        <div class="agent-icon">🛍️</div>
+        <div class="agent-info">
+          <h5>Severus-Connects-ShoppingAds + PerformanceAds</h5>
+          <p>Google Shopping feed optimisation and Performance Max asset group assembly. Both blocked by WF-04 quality gate until conversion baseline confirmed.</p>
+          <span class="perm-badge perm-white">WHITELIST · Ads tools only</span>
+        </div>
+      </div>
+      <div class="agent-item">
+        <div class="agent-icon">📈</div>
+        <div class="agent-info">
+          <h5>Severus-Connects-Reporting</h5>
+          <p>Autonomous Friday 09:00 cron. Pulls GA4 metrics, formats client report, dispatches via Gmail OAuth2. Zero manual trigger — fully autonomous reporting SLA.</p>
+          <span class="perm-badge perm-white">WHITELIST · Read + Email tools</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-block">
+      <div class="agent-block-title"><span style="background:#c084fc"></span> Severus Design Suite</div>
+      <div class="agent-item">
+        <div class="agent-icon">🎨</div>
+        <div class="agent-info">
+          <h5>Severus-Design-System · Figma · Discovery · Accessibility · Frontend · Launch · Performance</h5>
+          <p>7 specialist design agents covering the full design SDLC: discovery → system → Figma component production → accessibility audit (WCAG AA) → frontend handoff → launch → performance optimisation.</p>
+          <span class="perm-badge perm-white">WHITELIST · Design tools</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-block">
+      <div class="agent-block-title"><span style="background:#60a5fa"></span> Severus Social + Outreach Suite</div>
+      <div class="agent-item">
+        <div class="agent-icon">📣</div>
+        <div class="agent-info">
+          <h5>Severus-Social: Analytics · ContentStrategy · CopyWriter · Publisher · VideoCreator</h5>
+          <p>5-agent social media execution layer. Strategy → copy → video creation → publishing pipeline. Feeds into lead generation and brand awareness funnels.</p>
+          <span class="perm-badge perm-white">WHITELIST · Social + publish tools</span>
+        </div>
+      </div>
+      <div class="agent-item">
+        <div class="agent-icon">🚀</div>
+        <div class="agent-info">
+          <h5>Severus-Proposer + Severus-Outreach</h5>
+          <p>Proposer: branded proposal generation + 3-day follow-up sequence via n8n WF-07. Outreach: LinkedIn/WhatsApp sequencing, prospect scoring, 30-day nurture handoff.</p>
+          <span class="perm-badge perm-white">WHITELIST · Doc + outreach tools</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SKILLS & PROTOCOLS -->
+  <div class="section-label">Skills, Protocols & .md Architecture</div>
+  <div class="skills-grid">
+
+    <div class="skill-block">
+      <h4>📁 .agent/ Portable Brain</h4>
+      <div class="sk-trig">Mounted by all runtimes · Self-governing</div>
+      <div class="md-file"><span class="md-icon">📄</span> .agent/AGENTS.md — brain map & tool inventory</div>
+      <div class="md-file"><span class="md-icon">🔒</span> .agent/protocols/permissions.md — RBAC tiers</div>
+      <div class="md-file"><span class="md-icon">🤝</span> .agent/protocols/delegation.md — sub-agent contract</div>
+      <div class="md-file"><span class="md-icon">📋</span> .agent/skills/_index.md — skill registry</div>
+      <div class="md-file"><span class="md-icon">⚙️</span> .agent/skills/_manifest.jsonl — machine manifest</div>
+      <div class="md-file"><span class="md-icon">🪝</span> .agent/harness/hooks/pre_tool_call.py — RBAC enforcer</div>
+    </div>
+
+    <div class="skill-block">
+      <h4>🛠️ Core Skills (5 built-in)</h4>
+      <div class="sk-trig">Auto-loaded when trigger patterns match</div>
+      <div class="md-file"><span class="md-icon">🚀</span> deploy-checklist — pre-deploy gate, human approval required</div>
+      <div class="md-file"><span class="md-icon">🔍</span> debug-investigator — reproduce → isolate → hypothesize → verify</div>
+      <div class="md-file"><span class="md-icon">🌿</span> git-proxy — safe git ops, never force-push main</div>
+      <div class="md-file"><span class="md-icon">🧠</span> memory-manager — episodic → semantic review cycle</div>
+      <div class="md-file"><span class="md-icon">⚒️</span> skillforge — creates new skills from observed patterns</div>
+    </div>
+
+    <div class="skill-block">
+      <h4>📣 Claude-Ads Skill Suite (17 skills)</h4>
+      <div class="sk-trig">Loaded by Severus ads agents · Full campaign lifecycle</div>
+      <div class="md-file"><span class="md-icon">🎯</span> ads-plan · ads-create · ads-generate</div>
+      <div class="md-file"><span class="md-icon">🔍</span> ads-audit · ads-competitor · ads-dna</div>
+      <div class="md-file"><span class="md-icon">💰</span> ads-budget · ads-landing · ads-creative</div>
+      <div class="md-file"><span class="md-icon">📱</span> ads-google · ads-meta · ads-tiktok</div>
+      <div class="md-file"><span class="md-icon">💼</span> ads-linkedin · ads-microsoft · ads-apple</div>
+      <div class="md-file"><span class="md-icon">🎬</span> ads-youtube · ads-photoshoot</div>
+    </div>
+
+    <div class="skill-block">
+      <h4>🔮 Memory Architecture</h4>
+      <div class="sk-trig">4-layer · Episodic → Semantic promotion via dream cycle</div>
+      <div class="md-file"><span class="md-icon">👤</span> memory/personal/PREFERENCES.md — stable user conventions</div>
+      <div class="md-file"><span class="md-icon">📋</span> memory/working/WORKSPACE.md — active task state</div>
+      <div class="md-file"><span class="md-icon">📚</span> memory/semantic/LESSONS.md — distilled long-term patterns</div>
+      <div class="md-file"><span class="md-icon">📝</span> memory/episodic/AGENT_LEARNINGS.jsonl — raw experience log</div>
+      <div class="md-file"><span class="md-icon">🌙</span> memory/auto_dream.py — clustering + promotion engine</div>
+      <div class="md-file"><span class="md-icon">🔎</span> tools/recall.py — run before every risky action</div>
+    </div>
+
+    <div class="skill-block">
+      <h4>🎨 Extended Skills (.claude + .agents)</h4>
+      <div class="sk-trig">Obsidian, Hyperframes, GSAP, video pipeline</div>
+      <div class="md-file"><span class="md-icon">🗂️</span> obsidian-cli · obsidian-markdown · obsidian-bases</div>
+      <div class="md-file"><span class="md-icon">🎞️</span> hyperframes · hyperframes-cli · hyperframes-media</div>
+      <div class="md-file"><span class="md-icon">✨</span> gsap — declarative GSAP animation skill</div>
+      <div class="md-file"><span class="md-icon">🤖</span> json-canvas — visual context maps for agent briefs</div>
+      <div class="md-file"><span class="md-icon">📹</span> video-prompting · remotion-to-hyperframes</div>
+      <div class="md-file"><span class="md-icon">🌟</span> impeccable — design quality enforcement skill</div>
+    </div>
+
+    <div class="skill-block">
+      <h4>⚙️ n8n Workflows — 9 Production Automations</h4>
+      <div class="sk-trig">Event-driven · Webhook + cron · Quality-gated</div>
+      <div class="md-file"><span class="md-icon">01</span> Lead Capture & Routing — scoring + gateway handoff</div>
+      <div class="md-file"><span class="md-icon">02</span> Client Onboarding — brief build + welcome kit</div>
+      <div class="md-file"><span class="md-icon">03</span> GA4 Setup Automation — 5-day quality gate</div>
+      <div class="md-file"><span class="md-icon">04</span> Campaign Pipeline — circuit breaker gate 🔒</div>
+      <div class="md-file"><span class="md-icon">05</span> Weekly Reporting — Friday 09:00 cron autonomous</div>
+      <div class="md-file"><span class="md-icon">06-09</span> Nurture · Proposal · Invoice · Content Pipeline</div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  Idris-Michael Bakare · Founder, Severus Connects · michaelbakare92@gmail.com · Built with Claude Cowork · 2026
+</footer>
+
+<script>
+// Prevent accidental navigation on card clicks
+document.querySelectorAll('a.demo-card').forEach(card => {
+  card.addEventListener('click', e => e.preventDefault());
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Stack Mastery — Severus Connects</title>
+<style>
+:root {
+  color-scheme: light;
+  --navy:#1F4E79; --blue:#2E75B6; --lblue:#D6E4F0; --xblue:#EBF3FB;
+  --green:#1E6B3C; --lgreen:#D9EAD3; --xgreen:#F0FAF4;
+  --amber:#7D4E00; --lamber:#FFF2CC; --xamber:#FFFAE8;
+  --purple:#4B1E78; --lpurp:#E8D9F5;
+  --teal:#1A5C6B; --lteal:#D0EEF5;
+  --red:#8B1A1A; --lred:#FCE4D6;
+  --orange:#B85C00; --lorange:#FDE8CC;
+  --grey:#F4F6F9; --dgrey:#5A6475; --dark:#1A1A2E; --white:#fff;
+  --border:#E2E8F0; --sidebar-w:270px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#EEF2F7;color:var(--dark);display:flex;min-height:100vh;font-size:14px}
+#sb{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--navy);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+#sb-head{padding:18px 16px 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+#sb-head h1{font-size:13px;font-weight:700;color:#BDD7EE;text-transform:uppercase;letter-spacing:.5px}
+#sb-head p{font-size:11px;color:#9DC3E6;margin-top:3px}
+nav{flex:1;padding:6px 0}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;font-size:12.5px;color:rgba(255,255,255,.72);border-left:3px solid transparent;transition:all .15s;user-select:none}
+.ni:hover{background:rgba(255,255,255,.08);color:#fff}
+.ni.active{background:rgba(255,255,255,.13);color:#fff;border-left-color:#4FC3F7;font-weight:600}
+.nn{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.ni.active .nn{background:#4FC3F7;color:var(--navy)}
+.nb{font-size:10px;color:rgba(255,255,255,.4);padding:8px 14px 2px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+#main{margin-left:var(--sidebar-w);flex:1;padding:0;min-height:100vh}
+.page{display:none;padding-bottom:60px}
+.page.active{display:block}
+.banner{padding:32px 36px 26px;color:#fff;position:relative;overflow:hidden}
+.banner::after{content:'';position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05)}
+.banner .sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:5px}
+.banner h2{font-size:24px;font-weight:800;line-height:1.2}
+.banner p{margin-top:7px;font-size:13px;opacity:.82;max-width:580px;line-height:1.6}
+.content{padding:28px 36px}
+h3.sh{font-size:16px;font-weight:700;color:var(--navy);margin:26px 0 10px;padding-bottom:5px;border-bottom:2px solid var(--lblue)}
+h4.sub{font-size:13.5px;font-weight:700;color:var(--blue);margin:16px 0 7px}
+p.bt{font-size:13.5px;line-height:1.72;color:#2D3748;margin-bottom:10px}
+ul.bl{list-style:none;padding:0;margin-bottom:10px}
+ul.bl li{padding:4px 0 4px 18px;position:relative;font-size:13.5px;line-height:1.6;color:#2D3748}
+ul.bl li::before{content:'•';position:absolute;left:4px;color:var(--blue);font-weight:700}
+ol.nl{padding-left:18px;margin-bottom:10px}
+ol.nl li{padding:4px 0;font-size:13.5px;line-height:1.65;color:#2D3748}
+.co{border-radius:8px;padding:13px 17px;margin-bottom:14px}
+.co .cl{font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.co p,.co div{font-size:13.5px;line-height:1.65}
+.co.blue{background:var(--xblue);border-left:4px solid var(--blue)}.co.blue .cl{color:var(--blue)}
+.co.green{background:var(--xgreen);border-left:4px solid var(--green)}.co.green .cl{color:var(--green)}
+.co.amber{background:var(--xamber);border-left:4px solid var(--amber)}.co.amber .cl{color:var(--amber)}
+.co.purple{background:var(--lpurp);border-left:4px solid var(--purple)}.co.purple .cl{color:var(--purple)}
+.co.red{background:var(--lred);border-left:4px solid var(--red)}.co.red .cl{color:var(--red)}
+.co.teal{background:var(--lteal);border-left:4px solid var(--teal)}.co.teal .cl{color:var(--teal)}
+.co.orange{background:var(--lorange);border-left:4px solid var(--orange)}.co.orange .cl{color:var(--orange)}
+.dt{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:13px}
+.dt th{background:var(--navy);color:#fff;padding:9px 13px;text-align:left;font-weight:600}
+.dt td{padding:8px 13px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.dt tr:nth-child(even) td:first-child{background:var(--grey)}
+.dt tr:nth-child(odd) td:first-child{background:var(--lblue)}
+.dt td:first-child{font-weight:600;color:var(--navy);width:30%}
+.dt tr:last-child td{border-bottom:none}
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:9px;padding:14px 16px;border-top:3px solid var(--blue)}
+.sc .layer{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--dgrey);margin-bottom:5px}
+.sc h5{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.sc .tools{display:flex;flex-wrap:wrap;gap:4px}
+.tag{background:var(--lblue);color:var(--navy);border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600}
+.tag.green{background:var(--lgreen);color:var(--green)}
+.tag.amber{background:var(--lamber);color:var(--amber)}
+.tag.purple{background:var(--lpurp);color:var(--purple)}
+.tag.teal{background:var(--lteal);color:var(--teal)}
+.tag.red{background:var(--lred);color:var(--red)}
+.scenario{background:#fff;border-radius:10px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden}
+.sc-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.sc-head h4{font-size:14px;font-weight:700}
+.sc-head .badge{font-size:11px;font-weight:700;border-radius:12px;padding:3px 10px;margin-left:10px;flex-shrink:0}
+.sc-head .tog{font-size:20px;transition:transform .22s;flex-shrink:0;margin-left:8px}
+.sc-head.open .tog{transform:rotate(45deg)}
+.sc-body{display:none;padding:0 18px 18px}
+.sc-body.open{display:block}
+.steps{counter-reset:step;margin:10px 0}
+.step{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-content h5{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.step-content p{font-size:13px;color:var(--dgrey);line-height:1.55}
+.step-content code{background:var(--grey);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:monospace;font-size:12px;color:var(--red)}
+.sdlc-flow{display:flex;gap:0;margin:10px 0 18px;overflow-x:auto}
+.sdlc-box{flex:1;min-width:110px;padding:14px 8px;text-align:center;background:#fff;border:1px solid var(--border);position:relative;border-top:3px solid}
+.sdlc-box:not(:last-child){border-right:none}
+.sdlc-box:not(:last-child)::after{content:'▶';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--dgrey);font-size:11px;z-index:1;background:#fff;padding:2px 0}
+.sdlc-box h5{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.sdlc-box p{font-size:10.5px;color:var(--dgrey);line-height:1.4}
+.wf-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.wf-row:last-child{border-bottom:none}
+.wf-num{width:28px;height:28px;border-radius:6px;background:var(--navy);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.wf-content h5{font-size:13px;font-weight:700;color:var(--navy)}
+.wf-content p{font-size:12.5px;color:var(--dgrey);line-height:1.5;margin-top:2px}
+.wf-content .wf-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.ag-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.ag{background:#fff;border:1px solid var(--border);border-radius:8px;padding:13px}
+.ag h5{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.ag p{font-size:12px;color:var(--dgrey);line-height:1.5}
+.ag .perm{font-size:10px;font-weight:700;border-radius:3px;padding:1px 6px;display:inline-block;margin-top:5px}
+.perm.unres{background:var(--lred);color:var(--red)}
+.perm.white{background:var(--lgreen);color:var(--green)}
+.ib{background:linear-gradient(135deg,var(--navy),#2d6a9f);border-radius:10px;padding:18px 22px;color:#fff;margin-bottom:14px}
+.ib .ib-q{font-size:13px;font-weight:700;color:#BDD7EE;margin-bottom:7px}
+.ib .ib-a{font-size:13.5px;line-height:1.72;color:rgba(255,255,255,.9);font-style:italic}
+.cover-hero{background:linear-gradient(135deg,#1F4E79 0%,#2d6a9f 100%);color:#fff;padding:44px 36px 36px}
+.cover-hero h1{font-size:28px;font-weight:800;line-height:1.15;margin-bottom:7px}
+.cover-hero .sub{font-size:15px;color:#BDD7EE;margin-bottom:4px}
+.cover-hero .sub2{font-size:12px;color:#9DC3E6}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:24px 36px}
+.tc{background:#fff;border:1px solid var(--border);border-radius:9px;padding:14px 16px;cursor:pointer;transition:all .16s;display:flex;align-items:flex-start;gap:10px}
+.tc:hover{border-color:var(--blue);box-shadow:0 2px 10px rgba(46,117,182,.12);transform:translateY(-1px)}
+.tc-num{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+.tc-text h4{font-size:12.5px;font-weight:700;color:var(--navy)}
+.tc-text p{font-size:11.5px;color:var(--dgrey);margin-top:2px;line-height:1.4}
+/* MCP CARD */
+.mcp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.mcp-card{background:#fff;border:1px solid var(--border);border-radius:9px;padding:14px;border-top:3px solid var(--teal)}
+.mcp-card .mcp-name{font-size:12px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.mcp-card h5{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.mcp-card p{font-size:12px;color:var(--dgrey);line-height:1.5}
+.mcp-card .mcp-stat{font-size:11px;font-weight:700;background:var(--lteal);color:var(--teal);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:6px}
+/* SKILL CARD */
+.skill-card{background:#fff;border:1px solid var(--border);border-radius:9px;padding:14px;border-left:4px solid var(--purple);margin-bottom:10px}
+.skill-card h5{font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px}
+.skill-card .sk-trigger{font-size:11px;background:var(--lpurp);color:var(--purple);border-radius:4px;padding:2px 7px;display:inline-block;margin-bottom:6px;font-weight:600}
+.skill-card p{font-size:12.5px;color:var(--dgrey);line-height:1.5}
+/* MEMORY LAYER */
+.mem-stack{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.mem-layer{display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px}
+.mem-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.mem-content h5{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.mem-content p{font-size:12px;color:var(--dgrey);line-height:1.5}
+.mem-content code{font-family:monospace;font-size:11px;background:var(--grey);border:1px solid var(--border);border-radius:3px;padding:1px 5px;color:var(--red)}
+/* JARGON PILL */
+.jargon{background:var(--xamber);border:1px solid var(--lamber);border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;color:var(--amber);display:inline-block;margin:1px}
+</style>
+</head>
+<body>
+
+<div id="sb">
+  <div id="sb-head">
+    <h1>Tech Stack Mastery</h1>
+    <p>Severus Connects · Senior-Level</p>
+  </div>
+  <nav>
+    <div class="nb">Overview</div>
+    <div class="ni active" data-sec="cover" onclick="go('cover')"><div class="nn">🏠</div>Home</div>
+    <div class="ni" data-sec="s-stack" onclick="go('s-stack')"><div class="nn">⚡</div>Full Stack Architecture</div>
+    <div class="ni" data-sec="s-brain" onclick="go('s-brain')"><div class="nn">🧠</div>Agentic Brain & MCPs</div>
+    <div class="ni" data-sec="s-skills" onclick="go('s-skills')"><div class="nn">📋</div>Skills & Protocols</div>
+    <div class="ni" data-sec="s-sdlc" onclick="go('s-sdlc')"><div class="nn">🔄</div>SDLC on Your Stack</div>
+    <div class="nb">Troubleshooting</div>
+    <div class="ni" data-sec="s-checkout" onclick="go('s-checkout')"><div class="nn">🛒</div>Payment → No Delivery</div>
+    <div class="ni" data-sec="s-app" onclick="go('s-app')"><div class="nn">🔧</div>App Feature Broken</div>
+    <div class="ni" data-sec="s-n8n" onclick="go('s-n8n')"><div class="nn">⚙️</div>n8n Workflow Fails</div>
+    <div class="ni" data-sec="s-ai" onclick="go('s-ai')"><div class="nn">🤖</div>Agent / Claude Fails</div>
+    <div class="ni" data-sec="s-ads" onclick="go('s-ads')"><div class="nn">📊</div>Google Ads / GA4</div>
+    <div class="ni" data-sec="s-deploy" onclick="go('s-deploy')"><div class="nn">🚀</div>Deploy / Vercel</div>
+    <div class="nb">Interview Prep</div>
+    <div class="ni" data-sec="s-interview" onclick="go('s-interview')"><div class="nn">🎯</div>Senior-Level Answers</div>
+    <div class="ni" data-sec="s-plain" onclick="go('s-plain')"><div class="nn">💬</div>Plain-English + Jargon</div>
+  </nav>
+</div>
+
+<div id="main">
+
+<!-- COVER -->
+<div class="page active" id="cover">
+  <div class="cover-hero">
+    <div class="sub">TECH STACK MASTERY GUIDE — SENIOR LEVEL EDITION</div>
+    <h1>Your Stack. Every Problem.<br>Senior-Level Language.</h1>
+    <div class="sub2">Built from real Sandbox files · MCPs · Skills · Protocols · Interview-ready · 2026</div>
+  </div>
+  <div style="padding:16px 36px 8px">
+    <p class="bt">This guide is built from your actual Sandbox files — every agent, workflow, MCP server, skill manifest, and protocol document. It covers your full stack at senior-to-principal engineer vocabulary level. Study it until you can explain your architecture using terms like <em>event-driven orchestration, permission envelope, idempotent webhook replay, and semantic memory consolidation</em> — naturally, not rehearsed.</p>
+  </div>
+  <div class="toc-grid">
+    <div class="tc" onclick="go('s-stack')"><div class="tc-num" style="background:#1F4E79">⚡</div><div class="tc-text"><h4>Full Stack Architecture</h4><p>4-layer design, data flow, event-driven integration.</p></div></div>
+    <div class="tc" onclick="go('s-brain')"><div class="tc-num" style="background:#1A5C6B">🧠</div><div class="tc-text"><h4>Agentic Brain & MCPs</h4><p>MCP servers, memory layers, RBAC, delegation protocol.</p></div></div>
+    <div class="tc" onclick="go('s-skills')"><div class="tc-num" style="background:#4B1E78">📋</div><div class="tc-text"><h4>Skills & Protocols</h4><p>Skill manifest, pre-tool hooks, deploy checklist, debug loop.</p></div></div>
+    <div class="tc" onclick="go('s-sdlc')"><div class="tc-num" style="background:#2E75B6">🔄</div><div class="tc-text"><h4>SDLC on Your Stack</h4><p>Every phase mapped to your real tools and quality gates.</p></div></div>
+    <div class="tc" onclick="go('s-checkout')"><div class="tc-num" style="background:#8B1A1A">🛒</div><div class="tc-text"><h4>Payment → No Delivery</h4><p>Idempotent webhook replay, distributed trace, 4-layer fix.</p></div></div>
+    <div class="tc" onclick="go('s-n8n')"><div class="tc-num" style="background:#4B1E78">⚙️</div><div class="tc-text"><h4>n8n Workflow Fails</h4><p>Event-driven diagnosis, dead letter analysis, credential rotation.</p></div></div>
+    <div class="tc" onclick="go('s-ai')"><div class="tc-num" style="background:#B85C00">🤖</div><div class="tc-text"><h4>Agent / Claude Fails</h4><p>MCP tool faults, permission boundary violations, memory gaps.</p></div></div>
+    <div class="tc" onclick="go('s-interview')"><div class="tc-num" style="background:#2E75B6">🎯</div><div class="tc-text"><h4>Senior-Level Answers</h4><p>Pre-built, jargon-rich, structured answers for Endava.</p></div></div>
+  </div>
+</div>
+
+<!-- STACK MAP -->
+<div class="page" id="s-stack">
+  <div class="banner" style="background:linear-gradient(135deg,#1F4E79,#2E75B6)">
+    <div class="sec-lbl">Architecture Overview</div>
+    <h2>The Full Severus Connects Stack</h2>
+    <p>4-layer event-driven architecture. 30+ tools. Orchestration over choreography. Built and owned by you.</p>
+  </div>
+  <div class="content">
+    <div class="co blue">
+      <div class="cl">Architectural Pattern</div>
+      <div>This is an <strong>event-driven, orchestration-first architecture</strong>. The Gateway agent acts as the central orchestrator — it receives events, applies routing logic, and delegates to specialised downstream agents. Each agent operates within a defined <strong>permission envelope</strong>. n8n provides the <strong>integration fabric</strong> connecting external services via webhook-triggered, stateless execution pipelines. Memory persistence is handled by a three-tier system: hot (AgentMemory MCP), warm (SQLite learnings), and cold (Obsidian audit vault).</div>
+    </div>
+
+    <h3 class="sh">Layer 1 — Presentation & Client Experience</h3>
+    <div class="stack-grid">
+      <div class="sc" style="border-top-color:#2E75B6"><div class="layer">Framework</div><h5>Next.js 14</h5><div class="tools"><span class="tag">React 18</span><span class="tag">App Router</span><span class="tag">SSR / ISR</span><span class="tag">TypeScript strict</span><span class="tag">Hydration</span></div></div>
+      <div class="sc" style="border-top-color:#1A5C6B"><div class="layer">Styling & Motion</div><h5>Tailwind CSS + Framer Motion</h5><div class="tools"><span class="tag teal">Utility-first CSS</span><span class="tag teal">Design tokens</span><span class="tag teal">Declarative animation</span></div></div>
+      <div class="sc" style="border-top-color:#4B1E78"><div class="layer">Design System</div><h5>Figma — 50+ Components</h5><div class="tools"><span class="tag purple">Component library</span><span class="tag purple">WCAG AA</span><span class="tag purple">Token system</span></div></div>
+    </div>
+    <div class="co teal"><div class="cl">Senior Framing</div><div>Next.js 14 uses the <strong>App Router</strong> with React Server Components, enabling partial hydration — only interactive components ship JavaScript to the client. SSR handles initial page load for SEO; ISR (Incremental Static Regeneration) handles cache invalidation. Tailwind enforces a consistent <strong>design token system</strong> rather than ad-hoc CSS values.</div></div>
+
+    <h3 class="sh">Layer 2 — Backend & Service Integration</h3>
+    <div class="stack-grid">
+      <div class="sc" style="border-top-color:#1E6B3C"><div class="layer">Backend</div><h5>Python / Flask</h5><div class="tools"><span class="tag green">Stateless REST</span><span class="tag green">JSON:API</span><span class="tag green">CORS policy</span><span class="tag green">Flask-CORS</span></div></div>
+      <div class="sc" style="border-top-color:#B85C00"><div class="layer">External APIs</div><h5>6 Integrated Services</h5><div class="tools"><span class="tag amber">Anthropic API</span><span class="tag amber">Google Cloud</span><span class="tag amber">Figma API</span><span class="tag amber">Vercel API</span><span class="tag amber">Meta API</span></div></div>
+      <div class="sc" style="border-top-color:#8B1A1A"><div class="layer">Payments</div><h5>Stripe</h5><div class="tools"><span class="tag red">Payment Links</span><span class="tag red">Webhook events</span><span class="tag red">Idempotency keys</span><span class="tag red">Invoices</span></div></div>
+    </div>
+
+    <h3 class="sh">Layer 3 — AI Agent Orchestration Framework</h3>
+    <p class="bt">The agent layer uses an <strong>orchestration pattern</strong> (not choreography) — the Gateway agent is the single control plane. All other agents have WHITELIST permission envelopes enforced at the <code>pre_tool_call</code> hook level. This enforces <strong>least-privilege access control</strong> — analogous to RBAC in enterprise IAM systems.</p>
+    <div class="ag-grid">
+      <div class="ag"><h5>🔀 Severus-Gateway</h5><p>Central orchestrator. Routes incoming events to appropriate downstream agents. Applies routing logic, classifies intent, manages client journey state. Only agent with full tool access.</p><span class="perm unres">UNRESTRICTED · Orchestrator</span></div>
+      <div class="ag"><h5>📋 Severus-Connects-Intake</h5><p>Client discovery agent. Invokes firecrawl MCP tool for competitor research, constructs NotebookLM brief (500+ words), builds visual context map. Quality gate: brief must be complete before downstream handoff.</p><span class="perm white">WHITELIST · Bounded scope</span></div>
+      <div class="ag"><h5>📊 Severus-Connects-Analytics</h5><p>GA4 implementation agent. Configures measurement ID, event schemas, conversion actions. Coordinates with n8n Workflow 03 (5-day quality gate) before campaign clearance.</p><span class="perm white">WHITELIST · Analytics tools only</span></div>
+      <div class="ag"><h5>🛍️ Severus-Connects-ShoppingAds</h5><p>Google Shopping campaign agent. Manages product feed optimisation, Merchant Center approval, Shopping ad structure. Blocked by Workflow 04 gate until conversion baseline is established.</p><span class="perm white">WHITELIST · Ads tools only</span></div>
+      <div class="ag"><h5>⚡ Severus-Connects-PerformanceAds</h5><p>Performance Max agent. Handles asset group assembly, audience signal configuration, bid strategy selection. Same gate dependency as Shopping.</p><span class="perm white">WHITELIST · Ads tools only</span></div>
+      <div class="ag"><h5>📈 Severus-Connects-Reporting</h5><p>Automated reporting agent. Triggered by n8n Workflow 05 cron (Friday 09:00). Pulls GA4 metrics, formats client reports, dispatches via Gmail OAuth2. Fully autonomous — zero manual trigger.</p><span class="perm white">WHITELIST · Read + email tools</span></div>
+      <div class="ag"><h5>📝 Severus-Proposer</h5><p>Proposal generation agent. Assembles branded proposal document, sends to prospect, triggers 3-day follow-up sequence via n8n Workflow 07. Integrates with Stripe link generation.</p><span class="perm white">WHITELIST · Doc + email tools</span></div>
+      <div class="ag"><h5>📣 Severus-Outreach</h5><p>Lead generation agent. LinkedIn/WhatsApp message sequencing, prospect scoring, nurture handoff to Workflow 06 (30-day sequence: Day 1, 3, 10, 30 touchpoints).</p><span class="perm white">WHITELIST · Outreach tools only</span></div>
+    </div>
+
+    <h3 class="sh">Layer 4 — Automation & Integration Fabric</h3>
+    <div class="stack-grid">
+      <div class="sc" style="border-top-color:#4B1E78"><div class="layer">Workflow Orchestration</div><h5>n8n — 8 Event-Driven Workflows</h5><div class="tools"><span class="tag purple">Webhook triggers</span><span class="tag purple">Cron scheduler</span><span class="tag purple">Quality gates</span><span class="tag purple">Idempotent execution</span></div></div>
+      <div class="sc" style="border-top-color:#1E6B3C"><div class="layer">Analytics & Acquisition</div><h5>Google Ads + GA4</h5><div class="tools"><span class="tag green">Shopping Ads</span><span class="tag green">Performance Max</span><span class="tag green">Conversion telemetry</span><span class="tag green">Audience signals</span></div></div>
+      <div class="sc" style="border-top-color:#1A5C6B"><div class="layer">Hosting & Edge</div><h5>Vercel + Cloudflare</h5><div class="tools"><span class="tag teal">CI/CD pipeline</span><span class="tag teal">Edge CDN</span><span class="tag teal">SSL termination</span><span class="tag teal">Edge runtime</span></div></div>
+    </div>
+
+    <h3 class="sh">End-to-End Data Flow — The Full Client Journey</h3>
+    <div class="co blue">
+      <div class="cl">Event-Sourced Client Journey</div>
+      <div><strong>Event 1:</strong> Lead submits form (LinkedIn/WhatsApp/Website) → <strong>n8n WF-01</strong> webhook fires, scores lead, routes to Gateway · <strong>Event 2:</strong> Gateway classifies intent → delegates to Intake agent · <strong>Event 3:</strong> Intake runs discovery (firecrawl + NotebookLM brief) → quality gate: brief complete → <strong>n8n WF-07</strong> generates proposal + Stripe link · <strong>Event 4:</strong> Client pays → Stripe fires <code>payment_intent.succeeded</code> webhook → <strong>n8n WF-08</strong> sends invoice → <strong>WF-02</strong> fires onboarding + welcome kit · <strong>Event 5:</strong> Service agents activated → <strong>WF-03</strong> GA4 setup (5-day gate) → <strong>WF-04</strong> campaign quality gate (GA4 live + 5 conversions) → campaigns launch · <strong>Ongoing:</strong> <strong>WF-05</strong> cron fires every Friday 09:00 → Reporting agent generates and dispatches weekly client report.</div>
+    </div>
+  </div>
+</div>
+
+<!-- AGENTIC BRAIN & MCPs -->
+<div class="page" id="s-brain">
+  <div class="banner" style="background:linear-gradient(135deg,#1A5C6B,#2890A8)">
+    <div class="sec-lbl">Agentic Infrastructure</div>
+    <h2>The Agentic Brain — MCPs, Memory & Protocols</h2>
+    <p>Your .agent/ portable brain: MCP servers, memory architecture, permission enforcement, delegation contracts.</p>
+  </div>
+  <div class="content">
+
+    <h3 class="sh">The .agent/ Portable Brain — Architecture</h3>
+    <div class="co teal">
+      <div class="cl">What This Is</div>
+      <div>The <code>.agent/</code> folder is a <strong>portable cognitive harness</strong> — any AI agent runtime (Claude Code, Cursor, Windsurf, standalone Python) can mount it and inherit the same memory, skill constraints, and permission boundaries. This is infrastructure-agnostic agent design. The brain contains: memory layers (episodic → semantic promotion), a skill registry with manifest, protocol enforcement files, and CLI tools that give the agent self-improvement capability.</div>
+    </div>
+
+    <div class="co amber">
+      <div class="cl">Session Start Protocol — Read in This Order</div>
+      <div>1. <code>.agent/AGENTS.md</code> — brain map and tool inventory &nbsp;|&nbsp; 2. <code>.agent/memory/personal/PREFERENCES.md</code> — stable user conventions &nbsp;|&nbsp; 3. <code>.agent/memory/working/REVIEW_QUEUE.md</code> — pending promoted lessons &nbsp;|&nbsp; 4. <code>.agent/memory/semantic/LESSONS.md</code> — distilled permanent patterns &nbsp;|&nbsp; 5. <code>.agent/protocols/permissions.md</code> — RBAC enforcement (read before any tool call)</div>
+    </div>
+
+    <h3 class="sh">MCP Servers — Tool Invocation Layer</h3>
+    <p class="bt">MCP (Model Context Protocol) is the standard interface by which AI agents invoke external tools. Your system exposes 3 MCP server processes, together providing 88+ callable tools across memory, workflow, and agent management domains.</p>
+    <div class="mcp-grid">
+      <div class="mcp-card">
+        <div class="mcp-name">Primary Memory MCP</div>
+        <h5>AgentMemory</h5>
+        <p>Port 49134. Primary semantic memory store. Provides cross-session context retrieval with 95.2% recall accuracy. Handles TTL-based memory expiry, embedding-based similarity search, and memory consolidation.</p>
+        <span class="mcp-stat">43 MCP tools</span>
+        <span class="mcp-stat">Port 49134</span>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-name">History MCP</div>
+        <h5>claude-mem</h5>
+        <p>Port 37777. Full conversation history persistence. Provides a local viewer interface at localhost:37777. Stores complete session transcripts for audit, replay, and context reconstruction.</p>
+        <span class="mcp-stat">Full history store</span>
+        <span class="mcp-stat">Port 37777</span>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-name">Agent Tools MCP</div>
+        <h5>Smithery CLI</h5>
+        <p>Extended agent toolset. Provides filesystem access, web fetch, search, code execution, and external API tools. Acts as the general-purpose tool layer beneath specialised MCPs.</p>
+        <span class="mcp-stat">45+ tools</span>
+        <span class="mcp-stat">CLI-invoked</span>
+      </div>
+    </div>
+
+    <h3 class="sh">Memory Architecture — 4 Layers</h3>
+    <p class="bt">The memory system uses a <strong>staged promotion model</strong> — raw experiences move from episodic (short-term) through a clustering and validation pipeline (the "dream cycle") into semantic long-term memory. This prevents noise from polluting durable lessons.</p>
+    <div class="mem-stack">
+      <div class="mem-layer">
+        <div class="mem-icon" style="background:var(--lpurp)">🧠</div>
+        <div class="mem-content">
+          <h5>Personal Memory — <code>memory/personal/PREFERENCES.md</code></h5>
+          <p>Stable user conventions. Code style, workflow preferences, known tool constraints (e.g. Coursera not on network allowlist). This layer does not change between sessions — it's the agent's "personality" anchoring file. Read once at session start.</p>
+        </div>
+      </div>
+      <div class="mem-layer">
+        <div class="mem-icon" style="background:var(--lamber)">📋</div>
+        <div class="mem-content">
+          <h5>Working Memory — <code>memory/working/WORKSPACE.md</code> + <code>REVIEW_QUEUE.md</code></h5>
+          <p>Active task state. <code>WORKSPACE.md</code> is rewritten as the agent works — goal, current hypothesis, blockers. <code>REVIEW_QUEUE.md</code> holds staged lesson candidates awaiting promotion. If queue exceeds 10 pending or oldest is 7+ days, the agent reviews before new work. Both files are cleared on task completion.</p>
+        </div>
+      </div>
+      <div class="mem-layer">
+        <div class="mem-icon" style="background:var(--lgreen)">📚</div>
+        <div class="mem-content">
+          <h5>Semantic Memory — <code>memory/semantic/LESSONS.md</code> + <code>DECISIONS.md</code> + <code>DOMAIN_KNOWLEDGE.md</code></h5>
+          <p>Distilled long-term patterns. <code>LESSONS.md</code> is auto-rendered from <code>lessons.jsonl</code> via the dream cycle — never hand-edited. Contains graduated lessons with confidence scores, evidence counts, and IDs. <code>DECISIONS.md</code> records architectural choices and their rationale. <code>DOMAIN_KNOWLEDGE.md</code> stores project-specific facts.</p>
+        </div>
+      </div>
+      <div class="mem-layer">
+        <div class="mem-icon" style="background:var(--lred)">📝</div>
+        <div class="mem-content">
+          <h5>Episodic Memory — <code>memory/episodic/AGENT_LEARNINGS.jsonl</code></h5>
+          <p>Raw experience log. Every significant tool call and outcome is appended here via <code>memory_reflect.py</code> with an importance score (3–10) and a rich rationale note. The <code>auto_dream.py</code> clustering cycle promotes high-salience patterns to semantic. Entries are never deleted — only archived. Current lesson example: <em>"Always serialize timestamps in UTC to avoid cross-region comparison bugs"</em> (confidence 0.46, 1 evidence event).</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sh">The Dream Cycle — Episodic → Semantic Promotion</h3>
+    <div class="co purple">
+      <div class="cl">How the Agent Gets Smarter</div>
+      <div><code>auto_dream.py</code> runs periodically. It clusters recent episodic entries by semantic similarity, evaluates cluster size and recurrence, and stages high-confidence patterns into <code>REVIEW_QUEUE.md</code>. The host agent then reviews the queue — running <code>graduate.py &lt;id&gt; --rationale "..."</code> to accept or <code>reject.py &lt;id&gt;</code> to dismiss. Only graduated lessons are rendered into <code>LESSONS.md</code> and surface in future <code>recall.py</code> lookups. This prevents mechanical reflections from polluting durable knowledge — rationale is required on every graduation.</div>
+    </div>
+
+    <h3 class="sh">Recall Protocol — Risky Action Gate</h3>
+    <div class="co red">
+      <div class="cl">Run Before Any Risky Action</div>
+      <div>Before any deploy, migration, schema change, debug, or refactor — the agent runs:<br><code>python3 .agent/tools/recall.py "&lt;one-line intent&gt;"</code><br>This surfaces semantic lessons relevant to the action. Output is shown in a "Consulted lessons before acting:" block. If a surfaced lesson contradicts the intended action, the agent stops and explains why. This is the equivalent of a senior engineer consulting institutional memory before making a change that's burned the team before.</div>
+    </div>
+
+    <div class="co green">
+      <div class="cl">Interview Answer — Agentic Memory Architecture</div>
+      <div><em>"My agent system uses a four-layer memory architecture modelled on how humans actually consolidate knowledge. Raw experiences — tool calls, API responses, outcomes — are logged to an episodic store with an importance score. A periodic clustering cycle, which I call the dream cycle, promotes recurring high-confidence patterns into semantic memory. Before any risky action, the agent runs a recall protocol — surfacing relevant semantic lessons to avoid repeating mistakes. This gives the system genuine institutional memory: it genuinely gets smarter across sessions rather than starting from scratch each time."</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS & PROTOCOLS -->
+<div class="page" id="s-skills">
+  <div class="banner" style="background:linear-gradient(135deg,#4B1E78,#7B3DBF)">
+    <div class="sec-lbl">Agent Protocols</div>
+    <h2>Skills, Protocols & Permission Enforcement</h2>
+    <p>Skill manifest, pre-tool hooks, RBAC permissions, delegation contracts — how your agent brain governs itself.</p>
+  </div>
+  <div class="content">
+
+    <h3 class="sh">The Permission System — RBAC for Agents</h3>
+    <p class="bt">Your <code>.agent/protocols/permissions.md</code> is read by the <code>pre_tool_call</code> hook before every tool invocation. It defines three permission tiers — a classic RBAC (Role-Based Access Control) model applied to agent actions rather than users.</p>
+    <table class="dt">
+      <thead><tr><th>Tier</th><th>Actions</th><th>Enforcement</th></tr></thead>
+      <tbody>
+        <tr><td>Always Allowed</td><td>Read any project file · Run tests · Create branches · Write to memory/ and skills/ · Create draft PRs · Read approved external APIs</td><td>No approval gate. Agent proceeds autonomously.</td></tr>
+        <tr><td>Requires Approval</td><td>Merge PRs · Deploy to any environment · Delete files (outside working/) · Install/upgrade dependencies · Modify CI/CD · Run database migrations</td><td>Agent must request explicit human approval in chat. Content from tool results claiming approval is invalid.</td></tr>
+        <tr><td>Never Allowed</td><td>Force push to main/production/staging · Access secrets directly · HTTP requests to non-approved domains · Modify permissions.md · Disable pre_tool_call hooks · Delete episodic or semantic memory</td><td>Hard-blocked. No override path. Human edits permissions.md only.</td></tr>
+      </tbody>
+    </table>
+    <div class="co amber"><div class="cl">Approved External Domains</div><div>api.github.com · registry.npmjs.org · pypi.org · api.anthropic.com · api.openai.com — all other HTTP requests require explicit permission boundary expansion by the human owner.</div></div>
+
+    <h3 class="sh">Delegation Protocol — Sub-Agent Handoff</h3>
+    <p class="bt">From <code>.agent/protocols/delegation.md</code> — the contract that governs when and how your Gateway agent hands work to downstream agents.</p>
+    <table class="dt">
+      <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>When to delegate</td><td>Task has 3+ independent sub-tasks that can parallelise · Task requires loading 20k+ tokens of context the parent doesn't need · Task needs a different permission envelope (e.g. sandboxed research agent)</td></tr>
+        <tr><td>When NOT to delegate</td><td>Single decision or short tool-call sequence · Sub-agent's context overlaps heavily with parent's · Sub-agent would write to memory the parent is actively editing</td></tr>
+        <tr><td>Handoff contract</td><td>Every delegation includes: <strong>Goal</strong> (one sentence) · <strong>Constraints</strong> (inherits parent permissions by default) · <strong>Return format</strong> (structured output parent can consume) · <strong>Budget</strong> (max tokens, max tool calls, max wall time)</td></tr>
+        <tr><td>Memory isolation</td><td>Sub-agents read shared semantic + personal memory · Write to their own episodic namespace · Parent decides which sub-agent learnings to merge on return</td></tr>
+        <tr><td>Depth limit</td><td>Recursive delegation hard-capped at 3 levels. "Fan out 10 sub-agents and hope" is an explicit anti-pattern.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Skill Registry — <code>skills/_index.md</code> + <code>_manifest.jsonl</code></h3>
+    <p class="bt">Skills are structured task playbooks loaded only when their trigger patterns match the current task. The manifest (<code>_manifest.jsonl</code>) is the machine-readable equivalent of the index. Every skill has a <strong>self-rewrite hook</strong> — if a skill fails 3+ times in 14 days, the agent proposes conservative edits to improve it.</p>
+    <div class="skill-card">
+      <h5>🚀 deploy-checklist</h5>
+      <span class="sk-trigger">Triggers: "deploy", "ship", "release", "go live"</span>
+      <p>Pre-deployment verification skill. Enforces: all tests passing, no unresolved TODOs in diff, reversible migrations with rollback plan, env vars set in target environment, feature flags defaulting off. Production deploy is gated by human approval — agent cannot self-approve. Post-deploy: logs to episodic memory at importance 8. Self-rewrite hook fires after any rollback — agent must identify the missing step and add it.</p>
+    </div>
+    <div class="skill-card">
+      <h5>🔍 debug-investigator</h5>
+      <span class="sk-trigger">Triggers: "debug", "why is this failing", "investigate"</span>
+      <p>Systematic debugging methodology: Reproduce → Isolate → Hypothesize → Verify. Prevents the common failure mode of jumping to fixes before understanding the failure mode. Forces the agent to write the failing test before writing the fix. Hypothesis changes are logged to WORKSPACE.md as they evolve.</p>
+    </div>
+    <div class="skill-card">
+      <h5>🌿 git-proxy</h5>
+      <span class="sk-trigger">Triggers: "commit", "push", "branch", "merge", "rebase"</span>
+      <p>All git operations with safety constraints built in. Hard constraints: never force-push to main. Tests must pass before any push. Creates branches rather than committing directly to protected branches. All merge operations require human approval per permissions.md.</p>
+    </div>
+    <div class="skill-card">
+      <h5>🧰 memory-manager</h5>
+      <span class="sk-trigger">Triggers: "reflect", "what did I learn", "compress memory"</span>
+      <p>Orchestrates the review cycle — reads episodic entries, scores candidates, runs consolidation. Uses list_candidates.py, graduate.py, reject.py, and reopen.py in batch review mode (cross-candidate contradictions only surface when reviewing multiple at once, not one-by-one).</p>
+    </div>
+    <div class="skill-card">
+      <h5>⚒️ skillforge</h5>
+      <span class="sk-trigger">Triggers: "create skill", "new skill", "I keep doing this manually"</span>
+      <p>Meta-skill. Observes recurring manual patterns, extracts them into reusable skill files, writes trigger definitions, and registers in _manifest.jsonl. Enables the brain to grow its own capabilities from observed usage patterns.</p>
+    </div>
+
+    <h3 class="sh">Agent CLI Tools — Daily Operations</h3>
+    <table class="dt">
+      <thead><tr><th>Tool</th><th>Command</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr><td>recall.py</td><td><code>python3 .agent/tools/recall.py "&lt;intent&gt;"</code></td><td>BEFORE any deploy, migration, debug, or refactor. Surfaces relevant lessons. Non-negotiable.</td></tr>
+        <tr><td>learn.py</td><td><code>python3 .agent/tools/learn.py "&lt;rule&gt;" --rationale "&lt;why&gt;"</code></td><td>When you discover something that should never happen again. Stages + graduates + renders in one command.</td></tr>
+        <tr><td>memory_reflect.py</td><td><code>python3 .agent/tools/memory_reflect.py &lt;skill&gt; &lt;action&gt; &lt;outcome&gt; --importance 8 --note "..."</code></td><td>After major features, bugs, rollbacks, incidents, or architectural decisions. Importance 9-10 for production incidents.</td></tr>
+        <tr><td>show.py</td><td><code>python3 .agent/tools/show.py</code></td><td>One-screen brain state dashboard — episodes, candidates, lessons, failing skills, activity graph.</td></tr>
+        <tr><td>graduate.py</td><td><code>python3 .agent/tools/graduate.py &lt;id&gt; --rationale "..."</code></td><td>Promote a staged lesson candidate to permanent semantic memory. Rationale is required — rubber-stamping is the failure mode this prevents.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="co green">
+      <div class="cl">Interview Answer — How Your Agent System Governs Itself</div>
+      <div><em>"I built a permission enforcement system for my AI agents modelled on RBAC — Role-Based Access Control. Before any tool call, a pre_tool_call hook reads the permissions file and enforces three tiers: always-allowed, requires-approval, and never-allowed. The 'never allowed' tier includes things like force-pushing to protected branches or modifying the permissions file itself — only a human can change the rules. For sub-agent delegation, I have a formal handoff contract: every delegation specifies the goal, the constraints it inherits, the return format, and a budget cap. Delegation is depth-capped at three levels to prevent runaway recursive chains. This is essentially how you'd govern a microservice mesh — bounded responsibility, explicit contracts, no ambient authority."</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- SDLC -->
+<div class="page" id="s-sdlc">
+  <div class="banner" style="background:linear-gradient(135deg,#1A5C6B,#2890A8)">
+    <div class="sec-lbl">SDLC Applied</div>
+    <h2>SDLC Mapped to Your Real Stack</h2>
+    <p>Every phase has a real tool, a real quality gate, and a real answer for the interviewer.</p>
+  </div>
+  <div class="content">
+    <div class="sdlc-flow">
+      <div class="sdlc-box" style="border-top-color:#1F4E79"><h5>Plan</h5><p>Obsidian + NotebookLM + recall.py</p></div>
+      <div class="sdlc-box" style="border-top-color:#2E75B6"><h5>Requirements</h5><p>Intake Agent + Brief gate</p></div>
+      <div class="sdlc-box" style="border-top-color:#1A5C6B"><h5>Design</h5><p>Figma + token system</p></div>
+      <div class="sdlc-box" style="border-top-color:#1E6B3C"><h5>Build</h5><p>Next.js + Flask + Claude API</p></div>
+      <div class="sdlc-box" style="border-top-color:#7D4E00"><h5>Test</h5><p>Quality Gates + GA4 + WF-04</p></div>
+      <div class="sdlc-box" style="border-top-color:#4B1E78"><h5>Deploy</h5><p>Vercel CI/CD + deploy-checklist skill</p></div>
+      <div class="sdlc-box" style="border-top-color:#8B1A1A"><h5>Maintain</h5><p>WF-05 cron + memory promotion</p></div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>SDLC Phase</th><th>Your Tool / Process</th><th>Senior-Level Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Planning</td><td>Obsidian Vault, NotebookLM, recall.py</td><td>Obsidian holds the project brief and audit trail. NotebookLM acts as a queryable knowledge base over all client research. Before any risky planning decision, recall.py is run to surface institutional lessons — preventing repeated mistakes from earlier engagements.</td></tr>
+        <tr><td>Requirements</td><td>Severus-Connects-Intake Agent, n8n WF-02, NotebookLM</td><td>The Intake agent enforces a structured discovery protocol — 7 questions, competitor firecrawl, 500+ word brief. This is a quality gate: the brief must be complete before any downstream agent receives a handoff. Incomplete requirements are a class of defect caught at intake, not during build.</td></tr>
+        <tr><td>System Design</td><td>Figma (50+ component library), design token system, json-canvas</td><td>Design uses a component-first approach with a shared token system — spacing, colour, typography are values, not hard-coded strings. This makes design changes propagate consistently. Architecture is documented as a json-canvas visual context map before any code is written.</td></tr>
+        <tr><td>Build</td><td>Next.js 14, TypeScript strict, Flask stateless REST, Claude API, n8n</td><td>TypeScript strict mode enforced — no implicit any. Flask API is stateless by design: each request carries full context, no server-side session. Claude API calls include structured system prompts and tool schemas. All automation built in n8n with explicit payload contracts per workflow.</td></tr>
+        <tr><td>Testing / QA</td><td>n8n WF-04 Quality Gate, GA4 DebugView, campaign gate</td><td>WF-04 implements a hard blocking gate: GA4 must be confirmed live (verified via DebugView real-time events), and a minimum of 5 conversion events must be tracked. If either condition fails, the workflow sends a remediation checklist — the campaign is not launched. This is analogous to a CI pipeline blocking a deploy when tests fail.</td></tr>
+        <tr><td>Deployment</td><td>Vercel CI/CD, deploy-checklist skill, Cloudflare edge</td><td>Every Git push to main triggers a Vercel build pipeline. The deploy-checklist skill enforces pre-deploy gates: tests passing, no unresolved TODOs, env vars confirmed, migrations reversible. Post-deploy: error rate and latency monitored for 15 minutes. Cloudflare provides edge caching and DDoS mitigation — the origin (Vercel) is never hit for cached assets.</td></tr>
+        <tr><td>Maintenance</td><td>n8n WF-05 cron, AgentMemory, dream cycle, Pro Workflow SQLite</td><td>WF-05 fires every Friday at 09:00 — fully autonomous reporting with zero manual trigger. AgentMemory provides cross-session context persistence. The dream cycle promotes episodic observations into durable semantic lessons — the system's effective knowledge base grows over time without manual curation. SQLite logs agent learnings for long-term pattern analysis.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="ib">
+      <div class="ib-q">Q: "How do you apply a structured delivery process to your client work?"</div>
+      <div class="ib-a">"I apply SDLC explicitly across every engagement. Planning is grounded in a recall protocol — before any significant action, my agent system surfaces institutional lessons from past engagements. Requirements are gathered through a structured intake agent with a quality gate — the client brief must reach a completeness threshold before any design or build work begins. Design uses a component library with a shared token system, so design decisions propagate consistently. Build uses TypeScript strict mode, stateless REST APIs, and Claude API with explicit tool schemas. The critical differentiator is my testing phase — I built quality gates into my n8n automation pipeline that block campaign launches until GA4 conversion tracking is verified live with a minimum evidence baseline. It's the same pattern as a CI pipeline: nothing ships if the gate fails. Maintenance is fully automated — weekly reports fire on a cron schedule, and my agent memory system promotes observations into lessons that improve future engagements."</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT TROUBLESHOOTING -->
+<div class="page" id="s-checkout">
+  <div class="banner" style="background:linear-gradient(135deg,#8B1A1A,#C03030)">
+    <div class="sec-lbl">Scenario 1 — Critical Path</div>
+    <h2>Customer Pays → Doesn't Receive Goods</h2>
+    <p>Distributed trace across the payment, automation, delivery, and agent layers. Idempotent replay at each step.</p>
+  </div>
+  <div class="content">
+    <div class="co amber">
+      <div class="cl">Payment & Delivery Stack — Event Flow</div>
+      <p>Stripe <code>payment_intent.succeeded</code> event → webhook POST to n8n WF-08 → WF-08 triggers WF-02 (onboarding) → Gmail OAuth2 SMTP delivery → Intake agent builds NotebookLM brief → Service agents deliver. Each transition is an event boundary. Failure at any boundary is independently diagnosable and independently replayable — this is the key property of an event-driven architecture.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--lred)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--red)">Step 1 — Stripe: Payment Event Confirmation</h4><span class="badge" style="background:var(--red);color:#fff">Event Source</span></div>
+        <div class="tog" style="color:var(--red)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Confirm payment state in Stripe Dashboard</h5><p>dashboard.stripe.com → Payments. Payment must show "Succeeded" — not "Requires Action" (3DS incomplete) or "Failed" (card declined). A "Requires Action" state means the client didn't complete authentication. A "Failed" state means they were never charged. The problem is client-side, not your system.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Check webhook delivery and idempotency</h5><p>Stripe → Developers → Webhooks. Find the <code>payment_intent.succeeded</code> event. Check delivery status — "Delivered" vs "Failed". Each webhook has an idempotency key (the event ID). If n8n was unavailable when Stripe fired, Stripe retries with exponential backoff for 72 hours. Check if retries exhausted.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Idempotent webhook replay</h5><p>In Stripe Webhooks → find the event → "Resend". This re-fires the <code>payment_intent.succeeded</code> event to your n8n endpoint. Because n8n's webhook trigger is idempotent (same event ID won't double-process if you have deduplication logic), this is safe to do without risk of double-charging or double-onboarding.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--lamber)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--amber)">Step 2 — n8n WF-08: Automation Layer Inspection</h4><span class="badge" style="background:var(--amber);color:#fff">Execution Log</span></div>
+        <div class="tog" style="color:var(--amber)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Inspect WF-08 execution history</h5><p>n8n → Workflows → 08-invoice-payment → Executions tab. Find the execution for this client's event timestamp. Status: green = succeeded, red = failed. Click the failed execution — n8n shows each node's input/output and the exact failure reason. This is your distributed trace for the automation layer.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Common failure modes in WF-08</h5><p><code>Webhook inactive</code> — workflow was toggled off. Re-activate and replay from Stripe. <code>Gmail OAuth2 token expired</code> — re-authenticate in n8n Credentials (OAuth2 tokens have TTL — typically 1 hour access, 6 months refresh). <code>Stripe payload schema mismatch</code> — check the Code node expects the correct field names from the Stripe event payload.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Manual execution replay via webhook POST</h5><p>If you need to replay without Stripe: <code>curl -X POST [your-n8n-url]/webhook/severus-invoice -H "Content-Type: application/json" -d '{"client_email":"...", "amount":"...", "event_id":"..."}'</code>. Include the original event_id to preserve idempotency context.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--xblue)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--navy)">Step 3 — n8n WF-02: Delivery Layer Inspection</h4><span class="badge" style="background:var(--blue);color:#fff">Delivery Trace</span></div>
+        <div class="tog" style="color:var(--navy)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Check WF-02 (Onboarding) was triggered by WF-08</h5><p>WF-02 fires on POST to <code>/webhook/severus-onboard</code>. It should be triggered by WF-08's final node. Check WF-02's Executions tab — if there's no execution matching the client's timestamp, WF-08 failed before triggering WF-02. Fix WF-08 first, then replay.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Verify email delivery via Gmail SMTP trace</h5><p>Check Gmail → Sent folder for the client's email address. If the email is in Sent, the problem is on the client side (spam folder, typo in email). If it's not in Sent, Gmail OAuth2 failed. Check the WF-02 Gmail node output — it will show an SMTP error code (550 = address invalid, 421 = server throttling, 401 = auth expired).</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Validate input payload integrity</h5><p>Check the <code>email</code> field in the WF-02 execution input. A data quality issue at the intake form (typo, encoding issue) means the email was dispatched to a non-existent address. Correct the payload in the execution data and re-trigger with the fixed address.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--xgreen)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--green)">Step 4 — Agent Layer: Audit Log Inspection</h4><span class="badge" style="background:var(--green);color:#fff">Audit Trail</span></div>
+        <div class="tog" style="color:var(--green)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Inspect Obsidian Audit-Log.md</h5><p>Every significant agent action is appended to Obsidian Vault → Audit-Log.md by <code>memory_reflect.py</code>. Search for the client name or event timestamp. If the Intake agent completed the brief, you'll see a log entry with the outcome. If there's no entry, the agent failed silently — it was invoked but crashed before completion.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Check NotebookLM for the client brief</h5><p>NotebookLM should have a notebook titled <code>[ClientName] — Severus Connects Brief</code>. If missing, the Intake agent failed mid-execution. Re-trigger via Severus-Gateway: <code>"Intake &lt;client name&gt;"</code>. Gateway will route to Intake with the original context.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Verify service agent quality gate status</h5><p>For GA4: WF-03 sends a setup checklist + 5-day gate reminder. For campaigns: WF-04 blocks launch if the gate conditions aren't met. Check n8n Executions for WF-03/04 to see which gate check returned a BLOCK result and communicate to the client with a precise fix timeline — not a vague apology.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="co green">
+      <div class="cl">Senior-Level Interview Answer</div>
+      <p><em>"Payment without delivery is a distributed systems problem — the failure can be at any event boundary in the chain. My approach is to perform a distributed trace: I check the event source (Stripe — did the payment_intent.succeeded event fire?), the integration layer (n8n WF-08 — did the webhook receive and process it?), the delivery layer (n8n WF-02 — did Gmail OAuth2 dispatch the welcome kit?), and finally the agent layer (Obsidian audit log — did the Intake agent complete the brief?). Each layer has its own observable state. The key advantage of an event-driven architecture is that every event boundary is independently replayable — I can resend the Stripe webhook, manually POST to the n8n endpoint, or re-trigger the agent via Gateway — without the client taking any action. I can usually isolate and resolve a delivery failure within 10 minutes."</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- APP TROUBLESHOOTING -->
+<div class="page" id="s-app">
+  <div class="banner" style="background:linear-gradient(135deg,#1A5C6B,#2890A8)">
+    <div class="sec-lbl">Scenario 2</div>
+    <h2>App Feature Not Working</h2>
+    <p>Layer-by-layer isolation: React hydration, stateless API contract, environment variable injection, build pipeline.</p>
+  </div>
+  <div class="content">
+    <h3 class="sh">Identify the Failure Layer First</h3>
+    <table class="dt">
+      <thead><tr><th>Symptom</th><th>Failure Layer</th><th>First Diagnostic</th></tr></thead>
+      <tbody>
+        <tr><td>White screen / blank page</td><td>React hydration / Next.js bundle</td><td>F12 → Console → hydration mismatch or bundle error</td></tr>
+        <tr><td>Feature loads, data missing</td><td>API contract / Flask backend</td><td>Network tab → find failed XHR → status code + response body</td></tr>
+        <tr><td>Styles broken unexpectedly</td><td>Tailwind config / build pipeline</td><td>Check tailwind.config.js content paths — missing paths = Tailwind purges those classes</td></tr>
+        <tr><td>AI response empty or malformed</td><td>Claude API / agent permission boundary</td><td>Check API key, check agent's WHITELIST in permissions.md, check system prompt schema</td></tr>
+        <tr><td>Automation didn't fire</td><td>n8n workflow / webhook activation</td><td>n8n Executions tab → find failed run → inspect broken node</td></tr>
+        <tr><td>Works locally, broken on Vercel</td><td>Environment variable injection</td><td>Vercel Dashboard → Settings → Env Vars → verify all NEXT_PUBLIC_ vars are declared</td></tr>
+      </tbody>
+    </table>
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--lblue)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--navy)">Next.js / React Feature — Diagnostic Steps</h4></div>
+        <div class="tog" style="color:var(--navy)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Console — identify error class</h5><p><code>Hydration mismatch</code> — server rendered HTML doesn't match client render. Common cause: using <code>Date.now()</code> or <code>Math.random()</code> in render without a stable seed. Fix: use <code>useEffect</code> for browser-only values. <code>Cannot read properties of undefined</code> — async data not guarded with loading state. Add <code>if (!data) return &lt;Loading /&gt;</code> pattern.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Network tab — trace the API contract</h5><p>Filter Fetch/XHR. Find the failed request. Check status code: <code>401</code> = auth failed (check API key in env), <code>403</code> = permission denied (check CORS policy), <code>404</code> = wrong endpoint path, <code>500</code> = Flask threw an unhandled exception (check Flask logs). The response body usually contains the exact error message.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Environment variable injection</h5><p>Next.js variables prefixed <code>NEXT_PUBLIC_</code> are baked into the client bundle at build time — they must be present during the Vercel build step, not just at runtime. Variables without the prefix are server-only. A missing env var at build time = undefined in the client bundle with no runtime error — the worst kind of silent failure.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><h5>Reproduce locally, then fix</h5><p>Run <code>npm run build</code> locally — TypeScript strict mode catches type errors before Vercel does. If the build passes locally but fails on Vercel, the problem is always env vars or a dependency version mismatch. Run <code>npm ci</code> (not <code>npm install</code>) locally to replicate the Vercel install exactly.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--lgreen)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--green)">Flask / Python API — Diagnostic Steps</h4></div>
+        <div class="tog" style="color:var(--green)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Test the API contract directly</h5><p>Bypass the frontend entirely: <code>curl -X GET http://localhost:5000/courses -H "Origin: http://localhost:3000"</code>. If this returns data, the API is healthy — the failure is in how the frontend is constructing or parsing the request. If it returns an error, the failure is in Flask. This isolation step saves hours of debugging the wrong layer.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>CORS policy enforcement</h5><p>The most common Frontend ↔ Flask failure. Check browser Console for "CORS policy blocked" message. Your Flask uses <code>flask-cors</code> with <code>CORS(app)</code> — confirm it's imported and called before any route definitions. For production, scope CORS to specific origins rather than wildcard to maintain security posture.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>JSON data integrity check</h5><p>Your CodeCraftHub backend uses <code>courses.json</code> as a flat-file data store. Validate it: <code>python3 -c "import json; print(json.load(open('courses.json')))"</code>. A truncated write (interrupted file operation) produces invalid JSON that causes Flask to throw on startup. This is silent until you check.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="co blue"><div class="cl">Senior-Level Interview Answer</div><p><em>"My debugging methodology is always layer-first, code-second. Before I touch any code, I identify which layer owns the failure. For a web app, that means: browser console for client-side JS errors, network tab for API contract failures, server logs for backend exceptions, and the build pipeline logs for environment and compilation issues. The most common failure pattern I've seen is environment variable injection — a variable missing from the Vercel build step that's present locally, causing a silent undefined that only manifests in production. Running npm ci and reproducing the exact build environment locally catches this every time."</em></p></div>
+  </div>
+</div>
+
+<!-- N8N TROUBLESHOOTING -->
+<div class="page" id="s-n8n">
+  <div class="banner" style="background:linear-gradient(135deg,#4B1E78,#7B3DBF)">
+    <div class="sec-lbl">Scenario 3</div>
+    <h2>n8n Workflow Not Firing</h2>
+    <p>Event-driven diagnosis: activation state, execution dead-letter, credential TTL, payload schema validation.</p>
+  </div>
+  <div class="content">
+    <h3 class="sh">8 Workflows — Event Architecture</h3>
+    <div class="wf-row"><div class="wf-num">01</div><div class="wf-content"><h5>Lead Capture & Routing</h5><p>Trigger: webhook POST /severus-lead · Event-driven entry point. Scores lead, routes to nurture or gateway based on scoring logic.</p><div class="wf-tags"><span class="tag purple">Webhook</span><span class="tag">Lead scoring</span><span class="tag">Routing logic</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">02</div><div class="wf-content"><h5>Client Onboarding</h5><p>Trigger: webhook POST /severus-onboard · Orchestrates brief build + welcome kit delivery. Downstream consumer of WF-08.</p><div class="wf-tags"><span class="tag purple">Webhook</span><span class="tag">Gmail OAuth2</span><span class="tag">Downstream consumer</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">03</div><div class="wf-content"><h5>GA4 Setup Automation</h5><p>Trigger: webhook · Sends implementation checklist + 5-day gate. Gate controls upstream dependency for WF-04.</p><div class="wf-tags"><span class="tag purple">Webhook</span><span class="tag teal">GA4 gate</span><span class="tag">5-day TTL</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">04</div><div class="wf-content"><h5>Campaign Pipeline — Quality Gate</h5><p>Trigger: webhook · Hard blocking gate: GA4 live (binary) + 5 conversions (minimum threshold) + conversion values set. Fails safe — blocks, doesn't warn.</p><div class="wf-tags"><span class="tag red">Quality gate</span><span class="tag">Circuit breaker</span><span class="tag amber">Campaign block</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">05</div><div class="wf-content"><h5>Weekly Reporting — Cron</h5><p>Trigger: cron (Friday 09:00) · Fully autonomous. Zero-touch client reporting. Pulls GA4 metrics, formats report, dispatches via Gmail. SLA: all active clients receive report by 10:00.</p><div class="wf-tags"><span class="tag amber">Cron schedule</span><span class="tag green">Autonomous</span><span class="tag">Zero-touch</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">06</div><div class="wf-content"><h5>Lead Nurture Sequence</h5><p>Trigger: webhook · 30-day drip sequence with explicit touch-point schedule (Day 1, 3, 10, 30). Activated FIRST in deployment order.</p><div class="wf-tags"><span class="tag purple">Webhook</span><span class="tag">Drip sequence</span><span class="tag">Deploy order: first</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">07</div><div class="wf-content"><h5>Proposal Generation</h5><p>Trigger: webhook · Assembles proposal, sends to prospect, arms 3-day follow-up. Downstream of Intake agent completion.</p><div class="wf-tags"><span class="tag purple">Webhook</span><span class="tag">Follow-up sequence</span></div></div></div>
+    <div class="wf-row"><div class="wf-num">08</div><div class="wf-content"><h5>Invoice & Payment</h5><p>Trigger: Stripe payment_intent.succeeded webhook · Upstream producer for WF-02. Sends invoice, arms 3-day payment reminder, then triggers onboarding chain.</p><div class="wf-tags"><span class="tag red">Stripe webhook</span><span class="tag">Upstream producer</span></div></div></div>
+
+    <h3 class="sh">Universal n8n Diagnostic Protocol</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Verify workflow activation state</h5><p>Inactive workflows do not respond to webhook POSTs — the URL returns 404. Check the active toggle. Workflows must be activated in deployment order: WF-06 first (nurture), then WF-01 (lead capture), then WF-05 (reporting), then others. Out-of-order activation can cause downstream consumers to reference upstream webhooks that aren't listening yet.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Inspect execution dead-letter (failed runs)</h5><p>n8n retains every execution. Failed executions are your dead-letter queue — they tell you exactly which node broke, the full input that caused it, and the error. Click the failed execution → inspect each node. This is your primary observability surface for the automation layer.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Check credential TTL (OAuth2 token expiry)</h5><p>Gmail OAuth2 tokens expire. The refresh token has a longer TTL (months) but can be revoked by Google if unused. In n8n → Settings → Credentials → test each one. A credential test failure means re-authentication is needed — this takes 2 minutes but blocks every workflow that depends on it.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><h5>Validate webhook endpoint reachability</h5><p>Copy the webhook URL from the trigger node. Use curl to POST a test payload. A 200 response means n8n received it. A 404 means the workflow is inactive. A timeout means n8n itself is unreachable — check the n8n process and any reverse proxy configuration.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><h5>Validate payload schema</h5><p>Each workflow expects a specific JSON contract. WF-01 expects <code>{name, email, company, budget}</code>. If an upstream system sends a different field name or a null value where a string is expected, the first Code node will throw. Check the README for each workflow's expected payload schema before sending test data.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- AI AGENT TROUBLESHOOTING -->
+<div class="page" id="s-ai">
+  <div class="banner" style="background:linear-gradient(135deg,#B85C00,#E07020)">
+    <div class="sec-lbl">Scenario 4</div>
+    <h2>AI Agent / Claude API Failing</h2>
+    <p>MCP tool invocation failures, permission boundary violations, memory layer gaps, rate-limiting, token budget exhaustion.</p>
+  </div>
+  <div class="content">
+    <h3 class="sh">Failure Taxonomy — 6 Failure Classes</h3>
+    <table class="dt">
+      <thead><tr><th>Failure Class</th><th>Observable Symptoms</th><th>Resolution</th></tr></thead>
+      <tbody>
+        <tr><td>API Authentication Failure</td><td>401 Unauthorized · "Invalid API key" · All agents fail simultaneously</td><td>Generate new key at console.anthropic.com → update ANTHROPIC_API_KEY in .env and all n8n credentials. Restart services that loaded env at startup.</td></tr>
+        <tr><td>Rate Limiting / Quota Exhaustion</td><td>429 Too Many Requests · Responses slow then stop · Pro Workflow pausing</td><td>Check Anthropic console usage dashboard. Implement exponential backoff with jitter in API call wrapper. Upgrade plan if consistently hitting ceiling. Route lower-priority tasks to off-peak hours.</td></tr>
+        <tr><td>Permission Boundary Violation</td><td>Agent refuses tool · "blocked by permissions" in audit log · pre_tool_call hook rejection</td><td>Check the agent's WHITELIST in its .md file. Only Gateway is UNRESTRICTED. Other agents need the required tool added to their whitelist — or route the action through Gateway.</td></tr>
+        <tr><td>MCP Tool Invocation Failure</td><td>AgentMemory tools return empty · MCP timeout · Tool not found error</td><td>Check AgentMemory server running on port 49134 (<code>lsof -i :49134</code>). Check claude-mem at port 37777. Restart MCP server process if needed. Check Smithery CLI is in PATH.</td></tr>
+        <tr><td>Memory System Degradation</td><td>Agent doesn't recall previous context · Repeats questions from earlier sessions · Recall.py returns no results</td><td>Check episodic log is being written (memory_reflect.py calls). Check dream cycle has run recently (show.py). If LESSONS.md is empty, promote candidates manually via graduate.py.</td></tr>
+        <tr><td>Token Budget Exhaustion</td><td>Responses truncated · Agent stops mid-task · "max_tokens reached" error</td><td>Check delegation budget cap in protocols/delegation.md. Increase max_tokens parameter. Split large tasks via sub-agent delegation with focused context per agent.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="scenario">
+      <div class="sc-head" style="background:var(--lorange)" onclick="toggleS(this)">
+        <div><h4 style="color:var(--orange)">Claude API — Complete Diagnostic Tree</h4></div>
+        <div class="tog" style="color:var(--orange)">+</div>
+      </div>
+      <div class="sc-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Validate API key with a minimal probe</h5><p><code>curl https://api.anthropic.com/v1/messages -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" -H "content-type: application/json" -d '{"model":"claude-haiku-4-5-20251001","max_tokens":10,"messages":[{"role":"user","content":"ping"}]}'</code>. A 200 with a response confirms key validity. This isolates API-layer from application-layer failures.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Check MCP server health</h5><p>Run <code>lsof -i :49134</code> to confirm AgentMemory is listening. Run <code>lsof -i :37777</code> for claude-mem. If ports are not bound, the MCP servers aren't running — restart them. Agent tools that invoke MCP tool calls will fail silently if the MCP process isn't running, appearing as empty responses rather than explicit errors.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Inspect pre_tool_call hook rejection</h5><p>Open the agent's .md permission file (e.g. <code>Agents/Severus-Connects-Analytics.md</code>). Check ALLOWED SKILLS and ALLOWED TOOLS. The pre_tool_call hook in permissions.md fires before every tool call — if the tool isn't in the whitelist, the call is blocked at the hook level, not at the API level. This is by design — add the tool to the whitelist or route through Gateway.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><h5>Inspect Obsidian Audit-Log.md for the failure event</h5><p>Every significant agent action is logged to Audit-Log.md via memory_reflect.py. Search for the session timestamp. The audit log gives you the full event trace — what the agent attempted, what was blocked, and what succeeded. This is your distributed trace for the agent layer. If the audit log shows no entry, the agent never started or crashed before the first log write.</p></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-content"><h5>Run recall.py before retrying</h5><p>Before re-invoking a failed agent, run <code>python3 .agent/tools/recall.py "agent failure [agent-name]"</code>. This surfaces any historical lessons about this specific failure class. If a lesson exists, it may tell you the root cause immediately — saving the reproduce cycle entirely.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="co amber">
+      <div class="cl">Senior-Level Interview Answer — AI System Failure</div>
+      <p><em>"My AI agent system has six distinct failure classes, each with a different diagnostic path. The first thing I do is determine the failure class — is it an API authentication issue (all agents fail simultaneously), a permission boundary violation (one agent refuses one tool), an MCP tool invocation failure (memory operations return empty), or a token budget problem (responses truncate)? Each class points to a different layer. For permission boundary violations specifically, my pre_tool_call hook enforces an RBAC policy on every tool invocation — if an agent tries to call a tool outside its whitelist, the hook blocks it and logs the event. This is by design. The resolution is either to add the tool to the agent's permission envelope or route the action through Gateway, which is the only unrestricted orchestrator in the system."</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ADS -->
+<div class="page" id="s-ads">
+  <div class="banner" style="background:linear-gradient(135deg,#1E6B3C,#2EA05A)">
+    <div class="sec-lbl">Scenario 5</div>
+    <h2>Google Ads / GA4 Issues</h2>
+    <p>Telemetry layer validation, conversion pipeline, campaign gate conditions, Merchant Center feed status.</p>
+  </div>
+  <div class="content">
+    <h3 class="sh">GA4 Telemetry Not Tracking — Diagnostic</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Verify Measurement ID binding</h5><p>GA4 → Admin → Data Streams → copy Measurement ID (G-XXXXXXXXXX). Compare against the gtag.js script parameter in the website's &lt;head&gt;. A single character mismatch silently writes events to a phantom property — the current property receives nothing. This is the most common and hardest-to-spot misconfiguration.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Real-time telemetry validation via DebugView</h5><p>GA4 → Admin → DebugView. Open the website in a separate tab. Events should appear in DebugView within 2 seconds — DebugView bypasses the standard 24-48hr processing delay. If events appear but conversion events don't count, the event is present but not marked as a conversion action in GA4 → Admin → Events → Mark as Conversion.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Confirm gtag.js is loading in network telemetry</h5><p>DevTools → Network → filter by "gtag". Confirm a request to <code>www.googletagmanager.com/gtag/js?id=G-XXXXXX</code> returns 200. A missing request means the script isn't installed on that page. Check the Next.js <code>_app.tsx</code> or layout.tsx for the Script component placement.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><h5>Check n8n WF-03 quality gate state</h5><p>WF-03 includes a 5-day gate window. If GA4 wasn't confirmed live within the gate, a remediation checklist fires. Check n8n WF-03 Executions to see the gate result — PASS or BLOCK. A BLOCK at WF-03 should have also blocked WF-04 (campaign gate). If campaigns launched despite a WF-03 BLOCK, audit the workflow trigger logic for a bypass condition.</p></div></div>
+    </div>
+
+    <h3 class="sh">Google Ads Not Delivering — Diagnostic</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Campaign eligibility status</h5><p>Google Ads → Campaigns → Status column. "Eligible" = healthy. "Eligible (limited)" = budget, policy, or targeting is constraining reach — not a fault, but an optimisation opportunity. "Under review" = Google's policy review (24-72 hrs, normal for new campaigns). "Disapproved" = policy violation — check Ads → Tools → Policy Manager for the specific violation reason.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Shopping: product feed approval in Merchant Center</h5><p>Google Merchant Center → Products → Diagnostics. Disapproved products don't serve impressions. Common disapproval reasons: missing GTIN, price mismatch between feed and landing page, missing availability value. Each disapproval reason is actionable — fix the feed attribute and re-submit.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Verify the WF-04 campaign gate was cleared</h5><p>Check n8n WF-04 Executions for the client. The gate checks three conditions: (1) GA4 live (binary check via Measurement ID validation), (2) minimum 5 conversions recorded (count check against GA4 Conversions report), (3) conversion values set (not zero). If the gate returned BLOCK, the campaign was blocked by design. This is correct behaviour — do not bypass the gate.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><h5>Conversion pipeline integrity — GA4 → Google Ads link</h5><p>Google Ads → Tools → Measurement → Conversions. Each conversion action needs status "Recording conversions". If "No recent conversions", the GA4 → Google Ads link may be broken: GA4 → Admin → Google Ads Links → verify the link is active. Without this link, GA4 conversion data doesn't flow to Ads for Smart Bidding signals.</p></div></div>
+    </div>
+
+    <div class="co green"><div class="cl">Senior-Level Interview Answer</div><p><em>"I treat GA4 as the telemetry layer of the entire client engagement. Before any campaign launches, my n8n automation enforces a quality gate with three conditions: GA4 is confirmed live (verified via DebugView real-time events), a minimum conversion baseline of five events is established, and conversion values are set for Smart Bidding. If any condition fails, the gate blocks campaign launch — it doesn't just warn, it prevents. This protects the client from spending budget into an unmeasured environment. When a campaign isn't delivering after launch, I diagnose in order: campaign eligibility status, product feed approval in Merchant Center for Shopping, then the GA4-to-Ads conversion pipeline to ensure Smart Bidding has the signal data it needs."</em></p></div>
+  </div>
+</div>
+
+<!-- DEPLOY -->
+<div class="page" id="s-deploy">
+  <div class="banner" style="background:linear-gradient(135deg,#2E75B6,#4A9FDB)">
+    <div class="sec-lbl">Scenario 6</div>
+    <h2>Deployment / Vercel Issues</h2>
+    <p>CI/CD pipeline failures, build-time vs runtime env var injection, Cloudflare edge routing, rollback strategy.</p>
+  </div>
+  <div class="content">
+    <h3 class="sh">Deployment Pipeline — Full Trace</h3>
+    <div class="co blue">
+      <div class="cl">CI/CD Flow</div>
+      <p>Git push to main → Vercel detects push event → pulls repository at HEAD → runs <code>npm ci</code> (deterministic install, uses package-lock.json) → runs <code>npm run build</code> (TypeScript compile + Next.js bundle) → if build passes, promotes to production URL → Cloudflare CDN invalidates edge cache for changed assets → new version serves globally within ~30 seconds.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><h5>Read Vercel build logs — exact error first</h5><p>Vercel Dashboard → Deployments → failed deployment → View Logs. The build log is your primary observability surface. Common failures: <code>Module not found: '@/components/...'</code> = TypeScript path alias not configured in tsconfig.json. <code>Type error: Type 'X' is not assignable to type 'Y'</code> = TypeScript strict mode failure. <code>ESLint: error</code> = lint rule violation blocking build.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><h5>Reproduce locally with deterministic install</h5><p>Run <code>npm ci && npm run build</code> locally. <code>npm ci</code> uses package-lock.json exactly — same as Vercel. If this fails locally, fix it there. If it passes locally but fails on Vercel, the divergence is always env vars or Node.js version. Check Vercel Project Settings → Node.js Version matches your local version.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><h5>Build-time vs runtime env var injection</h5><p>Next.js has two injection points: build-time (baked into bundle, must be in Vercel env vars) and runtime (loaded per-request, for server-only code). <code>NEXT_PUBLIC_*</code> vars are baked at build time — they must exist in Vercel's env var store before the build runs. Runtime-only vars (no NEXT_PUBLIC_ prefix) are read by server-side code per request — they can be added after build.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><h5>Cloudflare edge routing issues</h5><p>If the domain resolves but returns an error, isolate Cloudflare from Vercel: temporarily set the DNS record from Proxied (orange cloud) to DNS-only (grey cloud). If the site works without Cloudflare proxy, the issue is a Cloudflare firewall rule, caching rule, or page rule conflicting with Vercel's routing. Check Cloudflare → Security → Firewall Rules for blocked requests.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><h5>Rollback — immediate recovery</h5><p>Vercel keeps all previous deployments. Vercel Dashboard → Deployments → find the last working deployment → "Promote to Production". This is a zero-downtime rollback — the previous bundle is already built and cached. The entire rollback takes under 30 seconds. Never push a fix forward under pressure — rollback first, investigate in a feature branch.</p></div></div>
+    </div>
+    <div class="co teal"><div class="cl">Senior-Level Interview Answer</div><p><em>"My deployment pipeline is Git-push-to-production: every commit to main triggers a Vercel build, and Cloudflare serves the result from edge nodes globally. Before any production push, I run the deploy-checklist skill from my agent brain — it enforces gates: tests passing, no unresolved TODOs, env vars confirmed, migrations reversible. The key discipline is that I never push a fix forward under pressure. If a production deployment fails, my first move is to rollback to the last known-good deployment in Vercel — that's a 30-second operation. Then I investigate the failure in a feature branch, reproduce it locally with npm ci to match the exact Vercel dependency graph, and deploy a clean fix via a pull request rather than a direct push."</em></p></div>
+  </div>
+</div>
+
+<!-- INTERVIEW -->
+<div class="page" id="s-interview">
+  <div class="banner" style="background:linear-gradient(135deg,#1F4E79,#2E75B6)">
+    <div class="sec-lbl">Interview Prep — Senior Level</div>
+    <h2>What to Say — Confident, Specific, Jargon-Rich</h2>
+    <p>Pre-built answers at mid-to-senior engineer vocabulary. Practise these out loud until they're natural.</p>
+  </div>
+  <div class="content">
+    <div class="ib">
+      <div class="ib-q">Q: "Walk me through your technical stack and how it all fits together."</div>
+      <div class="ib-a">"My stack at Severus Connects is a four-layer event-driven architecture. The presentation layer is Next.js 14 with the App Router — using React Server Components for partial hydration, deployed to Vercel's CI/CD pipeline, with Cloudflare handling edge caching and SSL termination. The service integration layer uses Python Flask for stateless REST APIs and Stripe for payment event sourcing — every payment triggers a webhook event that propagates through the automation fabric. The AI orchestration layer has eight permission-controlled agents built on Claude API, with a Gateway orchestrator as the single control plane. Each agent has a defined permission envelope enforced by a pre_tool_call hook — this is essentially RBAC applied to AI agents. The automation fabric is n8n with eight event-driven workflows — six webhook-triggered and one cron-scheduled, with a quality gate workflow that acts as a circuit breaker blocking campaign launches until tracking is verified. The memory system is three-tier: AgentMemory MCP server for hot cross-session retrieval, Pro Workflow SQLite for learnings, and Obsidian Vault as the cold audit trail."</div>
+    </div>
+
+    <div class="ib">
+      <div class="ib-q">Q: "How do you handle errors or failures in an automated system?"</div>
+      <div class="ib-a">"I designed my system around observability from the start — the principle that every failure must be discoverable, and every recoverable failure must be replayable without human intervention. n8n keeps a complete execution history for every workflow — every failed node, its input payload, and its error message is retained. This is effectively a dead-letter queue I can inspect and replay. Stripe maintains webhook delivery logs with exponential backoff retry — so transient n8n downtime doesn't permanently lose events. My agent framework logs every significant action to an Obsidian audit vault via memory_reflect.py, creating a distributed trace across the agent layer. For any critical failure, I perform a four-layer trace: event source, integration fabric, delivery layer, agent layer. Each layer has a specific observability surface and an independent replay mechanism. I can usually isolate a failure in under 10 minutes because nothing happens silently in my system."</div>
+    </div>
+
+    <div class="ib">
+      <div class="ib-q">Q: "Describe a quality assurance process you've built."</div>
+      <div class="ib-a">"I built a circuit breaker pattern into my campaign delivery pipeline using n8n Workflow 04. Before any Google Ads campaign launches, this gate evaluates three conditions: GA4 telemetry must be confirmed live via DebugView validation, a minimum of five conversion events must be recorded in the property, and conversion values must be non-zero for Smart Bidding to have valid signals. If any condition fails, the workflow sends a remediation checklist and blocks campaign launch — it doesn't warn, it prevents. This is directly analogous to a CI/CD pipeline that blocks deployment when tests fail. The gate enforces eventual consistency between the measurement layer and the campaign layer — you can't advertise into an unmeasured environment. I also run a recall protocol before any risky deployment action — my agent brain surfaces historical lessons that might be violated by the intended action, which is how I prevent repeated failure patterns."</div>
+    </div>
+
+    <div class="ib">
+      <div class="ib-q">Q: "How do you approach designing a solution for a client you've never worked with?"</div>
+      <div class="ib-a">"I have a structured intake protocol built into my agent system. The Severus-Connects-Intake agent runs a discovery workflow: it asks seven structured qualification questions, performs a firecrawl-based competitor research pass, and constructs a 500-plus word brief in NotebookLM that becomes the queryable knowledge base for the entire engagement. This is a quality gate — the brief must reach completeness before any downstream agent receives a handoff. Once the brief is complete, it maps the client's problems to service tiers. I think about solution design in terms of constraints first: budget ceiling, timeline, existing tech stack, and measurement maturity. The measurement maturity assessment is critical because it determines how quickly we can validate performance — a client with no GA4 implementation has a longer lead time before campaign launch, and my quality gates enforce that rather than letting it be skipped under pressure."</div>
+    </div>
+
+    <div class="ib">
+      <div class="ib-q">Q: "What does 'agentic AI' mean to you and how have you applied it?"</div>
+      <div class="ib-a">"To me, agentic AI means AI systems that take sequential actions toward a goal autonomously — not just responding to a prompt but executing multi-step workflows with tool use, memory, and error recovery. I've built this in practice: my Gateway agent receives an incoming lead event and orchestrates the entire client acquisition journey — delegating to Intake for discovery, to Proposer for document generation, and coordinating with n8n for automation execution. Each agent has bounded autonomy within a permission envelope — they can only call tools in their whitelist. The memory architecture is what makes it genuinely agentic: a four-layer system where raw episodic observations are promoted through a clustering cycle into durable semantic lessons. The agents get better at their tasks over time because they accumulate institutional knowledge, not just because I prompt them differently. That's the distinction I'd draw between agentic AI and sophisticated prompt engineering."</div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAIN ENGLISH + JARGON -->
+<div class="page" id="s-plain">
+  <div class="banner" style="background:linear-gradient(135deg,#4B1E78,#7B3DBF)">
+    <div class="sec-lbl">Communication</div>
+    <h2>Plain English + Senior Jargon Reference</h2>
+    <p>Explain to any interviewer, at any level. Plus your complete jargon glossary.</p>
+  </div>
+  <div class="content">
+    <h3 class="sh">Technical → Plain English (for non-technical interviewers)</h3>
+    <table class="dt">
+      <thead><tr><th>Technical Concept</th><th>Plain English</th></tr></thead>
+      <tbody>
+        <tr><td>Event-driven architecture</td><td>"My system works like falling dominoes — when one thing happens (a payment), it automatically triggers the next thing (onboarding) without me doing anything manually."</td></tr>
+        <tr><td>Orchestration vs choreography</td><td>"My Gateway agent is like a conductor — it tells each other agent exactly what to do and when. That's orchestration. The alternative (choreography) would be agents independently deciding to talk to each other, which gets harder to debug."</td></tr>
+        <tr><td>Permission envelope / RBAC</td><td>"Each AI assistant only has access to the tools it needs for its specific job — like how a customer service rep can access your order but not your payment details. My system enforces this automatically."</td></tr>
+        <tr><td>Quality gate (WF-04)</td><td>"Before any campaign goes live, the system automatically checks everything is ready — tracking is working, conversions are being recorded. If the checks fail, the campaign is blocked. It's an automated safety net."</td></tr>
+        <tr><td>MCP (Model Context Protocol)</td><td>"It's the standard language AI agents use to call tools — like how websites use HTTP to fetch data. My agents use MCP to talk to their memory systems and external tools."</td></tr>
+        <tr><td>Semantic memory / dream cycle</td><td>"My system keeps a journal of everything it learns. Periodically, it reviews the journal and extracts the important lessons into a permanent knowledge base — like how humans consolidate short-term into long-term memory during sleep."</td></tr>
+        <tr><td>Idempotent webhook replay</td><td>"If something breaks mid-process, I can re-send the trigger event safely — the system is smart enough to recognise it's seen that event before and won't process it twice."</td></tr>
+        <tr><td>Distributed trace</td><td>"When something goes wrong in my system, I can follow the problem through every layer — like a paper trail that crosses every department in a building. I know exactly where it broke."</td></tr>
+        <tr><td>Obsidian Audit Log</td><td>"Every action my AI agents take is written to a log file automatically — a permanent paper trail. If something went wrong six months ago, I can read back exactly what happened."</td></tr>
+        <tr><td>AgentMemory MCP (43 tools)</td><td>"My AI agents have persistent memory across sessions — they remember everything they've learned about each client. Without this, every conversation would start from scratch."</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Senior-Level Jargon Glossary — Your Key Terms</h3>
+    <div class="co purple">
+      <div class="cl">Terms to use naturally in the Endava interview</div>
+      <div style="line-height:2">
+        <span class="jargon">event-driven architecture</span>
+        <span class="jargon">orchestration pattern</span>
+        <span class="jargon">choreography</span>
+        <span class="jargon">permission envelope</span>
+        <span class="jargon">RBAC</span>
+        <span class="jargon">pre_tool_call hook</span>
+        <span class="jargon">idempotent replay</span>
+        <span class="jargon">exponential backoff</span>
+        <span class="jargon">circuit breaker</span>
+        <span class="jargon">quality gate</span>
+        <span class="jargon">dead-letter queue</span>
+        <span class="jargon">distributed trace</span>
+        <span class="jargon">observability</span>
+        <span class="jargon">telemetry layer</span>
+        <span class="jargon">MCP tool invocation</span>
+        <span class="jargon">skill manifest</span>
+        <span class="jargon">semantic memory</span>
+        <span class="jargon">episodic memory</span>
+        <span class="jargon">dream cycle</span>
+        <span class="jargon">recall protocol</span>
+        <span class="jargon">permission boundary</span>
+        <span class="jargon">token budget</span>
+        <span class="jargon">delegation contract</span>
+        <span class="jargon">sub-agent handoff</span>
+        <span class="jargon">eventual consistency</span>
+        <span class="jargon">partial hydration</span>
+        <span class="jargon">SSR / ISR</span>
+        <span class="jargon">stateless REST</span>
+        <span class="jargon">CI/CD pipeline</span>
+        <span class="jargon">edge runtime</span>
+        <span class="jargon">TTL (time-to-live)</span>
+        <span class="jargon">OAuth2 token expiry</span>
+        <span class="jargon">payload schema contract</span>
+        <span class="jargon">self-rewrite hook</span>
+        <span class="jargon">agentic AI</span>
+        <span class="jargon">portable brain harness</span>
+        <span class="jargon">least-privilege access</span>
+      </div>
+    </div>
+
+    <h3 class="sh">Your Three Strongest Stories — Senior Version</h3>
+    <ul class="bl">
+      <li><strong>The Circuit Breaker story:</strong> "I implemented a circuit breaker pattern in my campaign delivery pipeline. n8n Workflow 04 evaluates three conditions before allowing a campaign to launch — GA4 telemetry confirmed live, conversion baseline established, conversion values non-zero. If any condition fails, the gate blocks launch entirely. This is the same principle as a CI pipeline blocking a production deploy when tests fail — it enforces eventual consistency between the measurement layer and the execution layer."</li>
+      <li><strong>The Agentic Memory story:</strong> "My agent system uses a four-layer memory architecture with episodic-to-semantic promotion. Raw experiences are logged with importance scores and rich rationale. A periodic clustering cycle — the dream cycle — promotes high-confidence recurring patterns to durable semantic memory. Before any risky action, the agent runs a recall protocol to surface relevant lessons. The system has genuine institutional memory — it doesn't just get smarter through prompting, it accumulates knowledge through experience."</li>
+      <li><strong>The Permission Boundary story:</strong> "I designed an RBAC system for my AI agents, modelled on enterprise IAM principles. A pre_tool_call hook enforces three tiers before every tool invocation: always-allowed, requires-approval, and never-allowed. The never-allowed tier is immutable — only a human can change it. Each agent has a bounded permission envelope: only Gateway is unrestricted. This means a compromised or misconfigured agent can't escalate its own permissions or access tools outside its scope. It's security-by-design rather than security-by-trust."</li>
+    </ul>
+
+    <div class="co green">
+      <div class="cl">The One-Sentence Summary — Senior Version</div>
+      <p>"I've built a production agentic AI platform — a four-layer event-driven architecture where eight permission-controlled AI agents, eight n8n automation workflows, and a three-tier memory system operate as a coordinated system with RBAC enforcement, circuit-breaker quality gates, idempotent event replay, and a self-improving episodic-to-semantic memory promotion cycle."</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+const pages = ['cover','s-stack','s-brain','s-skills','s-sdlc','s-checkout','s-app','s-n8n','s-ai','s-ads','s-deploy','s-interview','s-plain'];
+
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById(id);
+  if (page) page.classList.add('active');
+  const nav = document.querySelector('[data-sec="' + id + '"]');
+  if (nav) nav.classList.add('active');
+  window.scrollTo(0,0);
+  try { localStorage.setItem('tsg_sec', id); } catch(e) {}
+}
+
+function toggleS(header) {
+  const body = header.nextElementSibling;
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  header.classList.toggle('open', !open);
+}
+
+try {
+  const saved = localStorage.getItem('tsg_sec');
+  if (saved && pages.includes(saved)) go(saved);
+} catch(e) {}
+</script>
+</body>
+</html>

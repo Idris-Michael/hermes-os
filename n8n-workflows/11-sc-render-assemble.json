@@ -1,0 +1,132 @@
+{
+  "name": "sc-render-assemble",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram — /render or /assemble",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "is-render-cmd",
+              "leftValue": "={{ $json.message.text || '' }}",
+              "rightValue": "^/(render|assemble)\\s+",
+              "operator": { "type": "string", "operation": "regex" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-render-cmd",
+      "name": "Filter — /render or /assemble",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse:  /render <pillar> [hook=\"...\"] [variant=N] [account=severus] [source=seedance|user_upload|hybrid]\n// Or:     /assemble <pillar> [hook=\"...\"] [variant=N] [account=severus]\nconst raw = $input.first().json.message.text || '';\nconst match = raw.match(/^\\/(render|assemble)\\s+(\\S+)(.*)$/);\nif (!match) {\n  return [{ json: { error: 'Could not parse command', raw } }];\n}\nconst command = match[1];\nconst pillar = match[2];\nconst rest = match[3] || '';\n\n// Pull key=\"value with spaces\" or key=value\nconst params = {};\nconst kvRegex = /(\\w+)=(\"([^\"]+)\"|(\\S+))/g;\nlet m;\nwhile ((m = kvRegex.exec(rest)) !== null) {\n  params[m[1].toLowerCase()] = m[3] !== undefined ? m[3] : m[4];\n}\n\nconst account = params.account || 'severus';\nconst variantIndex = params.variant !== undefined ? parseInt(params.variant, 10) : null;\nconst hookOverride = params.hook || null;\nconst assetSource = params.source || (command === 'assemble' ? 'user_upload' : null);\n\nreturn [{\n  json: {\n    command,\n    pillar,\n    account,\n    variantIndex,\n    hookOverride,\n    assetSource,\n    chat_id: $input.first().json.message.chat.id,\n    message_id: $input.first().json.message.message_id,\n    from_username: $input.first().json.message.from?.username || 'unknown',\n  },\n}];"
+      },
+      "id": "parse-cmd",
+      "name": "Parse /render or /assemble",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "=Triggering *{{ $json.command }}* for *{{ $json.pillar }}* ({{ $json.account }}){{ $json.variantIndex !== null ? ' — hook variant ' + $json.variantIndex : '' }}{{ $json.assetSource ? '\\nAsset source: ' + $json.assetSource : '' }}\n\nWatch this channel for the approval link in ~3 minutes.",
+        "additionalFields": { "parse_mode": "Markdown" },
+        "replyToMessageId": "={{ $json.message_id }}"
+      },
+      "id": "telegram-ack",
+      "name": "Telegram — acknowledge",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 200],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=cd \"{{ $env.HERMES_ROOT }}/severus-social\" && npx tsx pipeline/heartbeat.ts --on-demand --pillar={{ $('Parse /render or /assemble').first().json.pillar }} --account={{ $('Parse /render or /assemble').first().json.account }}{{ $('Parse /render or /assemble').first().json.variantIndex !== null ? ' --hook-variant=' + $('Parse /render or /assemble').first().json.variantIndex : '' }}{{ $('Parse /render or /assemble').first().json.hookOverride ? ' --hook-override=\"' + $('Parse /render or /assemble').first().json.hookOverride.replace(/\"/g, '\\\\\"') + '\"' : '' }}{{ $('Parse /render or /assemble').first().json.assetSource ? ' --asset-source=' + $('Parse /render or /assemble').first().json.assetSource : '' }}"
+      },
+      "id": "exec-heartbeat",
+      "name": "Run heartbeat.ts on-demand",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse /render or /assemble').first().json.chat_id }}",
+        "text": "={{ $json.exitCode === 0 ? '✅ Render complete — check 🎨 Creative & Content for approval link.' : '❌ Render failed:\\n```\\n' + ($json.stderr || $json.stdout || 'no output').slice(0, 1500) + '\\n```' }}",
+        "additionalFields": { "parse_mode": "Markdown" },
+        "replyToMessageId": "={{ $('Parse /render or /assemble').first().json.message_id }}"
+      },
+      "id": "telegram-result",
+      "name": "Telegram — result",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 200],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=*Usage*\n\n`/render <pillar> [hook=\"...\"] [variant=N] [account=mikeb|severus] [source=seedance|user_upload|hybrid]`\n`/assemble <pillar> [hook=\"...\"] [variant=N] [account=mikeb|severus]`\n\n*Pillars:* case-study · ga4-tip · ads-tip · process-breakdown · client-result\n\n*Examples:*\n`/render ga4-tip`\n`/render ga4-tip variant=2 source=seedance`\n`/render case-study hook=\"Most ad agencies sell you Google Ads\"`\n`/assemble process-breakdown` (uses your uploaded clips)",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-usage",
+      "name": "Telegram — usage help",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [680, 400],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram — /render or /assemble": {
+      "main": [[{ "node": "Filter — /render or /assemble", "type": "main", "index": 0 }]]
+    },
+    "Filter — /render or /assemble": {
+      "main": [
+        [{ "node": "Parse /render or /assemble", "type": "main", "index": 0 }],
+        [{ "node": "Telegram — usage help", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse /render or /assemble": {
+      "main": [[{ "node": "Telegram — acknowledge", "type": "main", "index": 0 }]]
+    },
+    "Telegram — acknowledge": {
+      "main": [[{ "node": "Run heartbeat.ts on-demand", "type": "main", "index": 0 }]]
+    },
+    "Run heartbeat.ts on-demand": {
+      "main": [[{ "node": "Telegram — result", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [
+    { "id": "severus-connects", "name": "Severus Connects" },
+    { "id": "ugc-pipeline", "name": "UGC Pipeline" }
+  ]
+}

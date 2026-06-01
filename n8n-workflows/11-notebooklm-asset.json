@@ -1,0 +1,119 @@
+{
+  "name": "notebooklm-asset",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram — /trigger notebooklm_asset",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "version": 2 },
+          "combinator": "and",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/trigger notebooklm_asset",
+              "operator": { "type": "string", "operation": "startsWith" }
+            }
+          ]
+        }
+      },
+      "id": "filter-command",
+      "name": "Filter — command matches",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse: /trigger notebooklm_asset <type> <notebook_id> [--flag=value ...] | <instructions>\n// Supported types map 1:1 to the real notebooklm CLI subcommands.\nconst text = $input.first().json.message.text;\nconst body = text.replace('/trigger notebooklm_asset', '').trim();\nconst [head, ...rest] = body.split('|');\nconst instructions = rest.join('|').trim() || null;\n\nconst tokens = head.trim().split(/\\s+/);\nconst [asset_type, notebook_id, ...flagTokens] = tokens;\n\nconst validTypes = ['audio', 'video', 'report', 'infographic', 'slide-deck'];\nif (!validTypes.includes(asset_type)) {\n  throw new Error(`Invalid asset_type '${asset_type}'. Use one of: ${validTypes.join(', ')}`);\n}\nif (!notebook_id) {\n  throw new Error('notebook_id is required as second positional argument');\n}\n\n// Parse --key=value flags\nconst flags = {};\nfor (const tok of flagTokens) {\n  const m = tok.match(/^--([a-z-]+)=(.+)$/);\n  if (m) flags[m[1]] = m[2];\n}\n\n// Build the real CLI command\nconst parts = ['notebooklm', 'generate', asset_type, '-n', notebook_id, '--wait', '--json'];\nfor (const [k, v] of Object.entries(flags)) {\n  parts.push(`--${k}`, v);\n}\nif (instructions) {\n  // 'description' is the positional argument that maps to --instructions internally\n  parts.push(JSON.stringify(instructions));\n}\n\nreturn [{ json: {\n  chat_id: $input.first().json.message.chat.id,\n  asset_type,\n  notebook_id,\n  flags,\n  instructions,\n  cli_command: parts.join(' '),\n  consumer_agent: (asset_type === 'audio' || asset_type === 'video') ? 'Social-VideoCreator' : 'Social-ContentStrategy'\n}}];"
+      },
+      "id": "parse-args",
+      "name": "Parse — build real CLI command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "=🛠️ NotebookLM job starting (synchronous, may take 5–10 min)\n• Type: {{ $json.asset_type }}\n• Notebook: {{ $json.notebook_id }}\n• Consumer: {{ $json.consumer_agent }}\n• Command: `{{ $json.cli_command }}`\n\nThis n8n execution will block until the CLI returns. I'll deliver the asset when ready.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-ack",
+      "name": "Telegram — dispatch ack",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "command": "={{ $('Parse — build real CLI command').item.json.cli_command }}"
+      },
+      "id": "exec-cli",
+      "name": "Execute — notebooklm CLI (blocking, --wait)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1080, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// notebooklm CLI with --json --wait returns a JSON GenerationStatus on stdout.\n// On failure, exitCode != 0 and stderr contains the message.\nconst exec = $input.first().json;\nif (exec.exitCode !== 0) {\n  throw new Error(`notebooklm CLI failed (exit ${exec.exitCode}): ${exec.stderr || 'unknown'}`);\n}\nlet result;\ntry {\n  result = JSON.parse(exec.stdout);\n} catch (e) {\n  throw new Error(`Failed to parse CLI JSON output: ${e.message}\\nstdout: ${exec.stdout?.slice(0, 500)}`);\n}\n\n// Extract artifact metadata for delivery\nreturn [{ json: {\n  artifact_id: result.artifact_id || result.id,\n  artifact_type: result.type || $('Parse — build real CLI command').item.json.asset_type,\n  state: result.state || result.status,\n  title: result.title || 'Untitled artifact',\n  asset_url: result.url || result.download_url || null,\n  notebook_id: $('Parse — build real CLI command').item.json.notebook_id,\n  chat_id: $('Parse — build real CLI command').item.json.chat_id,\n  raw: result\n}}];"
+      },
+      "id": "parse-result",
+      "name": "Parse — CLI JSON result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ NotebookLM asset ready\n• Type: {{ $json.artifact_type }}\n• Title: {{ $json.title }}\n• State: {{ $json.state }}\n• Notebook: {{ $json.notebook_id }}\n• Artifact ID: `{{ $json.artifact_id }}`\n{{ $json.asset_url ? '• URL: ' + $json.asset_url : '• Use `notebooklm artifact download -n ' + $json.notebook_id + ' ' + $json.artifact_id + '` to fetch' }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-deliver",
+      "name": "Telegram — Creative & Content delivery",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1520, 300]
+    }
+  ],
+  "connections": {
+    "Telegram — /trigger notebooklm_asset": {
+      "main": [[{ "node": "Filter — command matches", "type": "main", "index": 0 }]]
+    },
+    "Filter — command matches": {
+      "main": [[{ "node": "Parse — build real CLI command", "type": "main", "index": 0 }]]
+    },
+    "Parse — build real CLI command": {
+      "main": [[{ "node": "Telegram — dispatch ack", "type": "main", "index": 0 }]]
+    },
+    "Telegram — dispatch ack": {
+      "main": [[{ "node": "Execute — notebooklm CLI (blocking, --wait)", "type": "main", "index": 0 }]]
+    },
+    "Execute — notebooklm CLI (blocking, --wait)": {
+      "main": [[{ "node": "Parse — CLI JSON result", "type": "main", "index": 0 }]]
+    },
+    "Parse — CLI JSON result": {
+      "main": [[{ "node": "Telegram — Creative & Content delivery", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "executionTimeout": 900
+  },
+  "tags": [
+    { "name": "severus" },
+    { "name": "notebooklm" },
+    { "name": "cli-execute" }
+  ]
+}

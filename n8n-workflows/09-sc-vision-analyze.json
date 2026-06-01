@@ -1,0 +1,144 @@
+{
+  "name": "sc-vision-analyze",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram — /vision_analyze",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "is-vision-cmd",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "^/vision_analyze\\s+https?://",
+              "operator": { "type": "string", "operation": "regex" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-vision-cmd",
+      "name": "Filter — /vision_analyze + URL",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.message.text;\nconst match = text.match(/^\\/vision_analyze\\s+(https?:\\/\\/\\S+)/);\nreturn [{ json: { source_url: match ? match[1] : null, chat_id: $input.first().json.message.chat.id } }];"
+      },
+      "id": "extract-url",
+      "name": "Extract URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={\n  \"contents\": [{\n    \"parts\": [\n      { \"text\": \"You are the Severus Connects Vision Orchestrator. Analyze this video for TikTok/Reel hook potential. Identify the top 5 segments by energy + visual interest that will stop the scroll. For each, return: timestamp (range like 0:02-0:07), visual_description, hook_strategy (one of: Curiosity-Gap, Social-Proof, Pattern-Interrupt, Founder-POV, Stakes-Reveal), and rationale. Output ONLY valid JSON matching this schema: { source_url, analyzed_at, hooks: [{ rank, timestamp, visual_description, hook_strategy, rationale }] }. No prose, no markdown fences.\" },\n      { \"file_data\": { \"file_uri\": \"{{ $json.source_url }}\", \"mime_type\": \"video/mp4\" } }\n    ]\n  }],\n  \"generationConfig\": {\n    \"temperature\": 0.4,\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+        "options": { "timeout": 120000 }
+      },
+      "id": "gemini-vision",
+      "name": "Gemini Omni Flash — Vision Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.candidates?.[0]?.content?.parts?.[0]?.text;\nif (!raw) {\n  return [{ json: { error: 'No content from Gemini', raw: $input.first().json } }];\n}\ntry {\n  const parsed = JSON.parse(raw);\n  parsed.source_url = $('Extract URL').first().json.source_url;\n  parsed.analyzed_at = new Date().toISOString();\n  return [{ json: { ...parsed, chat_id: $('Extract URL').first().json.chat_id, formatted: '```json\\n' + JSON.stringify(parsed, null, 2) + '\\n```' } }];\n} catch (e) {\n  return [{ json: { error: 'Invalid JSON from Gemini', raw, chat_id: $('Extract URL').first().json.chat_id } }];\n}"
+      },
+      "id": "parse-json",
+      "name": "Parse Vision JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CREATIVE_CHAT_ID }}",
+        "text": "=*Vision Analysis Complete*\n\nSource: {{ $json.source_url }}\n\n{{ $json.formatted || ('Error: ' + $json.error) }}\n\n@CopyWriter — draft 3 script variants using rank-1 hook.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-creative",
+      "name": "Telegram — Creative Channel",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 200],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Vision analysis ignored — usage: /vision_analyze <video URL>",
+        "additionalFields": {}
+      },
+      "id": "telegram-error",
+      "name": "Telegram — Usage Help",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [680, 400],
+      "credentials": {
+        "telegramApi": { "id": "severus-bot", "name": "Severus Bot" }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram — /vision_analyze": {
+      "main": [[{ "node": "Filter — /vision_analyze + URL", "type": "main", "index": 0 }]]
+    },
+    "Filter — /vision_analyze + URL": {
+      "main": [
+        [{ "node": "Extract URL", "type": "main", "index": 0 }],
+        [{ "node": "Telegram — Usage Help", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract URL": {
+      "main": [[{ "node": "Gemini Omni Flash — Vision Analysis", "type": "main", "index": 0 }]]
+    },
+    "Gemini Omni Flash — Vision Analysis": {
+      "main": [[{ "node": "Parse Vision JSON", "type": "main", "index": 0 }]]
+    },
+    "Parse Vision JSON": {
+      "main": [[{ "node": "Telegram — Creative Channel", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [
+    { "id": "severus-connects", "name": "Severus Connects" },
+    { "id": "vision", "name": "Vision Orchestrator" }
+  ]
+}

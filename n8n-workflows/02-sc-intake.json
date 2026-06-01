@@ -1,0 +1,117 @@
+{
+  "name": "sc-intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sc-intake",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook — /sc intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the Severus Connects intake agent. Ask these 7 questions one at a time, then synthesise into a brief:\n1. Business name and URL\n2. Monthly Google Ads spend\n3. Current ROAS or CPA (if known)\n4. Main product/service they're advertising\n5. Target customer (who buys, age, location)\n6. Biggest ads frustration right now\n7. What does success look like in 90 days?\n\nAfter all answers, return a JSON brief: { client_name, url, monthly_spend, current_roas, product, target_customer, pain_point, success_criteria, recommended_service }"
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.body.message || 'Start intake for new client' }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-intake",
+      "name": "Claude — Intake Agent",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ JSON.parse($('Claude — Intake Agent').item.json.content).url }}",
+        "options": { "onlyMainContent": true }
+      },
+      "id": "firecrawl-client",
+      "name": "Firecrawl — Research Client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are synthesising a client brief for Severus Connects. Given intake data and website research, produce a structured brief covering: business overview, ads opportunity, recommended Anti-Gravity package (GA4 + Shopping + PMax), 90-day roadmap, and first 3 quick wins. Be specific and actionable."
+            },
+            {
+              "role": "user",
+              "content": "=Intake brief: {{ $('Claude — Intake Agent').item.json.content }}\n\nWebsite research: {{ $('Firecrawl — Research Client').item.json.content?.substring(0, 3000) }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-synthesise",
+      "name": "Claude — Synthesise Brief",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "filePath": "=C:/Users/profs/Desktop/Sandbox/Clients/{{ JSON.parse($('Claude — Intake Agent').item.json.content).client_name || 'new-client' }}/brief.md",
+        "fileContent": "=# Client Brief\n\n{{ $('Claude — Synthesise Brief').item.json.content }}\n\n---\n*Generated: {{ $now.toISOString() }}*"
+      },
+      "id": "obsidian-brief",
+      "name": "Write Brief to Obsidian",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=📋 *New Client Brief Ready*\n\n*Client:* {{ JSON.parse($('Claude — Intake Agent').item.json.content).client_name }}\n*Monthly Spend:* {{ JSON.parse($('Claude — Intake Agent').item.json.content).monthly_spend }}\n*Recommended:* {{ JSON.parse($('Claude — Intake Agent').item.json.content).recommended_service }}\n\nBrief saved to Obsidian Vault.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-notify",
+      "name": "Telegram — Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true, \"brief\": \"saved\" }"
+      },
+      "id": "webhook-response",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — /sc intake": { "main": [[{ "node": "Claude — Intake Agent", "type": "main", "index": 0 }]] },
+    "Claude — Intake Agent": { "main": [[{ "node": "Firecrawl — Research Client", "type": "main", "index": 0 }]] },
+    "Firecrawl — Research Client": { "main": [[{ "node": "Claude — Synthesise Brief", "type": "main", "index": 0 }]] },
+    "Claude — Synthesise Brief": { "main": [[{ "node": "Write Brief to Obsidian", "type": "main", "index": 0 }]] },
+    "Write Brief to Obsidian": { "main": [[{ "node": "Telegram — Notify", "type": "main", "index": 0 }]] },
+    "Telegram — Notify": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "description": "Client intake: webhook → 7-question intake → research client → synthesise brief → save to Obsidian → Telegram notify" }
+}

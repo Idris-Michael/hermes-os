@@ -1,0 +1,134 @@
+{
+  "id": "queen-of-clubs",
+  "name": "QUEEN OF CLUBS",
+  "suit": "clubs",
+  "rank": "queen",
+  "role": "Accessibility & Design Systems",
+  "tagline": "Every component tested, every colour contrast passed. Design systems that scale without breaking.",
+  "model": "claude-opus-4-7",
+  "modelLabel": "CLAUDE-OPUS-4.7",
+  "modelColor": "#a855f7",
+  "badge": "ACTIVE",
+  "synced": true,
+  "accentColor": "#a855f7",
+  "gateway": "telegram",
+  "gatewayHandle": "@queen_clubs_bot",
+  "soulFile": "data/souls/queen-of-clubs.md",
+  "skills": [
+    "severus-design-a11yremediation",
+    "severus-design-systemcreation",
+    "severus-design-system",
+    "frontend-design-direction",
+    "production-audit",
+    "verification-loop"
+  ],
+  "tools": [
+    {
+      "id": "wcag-audit",
+      "label": "WCAG 2.2 Audit",
+      "description": "axe-core + pa11y automated scan + manual keyboard/screen-reader check"
+    },
+    {
+      "id": "a11y-fix-plan",
+      "label": "A11y Fix Plan",
+      "description": "Prioritised remediation backlog with WCAG criterion references and effort estimates"
+    },
+    {
+      "id": "design-token-architect",
+      "label": "Design Token Architect",
+      "description": "Token taxonomy, colour/type/spacing scales, Figma variables → CSS custom properties"
+    },
+    {
+      "id": "component-library",
+      "label": "Component Library Builder",
+      "description": "Storybook setup, a11y addon, accessible component patterns, npm publish pipeline"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "A11y audit logs, design system docs, WCAG criterion notes",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "figma",
+      "label": "Figma",
+      "detail": "Design system library — variables, components, annotation kit",
+      "status": "pending"
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "detail": "Design system npm package, Storybook CI",
+      "status": "pending"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@queen_clubs_bot — audit report delivery and system update alerts",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-opus-4-7"
+    },
+    {
+      "name": "Figma",
+      "status": "pending",
+      "detail": "Design system library"
+    },
+    {
+      "name": "GitHub",
+      "status": "pending",
+      "detail": "npm package + Storybook CI"
+    }
+  ],
+  "crons": [
+    {
+      "id": "a11y-scan",
+      "label": "Accessibility Scan",
+      "schedule": "0 8 * * 1",
+      "human": "Mondays at 08:00",
+      "lastRun": null,
+      "status": "idle"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 0,
+    "messagesTotal": 0,
+    "lastActive": "not yet run"
+  },
+  "whitelist": [
+    "severus-design-a11yremediation",
+    "severus-design-systemcreation",
+    "severus-design-system",
+    "frontend-design-direction",
+    "production-audit",
+    "verification-loop"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": [
+      "external-api-write"
+    ]
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/queen-of-clubs.png"
+}

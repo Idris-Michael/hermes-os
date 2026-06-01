@@ -1,0 +1,79 @@
+{
+  "name": "sc-proposal-generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "notes": "Input: { client_name, monthly_spend, current_roas, pain_point, url }"
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "filePath": "={{ 'C:/Users/profs/Desktop/Sandbox/Clients/' + $json.client_name + '/brief.md' }}"
+      },
+      "id": "read-brief",
+      "name": "Read Client Brief",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the Severus Connects Proposer Agent. Write a compelling proposal for the Anti-Gravity package (GA4 + AI Shopping Ads + AI Performance Max). Structure:\n\n1. **The Problem** — name their specific pain in 2 sentences\n2. **The Anti-Gravity System** — explain the 3-layer stack plainly\n3. **What You Get** — 5 bullet deliverables\n4. **Expected Outcomes** — specific ROAS/CPA targets based on their current numbers\n5. **Timeline** — Week 1-2 GA4, Week 3-4 Shopping, Month 2 PMax\n6. **Investment** — tiered pricing: Starter £800/mo, Growth £1,500/mo, Scale £2,500/mo\n7. **Next Step** — single clear CTA\n\nTone: direct, no fluff, numbers-first. Sound like a specialist not an agency."
+            },
+            {
+              "role": "user",
+              "content": "=Write a proposal for:\n\n{{ $('Read Client Brief').item.json.data }}\n\nAdditional context:\n- Monthly spend: {{ $('Manual Trigger').item.json.monthly_spend }}\n- Current ROAS: {{ $('Manual Trigger').item.json.current_roas }}\n- Main pain: {{ $('Manual Trigger').item.json.pain_point }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-proposal",
+      "name": "Claude — Generate Proposal",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "filePath": "={{ 'C:/Users/profs/Desktop/Sandbox/Clients/' + $('Manual Trigger').item.json.client_name + '/proposal-' + $now.format('yyyy-MM-dd') + '.md' }}",
+        "fileContent": "={{ $('Claude — Generate Proposal').item.json.content }}"
+      },
+      "id": "save-proposal",
+      "name": "Save Proposal to Obsidian",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=📝 *Proposal Ready*\n\n*Client:* {{ $('Manual Trigger').item.json.client_name }}\n\nProposal saved to Obsidian. Review and send.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-notify",
+      "name": "Telegram — Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Read Client Brief", "type": "main", "index": 0 }]] },
+    "Read Client Brief": { "main": [[{ "node": "Claude — Generate Proposal", "type": "main", "index": 0 }]] },
+    "Claude — Generate Proposal": { "main": [[{ "node": "Save Proposal to Obsidian", "type": "main", "index": 0 }]] },
+    "Save Proposal to Obsidian": { "main": [[{ "node": "Telegram — Notify", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "description": "Proposal generator: read brief → Claude writes Anti-Gravity proposal → save to Obsidian → Telegram notify" }
+}

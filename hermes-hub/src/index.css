@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Bebas Neue", "Space Grotesk", sans-serif;
+
+  /* OS palette */
+  --color-os-bg: #070d07;
+  --color-os-surface: rgba(12, 20, 12, 0.95);
+  --color-os-border: rgba(255,255,255,0.10);
+  --color-os-gold: #D4A017;
+  --color-os-gold-dim: rgba(212, 160, 23, 0.15);
+  --color-os-teal: #2dd4bf;
+  --color-os-teal-dim: rgba(45, 212, 191, 0.12);
+  --color-os-red: #ef4444;
+  --color-os-muted: #4b5563;
+  --color-os-text: #e5e7eb;
+  --color-os-text-dim: #6b7280;
+
+  --color-emerald: #10b981;
+  --color-emerald-bright: #00ffcc;
+  --color-violet: #7c3aed;
+  --color-violet-bright: #ff00cc;
+  --color-gold-bright: #f59e0b;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Overwatch legacy palette */
+  --color-neon-blue: #00f0ff;
+  --color-neon-green: #39ff14;
+  --color-neon-red: #ff003c;
+  --color-dark-surface: rgba(10, 10, 12, 0.7);
+  --color-dark-border: rgba(0, 240, 255, 0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-os-bg);
+  color: var(--color-os-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+/* ── OS Layout ──────────────────────────────────────────────────────────── */
+.os-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.os-sidebar {
+  width: 168px;
+  min-width: 168px;
+  background: rgba(5, 10, 5, 0.98);
+  border-right: 1px solid var(--color-os-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.os-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.os-topbar {
+  height: 42px;
+  min-height: 42px;
+  border-bottom: 1px solid var(--color-os-border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: rgba(5, 10, 5, 0.8);
+}
+
+.os-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── Sidebar nav ────────────────────────────────────────────────────────── */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--color-os-text-dim);
+  cursor: pointer;
+  transition: color 180ms var(--ease-spring), background 180ms var(--ease-spring), transform 180ms var(--ease-spring);
+  border-radius: 0;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--color-os-text); background: rgba(255,255,255,0.04); }
+.nav-link:active { transform: scale(0.98); }
+.nav-link.active { color: var(--color-os-text); background: rgba(255,255,255,0.06); }
+
+.agent-pill {
+  display: flex;
+  align-items: center;
+  margin: 2px 10px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: opacity 180ms var(--ease-spring), transform 180ms var(--ease-spring), box-shadow 220ms var(--ease-out-expo);
+  text-decoration: none;
+}
+.agent-pill:hover { opacity: 0.85; }
+.agent-pill:active { transform: scale(0.98); }
+.agent-pill.hermes { background: #D4A017; color: #000; }
+.agent-pill.openclaw { background: transparent; border: 1px solid rgba(239,68,68,0.5); color: #ef4444; }
+
+/* ── Pill badges ────────────────────────────────────────────────────────── */
+.badge { display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; }
+.badge-teal { background: rgba(45,212,191,0.15); color: #2dd4bf; }
+.badge-amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.badge-grey { background: rgba(107,114,128,0.2); color: #9ca3af; }
+.badge-green { background: rgba(34,197,94,0.15); color: #4ade80; }
+.badge-red { background: rgba(239,68,68,0.15); color: #f87171; }
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+.os-card {
+  background: rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Command-Center Utilities ──────────────────────────────────────────────── */
+.cc-glass { background: rgba(0,0,0,0.40); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.10); box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 32px rgba(0,0,0,0.45); }
+.cc-press { transition: transform 180ms var(--ease-spring), box-shadow 220ms var(--ease-out-expo), border-color 220ms var(--ease-out-expo); }
+.cc-press:hover { border-color: rgba(255,255,255,0.18); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 0 24px rgba(16,185,129,0.18); }
+.cc-press:active { transform: scale(0.98); }
+.cc-glow-emerald { box-shadow: 0 0 12px rgba(16,185,129,0.45), inset 0 1px 0 rgba(255,255,255,0.10); }
+.cc-glow-gold { box-shadow: 0 0 12px rgba(245,158,11,0.45), inset 0 1px 0 rgba(255,255,255,0.10); }
+.cc-glow-violet { box-shadow: 0 0 12px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.10); }
+
+/* ── Section label ──────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-os-muted);
+  text-transform: uppercase;
+}
+
+/* ── Display font (Bebas Neue / retro stencil) ──────────────────────────── */
+.font-display { font-family: var(--font-display); }
+
+/* ── Overwatch CSS utilities (preserved for LondonDashboard etc.) ─────── */
+.glass-panel {
+  background: var(--color-dark-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-dark-border);
+  box-shadow: inset 0 0 20px rgba(0,240,255,0.05), 0 8px 32px rgba(0,0,0,0.5);
+  position: relative;
+}
+.glass-panel::before, .glass-panel::after {
+  content: ''; position: absolute; width: 10px; height: 10px;
+  border-style: solid; border-color: var(--color-neon-blue); opacity: 0.5; pointer-events: none;
+}
+.glass-panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.glass-panel::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.neon-text-blue  { color: var(--color-neon-blue);  text-shadow: 0 0 8px rgba(0,240,255,0.6); }
+.neon-text-green { color: var(--color-neon-green); text-shadow: 0 0 8px rgba(57,255,20,0.6); }
+.neon-text-red   { color: var(--color-neon-red);   text-shadow: 0 0 8px rgba(255,0,60,0.6); }
+.scanline {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 100; opacity: 0.6;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,240,255,0.05) 50%, rgba(0,0,0,0.1));
+  background-size: 100% 4px;
+}
+.hex-grid {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 1; opacity: 0.4;
+  background-image: radial-gradient(rgba(0,240,255,0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.radar-container { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+.radar-sweep {
+  position: absolute; width: 150vw; height: 150vw; border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 75%, rgba(0,240,255,0.15) 100%);
+  animation: sweep 4s linear infinite; transform-origin: center center;
+}
+.radar-rings {
+  position: absolute; width: 100vw; height: 100vw; border-radius: 50%;
+  border: 1px solid rgba(0,240,255,0.1); box-shadow: inset 0 0 40px rgba(0,240,255,0.05);
+  display: flex; justify-content: center; align-items: center;
+}
+.radar-rings::before { content: ''; position: absolute; width: 66%; height: 66%; border-radius: 50%; border: 1px solid rgba(0,240,255,0.1); }
+.radar-rings::after  { content: ''; position: absolute; width: 33%; height: 33%; border-radius: 50%; border: 1px solid rgba(0,240,255,0.1); }
+@keyframes sweep { to { transform: rotate(360deg); } }
+
+/* maplibre popup overrides */
+.maplibregl-popup-content { background-color: transparent !important; box-shadow: none !important; padding: 0 !important; }
+.maplibregl-popup-tip { border-top-color: rgba(10,10,12,0.9) !important; border-bottom-color: rgba(10,10,12,0.9) !important; }
+.maplibregl-popup-close-button { color: white !important; font-size: 16px !important; right: 8px !important; top: 8px !important; z-index: 10 !important; transition: all 0.2s; }
+.maplibregl-popup-close-button:hover { background-color: transparent !important; color: var(--color-neon-blue) !important; transform: scale(1.2); }
+
+/* ── Pulsing dot ────────────────────────────────────────────────────────── */
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ── Memory node glow ───────────────────────────────────────────────────── */
+@keyframes node-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}

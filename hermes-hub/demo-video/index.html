@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1920px; height: 1080px; overflow: hidden; background: #070d07; font-family: 'Space Grotesk', sans-serif; }
+
+/* ── composition root ── */
+[data-composition-id] { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+
+/* ── scene base ── */
+.scene {
+  position: absolute; top: 0; left: 0;
+  width: 1920px; height: 1080px;
+  overflow: hidden; opacity: 0;
+}
+#scene-intro { opacity: 1; }
+
+/* ── shared label ── */
+.section-label {
+  font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: #4b5563; font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ══ SCENE 1: DASHBOARD ══════════════════════════════════════════════════ */
+#scene-dashboard { background: #070d07; display: flex; flex-direction: row; }
+
+#db-sidebar {
+  width: 168px; min-width: 168px; height: 1080px;
+  background: rgba(5,10,5,0.98);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column;
+  transform: translateX(-168px);
+}
+.db-brand { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.db-brand-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: #D4A017; color: #000;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.db-brand-name { font-size: 10px; font-weight: 700; color: #fff; line-height: 1.2; margin-top: 6px; }
+.db-brand-sub { font-size: 8px; color: #4b5563; letter-spacing: .1em; text-transform: uppercase; }
+.db-nav { padding: 12px 0; }
+.db-nav-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; font-size: 12px; color: #6b7280;
+  cursor: pointer; transition: color .15s;
+}
+.db-nav-link.active { color: #D4A017; background: rgba(212,160,23,0.06); border-left: 2px solid #D4A017; }
+.db-section-label { padding: 12px 16px 4px; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; color: #374151; }
+.db-agent-pill {
+  margin: 2px 10px; padding: 6px 12px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; letter-spacing: .08em;
+  display: flex; align-items: center; gap: 6px;
+}
+.db-agent-hermes { background: rgba(212,160,23,0.15); color: #D4A017; border: 1px solid rgba(212,160,23,0.3); }
+.db-agent-openclaw { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+.db-sidebar-footer {
+  margin-top: auto; padding: 12px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.db-paperclip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 6px; font-size: 11px;
+  color: #374151; border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
+}
+.db-paperclip-port { margin-left: auto; font-size: 9px; color: #2dd4bf; }
+
+#db-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+#db-topbar {
+  height: 42px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(5,10,5,0.6);
+}
+#db-topbar-rule {
+  position: absolute; top: 41px; left: 168px;
+  width: calc(1920px - 168px); height: 1px;
+  background: linear-gradient(90deg, rgba(212,160,23,0.3), transparent);
+  transform-origin: left; transform: scaleX(0);
+}
+.db-topbar-left { font-size: 11px; color: #6b7280; }
+.db-topbar-left span { color: #9ca3af; }
+
+#db-content { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
+
+/* greeting */
+#db-greeting { display: flex; align-items: flex-start; justify-content: space-between; }
+.db-greeting-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: #22c55e;
+  box-shadow: 0 0 10px #22c55e, 0 0 20px rgba(34,197,94,0.5);
+  flex-shrink: 0; margin-top: 6px; margin-right: 12px;
+}
+.db-greeting-h1 { font-size: 22px; font-weight: 600; color: #f0f0f0; line-height: 1.3; }
+.db-greeting-h1 .gold { color: #D4A017; text-shadow: 0 0 20px rgba(212,160,23,0.4); }
+.db-greeting-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600;
+  background: rgba(212,160,23,0.12); color: #D4A017;
+  border: 1px solid rgba(212,160,23,0.3); margin-left: 12px;
+  box-shadow: 0 0 12px rgba(212,160,23,0.15);
+}
+.db-greeting-sub { font-size: 11px; color: #4b5563; margin-top: 4px; }
+.db-greeting-sub .em { color: #22c55e; }
+.db-date-filters { display: flex; gap: 6px; }
+.db-date-btn {
+  font-size: 10px; padding: 5px 12px; border-radius: 8px;
+  border: 1px solid transparent; cursor: pointer;
+}
+.db-date-btn.active { background: rgba(212,160,23,0.12); color: #D4A017; border-color: rgba(212,160,23,0.3); }
+.db-date-btn:not(.active) { color: #6b7280; background: transparent; }
+
+/* quick nav */
+#db-quicknav { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.qnav-tile {
+  border-radius: 12px; padding: 16px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  position: relative; overflow: hidden;
+}
+.qnav-icon { font-size: 20px; margin-bottom: 8px; }
+.qnav-label { font-size: 13px; font-weight: 600; color: #fff; }
+.qnav-sub { font-size: 11px; margin-top: 3px; }
+.qnav-watermark {
+  position: absolute; right: 8px; bottom: 4px;
+  font-size: 36px; opacity: .08; line-height: 1;
+}
+
+/* metric cards */
+#db-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.db-metric-card {
+  border-radius: 12px; padding: 20px; position: relative; overflow: hidden;
+}
+.db-metric-label { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: #9ca3af; margin-bottom: 8px; }
+.db-metric-value { font-size: 36px; font-weight: 700; line-height: 1; }
+.db-metric-sub { font-size: 10px; color: #6b7280; margin-top: 4px; }
+.db-metric-spark { position: absolute; bottom: 0; left: 0; right: 0; height: 48px; opacity: .35; }
+
+/* memory panel */
+#db-memory-panel {
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(212,160,23,0.12);
+}
+.db-memory-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(3,11,4,0.8); border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.db-memory-header-left { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.db-memory-header-left .icon { color: #22c55e; font-size: 14px; }
+.db-memory-label { color: #9ca3af; }
+.db-memory-count { color: #fff; font-weight: 700; }
+.db-memory-open { font-size: 10px; color: #D4A017; background: rgba(212,160,23,0.08); border: 1px solid rgba(212,160,23,0.2); padding: 4px 10px; border-radius: 6px; }
+#db-memory-canvas { display: block; width: 100%; height: 160px; background: #030b04; }
+.db-memory-footer {
+  display: flex; gap: 16px; padding: 8px 16px;
+  background: rgba(3,11,4,0.6); border-top: 1px solid rgba(255,255,255,0.04);
+}
+.db-mem-stat { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+.db-mem-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.db-mem-val { font-weight: 700; }
+.db-mem-lbl { color: #6b7280; }
+
+/* status row */
+#db-status-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.db-sys-tile {
+  border-radius: 12px; padding: 12px 16px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+}
+.db-sys-lbl { font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: #374151; margin-bottom: 6px; }
+.db-sys-status { display: flex; align-items: center; gap: 6px; }
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.db-sys-val { font-size: 11px; font-weight: 600; }
+.db-sys-sub { font-size: 10px; color: #374151; font-family: 'JetBrains Mono', monospace; margin-top: 3px; }
+
+/* ══ SCENE 2: OVERWATCH MAP ══════════════════════════════════════════════ */
+#scene-overwatch { background: #0a1628; }
+#ow-canvas { display: block; position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; }
+
+/* overwatch top bar */
+#ow-topbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 52px;
+  background: rgba(10,22,40,0.92); border-bottom: 1px solid rgba(0,240,255,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; z-index: 10;
+}
+.ow-topbar-left { display: flex; align-items: center; gap: 16px; }
+.ow-title { font-size: 15px; font-weight: 700; color: #e2e8f0; letter-spacing: .02em; }
+.ow-online { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #22c55e; font-family: 'JetBrains Mono', monospace; }
+.ow-online-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.ow-clock { font-size: 12px; color: #64748b; font-family: 'JetBrains Mono', monospace; }
+.ow-counters { display: flex; align-items: center; gap: 20px; }
+.ow-counter { text-align: center; }
+.ow-counter-val { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; line-height: 1; }
+.ow-counter-lbl { font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: #64748b; }
+.ow-cyan { color: #00f0ff; text-shadow: 0 0 12px rgba(0,240,255,0.6); }
+.ow-lime { color: #39ff14; text-shadow: 0 0 12px rgba(57,255,20,0.6); }
+.ow-red { color: #ff003c; text-shadow: 0 0 12px rgba(255,0,60,0.6); }
+.ow-green { color: #22c55e; }
+
+/* overwatch tab strip */
+#ow-tabs {
+  position: absolute; top: 52px; left: 0; right: 0; height: 44px;
+  background: rgba(30,58,95,0.6); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,240,255,0.06);
+  display: flex; align-items: center; padding: 0 16px; gap: 4px; z-index: 9;
+}
+.ow-brand { display: flex; align-items: center; gap: 8px; margin-right: 16px; }
+.ow-brand-sq { width: 20px; height: 20px; background: #C9A84C; border-radius: 4px; }
+.ow-brand-name { font-size: 10px; font-weight: 700; color: #C9A84C; letter-spacing: .08em; }
+.ow-tab {
+  padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  color: #94a3b8; display: flex; align-items: center; gap: 6px; cursor: pointer;
+}
+.ow-tab.active { color: #C9A84C; background: rgba(201,168,76,0.12); }
+
+/* overwatch left sidebar */
+#ow-sidebar {
+  position: absolute; top: 96px; left: 0; bottom: 0; width: 280px;
+  background: rgba(10,22,40,0.88); border-right: 1px solid rgba(0,240,255,0.06);
+  display: flex; flex-direction: column; z-index: 8;
+  transform: translateX(-280px);
+}
+.ow-sidebar-tabs { display: flex; border-bottom: 1px solid rgba(0,240,255,0.06); }
+.ow-sidebar-tab {
+  flex: 1; padding: 10px 0; text-align: center; font-size: 18px; cursor: pointer;
+  border-left: 2px solid transparent; color: #64748b;
+}
+.ow-sidebar-tab.active { color: #00f0ff; background: rgba(0,240,255,0.05); border-left-color: #00f0ff; }
+.ow-list-header {
+  padding: 10px 16px; font-size: 10px; color: #64748b; font-family: 'JetBrains Mono',monospace;
+  border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between;
+}
+.ow-flight-card {
+  padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); cursor: pointer;
+}
+.ow-flight-card.sel { background: rgba(0,240,255,0.06); border-left: 2px solid #00f0ff; }
+.ow-callsign { font-size: 13px; font-weight: 700; color: #00f0ff; font-family: 'JetBrains Mono',monospace; }
+.ow-flight-meta { font-size: 10px; color: #64748b; margin-top: 2px; font-family: 'JetBrains Mono',monospace; }
+
+/* overwatch right sidebar */
+#ow-right {
+  position: absolute; top: 96px; right: 0; bottom: 0; width: 320px;
+  background: rgba(10,22,40,0.96); border-left: 1px solid rgba(0,240,255,0.08);
+  z-index: 8; padding: 20px; transform: translateX(320px);
+}
+.ow-target-header { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.ow-target-label { font-size: 10px; color: #00f0ff; letter-spacing: .15em; text-transform: uppercase; font-family: 'JetBrains Mono',monospace; }
+.ow-callsign-big { font-size: 48px; font-weight: 700; color: #00f0ff; font-family: 'Bebas Neue', sans-serif; letter-spacing: .05em; text-shadow: 0 0 20px rgba(0,240,255,0.6); margin-bottom: 20px; line-height: 1; }
+.ow-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.ow-stat-box { background: rgba(0,240,255,0.04); border: 1px solid rgba(0,240,255,0.1); border-radius: 6px; padding: 10px; }
+.ow-stat-box-lbl { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: .1em; }
+.ow-stat-box-val { font-size: 16px; font-weight: 700; color: #e2e8f0; font-family: 'JetBrains Mono',monospace; margin-top: 4px; }
+.ow-coords { font-size: 10px; color: #64748b; font-family: 'JetBrains Mono',monospace; line-height: 1.8; }
+
+/* overwatch bottom bar */
+#ow-bottom {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: rgba(10,22,40,0.88); border: 1px solid rgba(0,240,255,0.1);
+  border-radius: 10px; padding: 10px 20px;
+  display: flex; align-items: center; gap: 12px; z-index: 10;
+}
+.ow-view-btn {
+  padding: 6px 14px; border-radius: 6px; font-size: 10px; font-weight: 600;
+  letter-spacing: .06em; cursor: pointer;
+  background: rgba(0,240,255,0.06); color: #64748b; border: 1px solid rgba(0,240,255,0.1);
+}
+.ow-view-btn.active { color: #00f0ff; border-color: rgba(0,240,255,0.4); }
+.ow-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.08); }
+.ow-clients-btn { padding: 6px 14px; border-radius: 6px; font-size: 10px; font-weight: 600; color: #C9A84C; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); }
+
+/* ══ SCENE 3: KANBAN ═════════════════════════════════════════════════════ */
+#scene-kanban { background: linear-gradient(135deg, #0f1c2e 0%, #1a2d45 100%); display: flex; flex-direction: column; }
+#kb-tabs {
+  height: 44px; background: rgba(30,58,95,0.6); border-bottom: 1px solid rgba(201,168,76,0.1);
+  display: flex; align-items: center; padding: 0 16px; gap: 4px; flex-shrink: 0;
+}
+#kb-board { flex: 1; display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; padding: 16px; overflow: hidden; }
+.kb-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.kb-col-header {
+  border-radius: 8px; padding: 10px 14px;
+  background: rgba(15,28,46,0.8); border: 1px solid rgba(255,255,255,0.06);
+  border-top-width: 2px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.kb-col-name { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #94a3b8; }
+.kb-col-count { font-size: 10px; color: #94a3b8; font-family: 'JetBrains Mono',monospace; background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 10px; }
+.kb-card {
+  border-radius: 8px; padding: 12px;
+  background: rgba(15,28,46,0.7); border: 1px solid rgba(255,255,255,0.06);
+}
+.kb-card-title { font-size: 12px; color: #fff; margin-bottom: 6px; line-height: 1.4; }
+.kb-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kb-assignee { font-size: 9px; color: #64748b; font-family: 'JetBrains Mono',monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.kb-badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 600; flex-shrink: 0; }
+.kb-high { background: rgba(127,29,29,0.4); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+.kb-medium { background: rgba(120,53,15,0.4); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+.kb-low { background: rgba(30,41,59,0.6); color: #94a3b8; border: 1px solid rgba(100,116,139,0.25); }
+.kb-add { font-size: 11px; color: #C9A84C; padding: 8px 14px; border-radius: 8px; border: 1px dashed rgba(201,168,76,0.3); text-align: center; cursor: pointer; }
+
+/* ══ SCENE 4: SWARM ══════════════════════════════════════════════════════ */
+#scene-swarm { background: linear-gradient(135deg, #0f1c2e 0%, #1a2d45 100%); display: flex; flex-direction: column; }
+#sw-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; flex-shrink: 0;
+}
+.sw-title { font-size: 20px; font-weight: 700; color: #fff; }
+.sw-subtitle { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+.sw-running-badge {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px;
+  background: rgba(6,78,59,0.5); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.2);
+  font-size: 11px; font-weight: 600;
+}
+.sw-running-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px #34d399; }
+.sw-stop-btn {
+  padding: 7px 16px; border-radius: 8px; font-size: 11px; font-weight: 600;
+  background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3);
+  margin-left: 12px; cursor: pointer;
+}
+#sw-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px 16px; overflow: hidden; }
+.sw-col-header { font-size: 13px; font-weight: 700; color: #e2e8f0; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.sw-task-list { background: rgba(30,58,95,0.4); border-radius: 10px; overflow: hidden; }
+.sw-task-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.sw-task-icon { font-size: 14px; flex-shrink: 0; }
+.sw-task-title { font-size: 12px; color: #e2e8f0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sw-task-time { font-size: 10px; color: #64748b; font-family: 'JetBrains Mono',monospace; flex-shrink: 0; }
+.sw-task-badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; font-weight: 600; }
+.sw-done { background: rgba(6,78,59,0.4); color: #34d399; }
+.sw-pending { background: rgba(120,53,15,0.4); color: #fbbf24; }
+.sw-running-b { background: rgba(30,64,175,0.4); color: #60a5fa; }
+.sw-failed { background: rgba(127,29,29,0.4); color: #f87171; }
+.sw-log-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 14px; overflow: hidden; }
+.sw-log-line { display: flex; gap: 10px; margin-bottom: 5px; font-size: 11px; font-family: 'JetBrains Mono',monospace; }
+.sw-log-num { color: #64748b; width: 16px; text-align: right; flex-shrink: 0; }
+.sw-log-text { color: #cbd5e1; }
+#sw-submit { padding: 12px 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; flex-shrink: 0; }
+.sw-input {
+  flex: 1; background: rgba(30,58,95,0.4); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 10px 16px; font-size: 12px; color: #94a3b8;
+  font-family: 'Space Grotesk',sans-serif;
+}
+.sw-submit-btn { padding: 10px 20px; background: #C9A84C; color: #1E3A5F; font-size: 12px; font-weight: 700; border-radius: 8px; }
+</style>
+</head>
+<body>
+<div data-composition-id="hermes-hub-demo" data-width="1920" data-height="1080" data-start="0" data-duration="100">
+
+  <!-- media clips -->
+  <video id="el-video" data-start="0" data-duration="5.5" data-track-index="0"
+    src="../public/intro.mp4" muted playsinline
+    style="position:absolute;top:0;left:0;width:1920px;height:1080px;object-fit:cover;z-index:1"></video>
+  <audio id="el-audio" data-start="0" data-duration="5.5" data-track-index="2"
+    src="../public/intro.mp4" data-volume="0.6"></audio>
+
+  <!-- ════ VFX OVERLAYS (always on, pointer-events:none) ════ -->
+  <div id="vfx-scanlines" data-layout-ignore style="position:absolute;top:0;left:0;width:1920px;height:1080px;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);opacity:0.6"></div>
+  <div id="vfx-vignette"  data-layout-ignore style="position:absolute;top:0;left:0;width:1920px;height:1080px;pointer-events:none;z-index:99;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,0.65) 100%);opacity:1"></div>
+  <div id="vfx-glitch"    data-layout-ignore style="position:absolute;top:0;left:0;width:1920px;height:1080px;pointer-events:none;z-index:101;background:rgba(0,240,255,0.12);opacity:0;mix-blend-mode:screen"></div>
+  <div id="vfx-brackets"  data-layout-ignore style="position:absolute;top:0;left:0;width:1920px;height:1080px;pointer-events:none;z-index:98;opacity:0">
+    <div style="position:absolute;top:20px;left:20px;width:40px;height:40px;border-top:2px solid #C9A84C;border-left:2px solid #C9A84C"></div>
+    <div style="position:absolute;top:20px;right:20px;width:40px;height:40px;border-top:2px solid #C9A84C;border-right:2px solid #C9A84C"></div>
+    <div style="position:absolute;bottom:20px;left:20px;width:40px;height:40px;border-bottom:2px solid #C9A84C;border-left:2px solid #C9A84C"></div>
+    <div style="position:absolute;bottom:20px;right:20px;width:40px;height:40px;border-bottom:2px solid #C9A84C;border-right:2px solid #C9A84C"></div>
+  </div>
+
+  <!-- ════ TITLE CARDS ════ -->
+  <div id="tc-hub" class="scene" style="z-index:20;background:#030805;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:120px;color:#D4A017;letter-spacing:.12em;text-shadow:0 0 60px rgba(212,160,23,0.4)">INTELLIGENCE HUB</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;color:#4b5563;letter-spacing:.3em;text-transform:uppercase;margin-top:8px">All operations. One screen.</div>
+  </div>
+  <div id="tc-field" class="scene" style="z-index:21;background:#030a14;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:120px;color:#00f0ff;letter-spacing:.12em;text-shadow:0 0 60px rgba(0,240,255,0.3)">FIELD INTELLIGENCE</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;color:#4b5563;letter-spacing:.3em;text-transform:uppercase;margin-top:8px">London. Live. 24/7.</div>
+  </div>
+  <div id="tc-memory" class="scene" style="z-index:22;background:#020604;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:120px;color:#22c55e;letter-spacing:.12em;text-shadow:0 0 60px rgba(34,197,94,0.3)">NEURAL MEMORY</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;color:#4b5563;letter-spacing:.3em;text-transform:uppercase;margin-top:8px">Every decision. Stored. Searchable.</div>
+  </div>
+  <div id="tc-perf" class="scene" style="z-index:23;background:#030805;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:120px;color:#D4A017;letter-spacing:.12em;text-shadow:0 0 60px rgba(212,160,23,0.4)">PERFORMANCE INTELLIGENCE</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;color:#4b5563;letter-spacing:.3em;text-transform:uppercase;margin-top:8px">Numbers that matter.</div>
+  </div>
+  <div id="tc-deck" class="scene" style="z-index:24;background:#030805;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:120px;color:#818cf8;letter-spacing:.12em;text-shadow:0 0 60px rgba(129,140,248,0.3)">THE DECK</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;color:#4b5563;letter-spacing:.3em;text-transform:uppercase;margin-top:8px">10 AI personas. One agency.</div>
+  </div>
+
+  <!-- ════ SCENE 0: INTRO ════ -->
+  <div id="scene-intro" class="scene" style="z-index:2"></div>
+
+  <!-- ════ SCENE 1: DASHBOARD ════ -->
+  <div id="scene-dashboard" class="scene" style="z-index:3">
+    <!-- sidebar -->
+    <div id="db-sidebar" data-layout-allow-overflow>
+      <div class="db-brand">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="db-brand-icon">C</div>
+          <div>
+            <div class="db-brand-name">Claude Code OS</div>
+            <div class="db-brand-sub">OPERATOR</div>
+          </div>
+        </div>
+      </div>
+      <div class="db-nav">
+        <div class="db-nav-link active">🏠 Home</div>
+        <div class="db-nav-link">⚡ Skills</div>
+        <div class="db-nav-link">🧠 Memory</div>
+        <div class="db-nav-link">📊 Activity</div>
+        <div class="db-nav-link">👤 Profiles</div>
+        <div class="db-nav-link">🎙 Voiceover</div>
+      </div>
+      <div class="db-section-label">AGENTS</div>
+      <div class="db-agent-pill db-agent-hermes">● HERMES-AGENT</div>
+      <div class="db-agent-pill db-agent-openclaw" style="margin-top:4px">🦀 OPENCLAW</div>
+      <div class="db-section-label" style="margin-top:12px">SYSTEMS</div>
+      <div class="db-nav-link">⚡ Overwatch</div>
+      <div class="db-nav-link">🧠 VIS</div>
+      <div class="db-sidebar-footer">
+        <div class="db-paperclip">
+          <span>📎</span><span style="font-size:11px">Paperclip</span>
+          <span class="db-paperclip-port">:3100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- main -->
+    <div id="db-main">
+      <div id="db-topbar">
+        <span class="db-topbar-left">Operator / <span>local</span></span>
+        <span style="font-size:10px;color:#4b5563">🔔</span>
+      </div>
+      <div id="db-topbar-rule"></div>
+
+      <div id="db-content">
+        <!-- greeting -->
+        <div id="db-greeting">
+          <div style="display:flex;align-items:flex-start;gap:0">
+            <div class="db-greeting-dot" style="margin-top:8px;margin-right:12px"></div>
+            <div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <h1 class="db-greeting-h1">Good evening, <span class="gold">Idris.</span></h1>
+                <span class="db-greeting-badge">INTELLIGENCE HUB</span>
+              </div>
+              <div class="db-greeting-sub"><span class="em">●</span> Hermes · Claude Code OS · All systems nominal</div>
+            </div>
+          </div>
+          <div class="db-date-filters">
+            <div class="db-date-btn">TODAY</div>
+            <div class="db-date-btn">7 DAYS</div>
+            <div class="db-date-btn active">28 DAYS</div>
+          </div>
+        </div>
+
+        <!-- quick nav -->
+        <div id="db-quicknav">
+          <div class="qnav-tile" style="border-color:rgba(212,160,23,0.12)">
+            <div class="qnav-watermark">⚡</div>
+            <div class="qnav-icon">⚡</div>
+            <div class="qnav-label">Hermes Agent</div>
+            <div class="qnav-sub" style="color:#D4A017cc">AI command interface</div>
+          </div>
+          <div class="qnav-tile" style="border-color:rgba(34,197,94,0.12)">
+            <div class="qnav-watermark">🧠</div>
+            <div class="qnav-icon">🧠</div>
+            <div class="qnav-label">Memory Graph</div>
+            <div class="qnav-sub" style="color:#22c55ecc">nodes in constellation</div>
+          </div>
+          <div class="qnav-tile" style="border-color:rgba(129,140,248,0.12)">
+            <div class="qnav-watermark">♠</div>
+            <div class="qnav-icon" style="font-size:18px">♠</div>
+            <div class="qnav-label">Deck Profiles</div>
+            <div class="qnav-sub" style="color:#818cf8cc">10 card personas active</div>
+          </div>
+          <div class="qnav-tile" style="border-color:rgba(244,114,182,0.12)">
+            <div class="qnav-watermark">🎙</div>
+            <div class="qnav-icon">🎙</div>
+            <div class="qnav-label">Voiceover</div>
+            <div class="qnav-sub" style="color:#f472b6cc">Supertonic TTS studio</div>
+          </div>
+        </div>
+
+        <!-- metric cards -->
+        <div id="db-cards">
+          <div class="db-metric-card" style="background:linear-gradient(135deg,#1a1200,#0d0d07);border:1px solid rgba(212,160,23,0.15)">
+            <div class="db-metric-label" style="display:flex;align-items:center;gap:4px">AI SPEND</div>
+            <div class="db-metric-value" style="color:#D4A017;text-shadow:0 0 30px rgba(212,160,23,0.5)">$240</div>
+            <div class="db-metric-sub">last 28 days</div>
+            <svg class="db-metric-spark" viewBox="0 0 300 60" preserveAspectRatio="none">
+              <defs><linearGradient id="sg1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#D4A017" stop-opacity="0.3"/><stop offset="100%" stop-color="#D4A017" stop-opacity="0.9"/></linearGradient></defs>
+              <polygon points="0,60 0,50 40,35 80,40 120,20 160,30 200,15 240,25 300,10 300,60" fill="rgba(212,160,23,0.08)"/>
+              <polyline points="0,50 40,35 80,40 120,20 160,30 200,15 240,25 300,10" fill="none" stroke="url(#sg1)" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="db-metric-card" style="background:linear-gradient(135deg,#001a0d,#00100a);border:1px solid rgba(34,197,94,0.15)">
+            <div class="db-metric-label">⚡ SKILLS ACTIVE</div>
+            <div class="db-metric-value" style="color:#22c55e;text-shadow:0 0 30px rgba(34,197,94,0.5)">69</div>
+            <div class="db-metric-sub">skills detected</div>
+            <svg class="db-metric-spark" viewBox="0 0 300 60" preserveAspectRatio="none">
+              <defs><linearGradient id="sg2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.9"/></linearGradient></defs>
+              <polygon points="0,60 0,55 60,50 120,45 180,42 240,40 300,38 300,60" fill="rgba(16,185,129,0.08)"/>
+              <polyline points="0,55 60,50 120,45 180,42 240,40 300,38" fill="none" stroke="url(#sg2)" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="db-metric-card" style="background:linear-gradient(135deg,#0a0a1a,#060610);border:1px solid rgba(129,140,248,0.15)">
+            <div class="db-metric-label">📊 ACTIVITY</div>
+            <div class="db-metric-value" style="color:#818cf8;text-shadow:0 0 30px rgba(129,140,248,0.5)">20,446</div>
+            <div class="db-metric-sub">tokens last 7d · 20 projects</div>
+            <svg class="db-metric-spark" viewBox="0 0 300 60" preserveAspectRatio="none">
+              <defs><linearGradient id="sg3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#818cf8" stop-opacity="0.3"/><stop offset="100%" stop-color="#818cf8" stop-opacity="0.9"/></linearGradient></defs>
+              <polygon points="0,60 0,50 40,45 80,30 120,35 160,20 200,25 240,10 300,15 300,60" fill="rgba(129,140,248,0.08)"/>
+              <polyline points="0,50 40,45 80,30 120,35 160,20 200,25 240,10 300,15" fill="none" stroke="url(#sg3)" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- memory panel -->
+        <div id="db-memory-panel">
+          <div class="db-memory-header">
+            <div class="db-memory-header-left">
+              <span class="icon">🧠</span>
+              <span class="db-memory-label">Memory Constellation</span>
+              <span class="db-memory-count">24</span>
+              <span style="font-size:10px;color:#6b7280">nodes</span>
+            </div>
+            <div class="db-memory-open">Open map ↗</div>
+          </div>
+          <canvas id="db-memory-canvas"></canvas>
+          <div class="db-memory-footer" id="db-mem-legend">
+            <div class="db-mem-stat"><div class="db-mem-dot" style="background:#9ca3af;box-shadow:0 0 4px #9ca3af"></div><span class="db-mem-val" style="color:#9ca3af">24</span><span class="db-mem-lbl">nodes</span></div>
+            <div class="db-mem-stat"><div class="db-mem-dot" style="background:#f59e0b;box-shadow:0 0 4px #f59e0b"></div><span class="db-mem-val" style="color:#f59e0b">3</span><span class="db-mem-lbl">feedback</span></div>
+            <div class="db-mem-stat"><div class="db-mem-dot" style="background:#34d399;box-shadow:0 0 4px #34d399"></div><span class="db-mem-val" style="color:#34d399">4</span><span class="db-mem-lbl">project</span></div>
+            <div class="db-mem-stat"><div class="db-mem-dot" style="background:#f97316;box-shadow:0 0 4px #f97316"></div><span class="db-mem-val" style="color:#f97316">2</span><span class="db-mem-lbl">stale</span></div>
+          </div>
+        </div>
+
+        <!-- subscriptions / token limits -->
+        <div id="db-subs-panel" style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);opacity:0">
+          <!-- tab row -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.05)">
+            <div style="display:flex;gap:0">
+              <div id="db-sub-tab-subs" style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 16px;color:#fff;border-bottom:2px solid #D4A017;background:transparent;cursor:pointer">SUBSCRIPTIONS</div>
+              <div id="db-sub-tab-tok" style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 16px;color:#6b7280;border-bottom:2px solid transparent;background:transparent;cursor:pointer">TOKEN LIMITS</div>
+            </div>
+            <div style="font-size:9px;color:#6b7280;display:flex;align-items:center;gap:6px;padding-bottom:2px">↻ SYNC · 20:04</div>
+          </div>
+          <!-- subscriptions body -->
+          <div style="padding:14px 20px 18px;background:rgba(255,255,255,0.01)">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+              <span style="font-size:10px;color:#6b7280">Monthly flat</span>
+              <span style="font-size:18px;font-weight:700;color:#D4A017;text-shadow:0 0 20px rgba(212,160,23,0.3)">$240</span>
+              <div style="display:inline-flex;padding:2px 10px;border-radius:20px;font-size:9px;font-weight:700;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.2)">0.5× ROI</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+              <!-- Claude Max -->
+              <div style="border-radius:10px;padding:14px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:30px;height:30px;border-radius:8px;background:#D4A017;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;box-shadow:0 0 12px rgba(212,160,23,0.6)">A</div>
+                  <div><div style="font-size:12px;font-weight:600;color:#fff">Claude Max 20x</div><div style="font-size:9px;color:#6b7280">ANTHROPIC · OAUTH</div></div>
+                </div>
+                <div style="font-size:20px;font-weight:700;color:#fff">$200<span style="font-size:10px;color:#6b7280;font-weight:400"> / mo</span></div>
+              </div>
+              <!-- ChatGPT Plus -->
+              <div style="border-radius:10px;padding:14px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:30px;height:30px;border-radius:8px;background:#10a37f;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;box-shadow:0 0 12px rgba(16,163,127,0.6)">C</div>
+                  <div><div style="font-size:12px;font-weight:600;color:#fff">ChatGPT Plus</div><div style="font-size:9px;color:#6b7280">OPENAI · CHATGPT</div></div>
+                </div>
+                <div style="font-size:20px;font-weight:700;color:#fff">$20<span style="font-size:10px;color:#6b7280;font-weight:400"> / mo</span></div>
+              </div>
+              <!-- Codex -->
+              <div style="border-radius:10px;padding:14px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:30px;height:30px;border-radius:8px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;box-shadow:0 0 12px rgba(59,130,246,0.6)">C</div>
+                  <div><div style="font-size:12px;font-weight:600;color:#fff">Codex</div><div style="font-size:9px;color:#6b7280">OPENAI · CLI AGENT</div></div>
+                </div>
+                <div style="font-size:13px;color:#6b7280">— credit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- status row -->
+        <div id="db-status-row">
+          <div class="db-sys-tile">
+            <div class="db-sys-lbl">HERMES AGENT</div>
+            <div class="db-sys-status"><div class="status-dot" style="background:#f97316;box-shadow:0 0 6px #f97316"></div><span class="db-sys-val" style="color:#f97316">OFFLINE</span></div>
+            <div class="db-sys-sub">port 8642</div>
+          </div>
+          <div class="db-sys-tile">
+            <div class="db-sys-lbl">PAPERCLIP</div>
+            <div class="db-sys-status"><div class="status-dot" style="background:#22c55e;box-shadow:0 0 6px #22c55e"></div><span class="db-sys-val" style="color:#22c55e">RUNNING</span></div>
+            <div class="db-sys-sub">port 3100</div>
+          </div>
+          <div class="db-sys-tile">
+            <div class="db-sys-lbl">MEMORY</div>
+            <div class="db-sys-status"><div class="status-dot" style="background:#818cf8;box-shadow:0 0 6px #818cf8"></div><span class="db-sys-val" style="color:#818cf8">24 nodes</span></div>
+            <div class="db-sys-sub">local fs</div>
+          </div>
+          <div class="db-sys-tile">
+            <div class="db-sys-lbl">TTS ENGINE</div>
+            <div class="db-sys-status"><div class="status-dot" style="background:#2dd4bf;box-shadow:0 0 6px #2dd4bf"></div><span class="db-sys-val" style="color:#2dd4bf">READY</span></div>
+            <div class="db-sys-sub">supertonic</div>
+          </div>
+        </div>
+      </div><!-- /db-content -->
+    </div><!-- /db-main -->
+  </div><!-- /scene-dashboard -->
+
+  <!-- ════ SCENE 2: OVERWATCH MAP ════ -->
+  <div id="scene-overwatch" class="scene" data-layout-allow-overflow style="z-index:4;overflow:visible">
+    <canvas id="ow-canvas"></canvas>
+
+    <div id="ow-topbar">
+      <div class="ow-topbar-left">
+        <span class="ow-title">Severus Overwatch</span>
+        <div class="ow-online"><div class="ow-online-dot"></div>SYS.ONLINE</div>
+        <span class="ow-clock">09:24:33</span>
+      </div>
+      <div class="ow-counters">
+        <div class="ow-counter"><div class="ow-counter-val ow-cyan">6</div><div class="ow-counter-lbl">AIRBORNE</div></div>
+        <div class="ow-counter"><div class="ow-counter-val ow-lime">4</div><div class="ow-counter-lbl">LIVE CAMS</div></div>
+        <div class="ow-counter"><div class="ow-counter-val ow-red">2</div><div class="ow-counter-lbl">ALERTS</div></div>
+        <div class="ow-counter"><div class="ow-counter-val ow-green">11/11</div><div class="ow-counter-lbl">LINES OK</div></div>
+        <div style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;color:#60a5fa;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2)">AI COMM</div>
+      </div>
+    </div>
+
+    <div id="ow-tabs">
+      <div class="ow-brand"><div class="ow-brand-sq"></div><div class="ow-brand-name">Severus Overwatch</div></div>
+      <div class="ow-tab active">🗺 Map</div>
+      <div class="ow-tab">⚡ Swarm</div>
+      <div class="ow-tab">🤖 Agents</div>
+      <div class="ow-tab">📋 Kanban</div>
+      <div class="ow-tab">🧠 Tactical AI</div>
+      <div class="ow-tab">📊 Markets</div>
+    </div>
+
+    <div id="ow-sidebar">
+      <div class="ow-sidebar-tabs">
+        <div class="ow-sidebar-tab active">✈</div>
+        <div class="ow-sidebar-tab">📷</div>
+        <div class="ow-sidebar-tab">⚠</div>
+        <div class="ow-sidebar-tab">🧠</div>
+      </div>
+      <div class="ow-list-header"><span>Active Flights</span><span>6</span></div>
+      <div class="ow-flight-card sel">
+        <div class="ow-callsign">BAW123</div>
+        <div class="ow-flight-meta">A320 · ALT 7,200m · SPD 450km/h</div>
+      </div>
+      <div class="ow-flight-card">
+        <div class="ow-callsign">EZY456</div>
+        <div class="ow-flight-meta">B737 · ALT 8,500m · SPD 510km/h</div>
+      </div>
+      <div class="ow-flight-card">
+        <div class="ow-callsign">VIR789</div>
+        <div class="ow-flight-meta">A350 · ALT 9,100m · SPD 890km/h</div>
+      </div>
+      <div class="ow-flight-card">
+        <div class="ow-callsign">RYR001</div>
+        <div class="ow-flight-meta">B738 · ALT 6,800m · SPD 420km/h</div>
+      </div>
+    </div>
+
+    <div id="ow-right" data-layout-allow-overflow>
+      <div class="ow-target-header">
+        <span style="font-size:18px;color:#00f0ff">✛</span>
+        <span class="ow-target-label">TARGET ACQUIRED</span>
+      </div>
+      <div class="ow-callsign-big">BAW123</div>
+      <div class="ow-grid-2">
+        <div class="ow-stat-box"><div class="ow-stat-box-lbl">ALTITUDE</div><div class="ow-stat-box-val">7,200m</div></div>
+        <div class="ow-stat-box"><div class="ow-stat-box-lbl">VELOCITY</div><div class="ow-stat-box-val">450 km/h</div></div>
+        <div class="ow-stat-box"><div class="ow-stat-box-lbl">HEADING</div><div class="ow-stat-box-val">135°</div></div>
+        <div class="ow-stat-box"><div class="ow-stat-box-lbl">ICAO24</div><div class="ow-stat-box-val">4CA2B3</div></div>
+      </div>
+      <div class="ow-coords">LAT&nbsp;&nbsp;51.505012°N<br>LON&nbsp;&nbsp;-0.127816°E</div>
+    </div>
+
+    <div id="ow-bottom">
+      <div class="ow-view-btn active">GLOBAL OVERVIEW</div>
+      <div class="ow-view-btn">FINANCIAL DISTRICT</div>
+      <div class="ow-view-btn">HEATHROW AIRPORT</div>
+      <div class="ow-view-btn">STREET LEVEL</div>
+      <div class="ow-divider"></div>
+      <div class="ow-clients-btn">CLIENTS (3)</div>
+      <div style="padding:6px 14px;border-radius:6px;font-size:10px;color:#64748b;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)">RESET TARGET ↺</div>
+    </div>
+  </div><!-- /scene-overwatch -->
+
+  <!-- ════ SCENE 3: KANBAN ════ -->
+  <div id="scene-kanban" class="scene" style="z-index:5">
+    <div id="kb-tabs">
+      <div class="ow-brand"><div class="ow-brand-sq"></div><div class="ow-brand-name">Severus Overwatch</div></div>
+      <div class="ow-tab">🗺 Map</div>
+      <div class="ow-tab">⚡ Swarm</div>
+      <div class="ow-tab">🤖 Agents</div>
+      <div class="ow-tab active">📋 Kanban</div>
+      <div class="ow-tab">🧠 Tactical AI</div>
+      <div class="ow-tab">📊 Markets</div>
+    </div>
+    <div id="kb-board">
+      <!-- BACKLOG -->
+      <div class="kb-col">
+        <div class="kb-col-header" style="border-top-color:#64748b">
+          <span class="kb-col-name">Backlog</span><span class="kb-col-count">2</span>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">Set up GA4 property for client</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-connects-analytics</span><span class="kb-badge kb-high">HIGH</span></div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">Design onboarding flow</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-design-discovery</span><span class="kb-badge kb-medium">MED</span></div>
+        </div>
+        <div class="kb-add">+ Add Card</div>
+      </div>
+      <!-- TO DO -->
+      <div class="kb-col">
+        <div class="kb-col-header" style="border-top-color:#3b82f6">
+          <span class="kb-col-name">To Do</span><span class="kb-col-count">2</span>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">Write performance audit report</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-auditor</span><span class="kb-badge kb-high">HIGH</span></div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">Create Shopping Ads campaign structure</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-connects-shopping</span><span class="kb-badge kb-medium">MED</span></div>
+        </div>
+        <div class="kb-add">+ Add Card</div>
+      </div>
+      <!-- IN PROGRESS -->
+      <div class="kb-col">
+        <div class="kb-col-header" style="border-top-color:#f59e0b">
+          <span class="kb-col-name">In Progress</span><span class="kb-col-count">1</span>
+        </div>
+        <div class="kb-card" id="kb-inprogress" style="border-color:rgba(245,158,11,0.3);box-shadow:0 0 12px rgba(245,158,11,0.1)">
+          <div class="kb-card-title">Build client dashboard prototype</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-design-frontend</span><span class="kb-badge kb-high">HIGH</span></div>
+        </div>
+        <div class="kb-add">+ Add Card</div>
+      </div>
+      <!-- REVIEW -->
+      <div class="kb-col">
+        <div class="kb-col-header" style="border-top-color:#a855f7">
+          <span class="kb-col-name">Review</span><span class="kb-col-count">1</span>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">Outreach email sequence draft</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-outreach</span><span class="kb-badge kb-low">LOW</span></div>
+        </div>
+        <div class="kb-add">+ Add Card</div>
+      </div>
+      <!-- DONE -->
+      <div class="kb-col">
+        <div class="kb-col-header" style="border-top-color:#22c55e">
+          <span class="kb-col-name">Done</span><span class="kb-col-count">1</span>
+        </div>
+        <div class="kb-card" id="kb-done" style="opacity:.65">
+          <div class="kb-card-title">Initial project setup</div>
+          <div class="kb-card-meta"><span class="kb-assignee">severus-gateway</span><span class="kb-badge kb-medium">MED</span></div>
+        </div>
+        <div class="kb-add">+ Add Card</div>
+      </div>
+    </div>
+  </div><!-- /scene-kanban -->
+
+  <!-- ════ SCENE 4: SWARM ════ -->
+  <div id="scene-swarm" class="scene" style="z-index:6">
+    <div id="sw-header-row">
+      <div>
+        <div class="sw-title">OpenSwarm Control</div>
+        <div class="sw-subtitle">Autonomous agent orchestration</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <div class="sw-running-badge"><div class="sw-running-dot"></div>RUNNING</div>
+        <div class="sw-stop-btn">■ Stop Swarm</div>
+      </div>
+    </div>
+    <div id="sw-grid">
+      <!-- left: task queue -->
+      <div>
+        <div class="sw-col-header">⚙ Task Queue <span style="font-size:11px;color:#64748b;margin-left:8px">↻</span></div>
+        <div class="sw-task-list" data-layout-allow-overflow>
+          <div class="sw-task-row"><span class="sw-task-icon" style="color:#34d399">✓</span><span class="sw-task-title">Analyze GA4 attribution window</span><span class="sw-task-time">08:42</span><span class="sw-task-badge sw-done">done</span></div>
+          <div class="sw-task-row"><span class="sw-task-icon" style="color:#fbbf24">⏱</span><span class="sw-task-title">Draft weekly performance report</span><span class="sw-task-time">09:15</span><span class="sw-task-badge sw-pending">pending</span></div>
+          <div class="sw-task-row"><span class="sw-task-icon" style="color:#60a5fa" id="sw-spin1">↺</span><span class="sw-task-title">Pull Meta campaign metrics</span><span class="sw-task-time">09:22</span><span class="sw-task-badge sw-running-b">running</span></div>
+          <div class="sw-task-row"><span class="sw-task-icon" style="color:#34d399">✓</span><span class="sw-task-title">Update keyword bid strategy</span><span class="sw-task-time">07:30</span><span class="sw-task-badge sw-done">done</span></div>
+          <div class="sw-task-row"><span class="sw-task-icon" style="color:#60a5fa" id="sw-spin2">↺</span><span class="sw-task-title">Generate client insight summary</span><span class="sw-task-time">09:45</span><span class="sw-task-badge sw-running-b">running</span></div>
+          <div class="sw-task-row"><span class="sw-task-icon" style="color:#f87171">✕</span><span class="sw-task-title">Send outreach batch — timeout</span><span class="sw-task-time">08:58</span><span class="sw-task-badge sw-failed">failed</span></div>
+        </div>
+      </div>
+      <!-- right: live log -->
+      <div>
+        <div class="sw-col-header">▪ Live Log</div>
+        <div class="sw-log-box" id="sw-log">
+          <!-- lines appended by GSAP -->
+        </div>
+      </div>
+    </div>
+    <div id="sw-submit" data-layout-allow-overflow>
+      <input class="sw-input" placeholder="Describe the task for OpenSwarm..." readonly>
+      <div class="sw-submit-btn">Submit ➤</div>
+    </div>
+  </div><!-- /scene-swarm -->
+
+  <!-- ════ SCENE 5: MEMORY ════ -->
+  <div id="scene-memory" class="scene" style="z-index:7;background:#020804;display:flex;flex-direction:column">
+    <!-- vertical label -->
+    <div id="mem-label-vert" style="position:absolute;left:16px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#D4A017;letter-spacing:.25em;white-space:nowrap;opacity:0">MEMORY CONSTELLATION</div>
+    <!-- canvas -->
+    <div id="mem-canvas-wrap" style="flex:1;position:relative;opacity:0">
+      <canvas id="mem-canvas" style="display:block;width:100%;height:100%"></canvas>
+      <!-- legend -->
+      <div id="mem-legend" style="position:absolute;top:12px;left:40px;background:rgba(2,8,4,0.85);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 14px;backdrop-filter:blur(8px);opacity:0">
+        <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:8px">NODE LEGEND</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 5px #22c55e;flex-shrink:0"></span>Memory core</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 5px #34d399;flex-shrink:0"></span>Project</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#60a5fa;box-shadow:0 0 5px #60a5fa;flex-shrink:0"></span>Decision</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#818cf8;box-shadow:0 0 5px #818cf8;flex-shrink:0"></span>Session</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#f472b6;box-shadow:0 0 5px #f472b6;flex-shrink:0"></span>Skill</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;box-shadow:0 0 5px #f59e0b;flex-shrink:0"></span>Feedback</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#7c3aed;box-shadow:0 0 5px #7c3aed;flex-shrink:0"></span>Obsidian</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#f97316;box-shadow:0 0 5px #f97316;flex-shrink:0"></span>Stale</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#9ca3af"><span style="width:8px;height:8px;border-radius:50%;background:#6b7280;box-shadow:0 0 5px #6b7280;flex-shrink:0"></span>Missing</div>
+        </div>
+      </div>
+      <!-- signals -->
+      <div id="mem-signals" style="position:absolute;top:12px;right:12px;width:208px;background:rgba(2,8,4,0.85);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 14px;backdrop-filter:blur(8px);opacity:0">
+        <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:8px">LATEST SIGNALS</div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px"><div style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px #22c55e;margin-top:4px;flex-shrink:0"></div><div><div style="font-size:11px;color:#93c5fd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">Content Pipeline.md</div><div style="font-size:9px;color:#6b7280">recently</div></div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px"><div style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px #22c55e;margin-top:4px;flex-shrink:0"></div><div><div style="font-size:11px;color:#93c5fd">Mount Severus OS</div><div style="font-size:9px;color:#6b7280">recently</div></div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px"><div style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 4px #22c55e;margin-top:4px;flex-shrink:0"></div><div><div style="font-size:11px;color:#93c5fd">Welcome.md</div><div style="font-size:9px;color:#6b7280">recently</div></div></div>
+      </div>
+      <!-- core ring decoration -->
+      <div id="mem-core-ring" style="position:absolute;left:50%;top:50%;width:60px;height:60px;border-radius:50%;border:1px solid rgba(34,197,94,0.4);transform:translate(-50%,-50%);pointer-events:none;opacity:0"></div>
+      <!-- stats -->
+      <div style="position:absolute;bottom:12px;left:40px;display:flex;gap:12px">
+        <div style="padding:6px 12px;border-radius:8px;background:rgba(2,8,4,0.85);border:1px solid rgba(255,255,255,0.06);font-size:12px"><span style="font-weight:700;color:#fff">24</span><span style="color:#6b7280;margin-left:4px">nodes</span></div>
+        <div style="padding:6px 12px;border-radius:8px;background:rgba(2,8,4,0.85);border:1px solid rgba(255,255,255,0.06);font-size:12px"><span style="font-weight:700;color:#f97316">2</span><span style="color:#6b7280;margin-left:4px">stale</span></div>
+        <div style="padding:6px 12px;border-radius:8px;background:rgba(2,8,4,0.85);border:1px solid rgba(255,255,255,0.06);font-size:12px"><span style="font-weight:700;color:#6b7280">0</span><span style="color:#6b7280;margin-left:4px">missing</span></div>
+      </div>
+      <!-- filter pills -->
+      <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px" id="mem-pills">
+        <div style="padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3)">Decisions</div>
+        <div style="padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(129,140,248,0.1);color:#818cf8;border:1px solid rgba(129,140,248,0.2)">Sessions</div>
+        <div style="padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(244,114,182,0.1);color:#f472b6;border:1px solid rgba(244,114,182,0.2)">Skills</div>
+        <div style="padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(124,58,237,0.1);color:#7c3aed;border:1px solid rgba(124,58,237,0.2)">Obsidian</div>
+        <div style="padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2)">Projects</div>
+      </div>
+    </div>
+    <!-- tech stack grid -->
+    <div id="mem-stack" data-layout-allow-overflow style="padding:12px 24px 16px;flex-shrink:0;opacity:0">
+      <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:8px">STACK</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#10a37f22;display:flex;align-items:center;justify-content:center;font-size:13px">⚙️</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">OpenAI Codex</div><div style="font-size:8px;color:#6b7280">Codex · chatgpt</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#7c3aed22;display:flex;align-items:center;justify-content:center;font-size:13px">💎</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Obsidian</div><div style="font-size:8px;color:#6b7280">vault linked</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#ef444422;display:flex;align-items:center;justify-content:center;font-size:13px">🦀</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">OpenClaw</div><div style="font-size:8px;color:#6b7280">v2026.3.23-2</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#ff000022;display:flex;align-items:center;justify-content:center;font-size:13px">▶️</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Youtube</div><div style="font-size:8px;color:#6b7280">MCP · sdio</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#3b82f622;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#3b82f6">C</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Codex Plugin</div><div style="font-size:8px;color:#6b7280">plugin</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#4285f422;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#4285f4">G</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Gemini Plugin</div><div style="font-size:8px;color:#6b7280">plugin</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#ffffff18;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">▲</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Vercel</div><div style="font-size:8px;color:#6b7280">plugin</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#fbbc0422;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fbbc04">G</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Gemini</div><div style="font-size:8px;color:#6b7280">connector</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#1a73e822;display:flex;align-items:center;justify-content:center;font-size:13px">📅</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Google Cal</div><div style="font-size:8px;color:#6b7280">connector</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#6366f122;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#6366f1">G</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Gamma</div><div style="font-size:8px;color:#6b7280">connector</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#D4A01722;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#D4A017">M</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Mercury</div><div style="font-size:8px;color:#6b7280">connector</div></div></div>
+        <div style="border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)"><div style="width:26px;height:26px;border-radius:6px;background:#f472b622;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#f472b6">F</div><div><div style="font-size:10px;color:#e5e7eb;font-weight:500">Fireflies</div><div style="font-size:8px;color:#6b7280">connector</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SCENE 6: METRICS PEAK ════ -->
+  <div id="scene-metrics" class="scene" style="z-index:8;background:#070d07;display:flex;flex-direction:row">
+    <!-- left -->
+    <div style="width:860px;height:1080px;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative">
+      <div id="metrics-ghost" data-layout-ignore style="position:absolute;font-family:'Bebas Neue',sans-serif;font-size:420px;color:rgba(212,160,23,0.05);top:-80px;left:10px;line-height:1;user-select:none;pointer-events:none">$</div>
+      <div id="metrics-vert-label" style="position:absolute;left:48px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:#D4A017;letter-spacing:.25em;white-space:nowrap">SEVERUS CONNECTS</div>
+      <svg id="metrics-sparks" viewBox="0 0 300 250" style="width:580px;opacity:0" data-layout-allow-overflow>
+        <defs>
+          <linearGradient id="spk1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#D4A017" stop-opacity="0.3"/><stop offset="100%" stop-color="#D4A017" stop-opacity="0.9"/></linearGradient>
+          <linearGradient id="spk2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.9"/></linearGradient>
+          <linearGradient id="spk3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#818cf8" stop-opacity="0.3"/><stop offset="100%" stop-color="#818cf8" stop-opacity="0.9"/></linearGradient>
+        </defs>
+        <!-- gold sparkline -->
+        <polygon points="0,60 0,50 40,35 80,40 120,20 160,30 200,15 240,25 300,10 300,60" fill="rgba(212,160,23,0.08)"/>
+        <polyline id="spk-gold" points="0,50 40,35 80,40 120,20 160,30 200,15 240,25 300,10" fill="none" stroke="url(#spk1)" stroke-width="2" stroke-dasharray="320" stroke-dashoffset="320"/>
+        <!-- green sparkline -->
+        <polygon points="0,120 0,110 60,105 120,100 180,97 240,95 300,93 300,120" fill="rgba(16,185,129,0.08)" transform="translate(0,60)"/>
+        <polyline id="spk-green" points="0,110 60,105 120,100 180,97 240,95 300,93" fill="none" stroke="url(#spk2)" stroke-width="2" stroke-dasharray="240" stroke-dashoffset="240" transform="translate(0,60)"/>
+        <!-- indigo sparkline -->
+        <polygon points="0,180 0,170 40,165 80,150 120,155 160,140 200,145 240,130 300,135 300,180" fill="rgba(129,140,248,0.08)" transform="translate(0,60)"/>
+        <polyline id="spk-indigo" points="0,170 40,165 80,150 120,155 160,140 200,145 240,130 300,135" fill="none" stroke="url(#spk3)" stroke-width="2" stroke-dasharray="280" stroke-dashoffset="280" transform="translate(0,60)"/>
+      </svg>
+    </div>
+    <!-- divider -->
+    <div id="metrics-divider" style="width:2px;background:rgba(212,160,23,0.15);align-self:stretch;margin:80px 0;transform:scaleY(0);transform-origin:top"></div>
+    <!-- right: cards -->
+    <div id="metrics-cards" style="flex:1;display:flex;flex-direction:column;gap:16px;padding:80px 80px 80px 60px;justify-content:center">
+      <div id="mc-spend" style="border-radius:14px;padding:28px;background:linear-gradient(135deg,#1a1200,#0d0d07);border:1px solid rgba(212,160,23,0.3);box-shadow:0 0 20px rgba(212,160,23,0.15);position:relative;overflow:hidden;opacity:0">
+        <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:10px">AI SPEND</div>
+        <div id="mv-spend" style="font-family:'Bebas Neue',sans-serif;font-size:110px;color:#D4A017;text-shadow:0 0 30px rgba(212,160,23,0.5);line-height:1">$240</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:6px">last 28 days</div>
+      </div>
+      <div id="mc-skills" style="border-radius:14px;padding:28px;background:linear-gradient(135deg,#001a0d,#00100a);border:1px solid rgba(34,197,94,0.3);box-shadow:0 0 20px rgba(34,197,94,0.1);position:relative;overflow:hidden;opacity:0">
+        <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:10px">SKILLS ACTIVE</div>
+        <div id="mv-skills" style="font-family:'Bebas Neue',sans-serif;font-size:110px;color:#22c55e;text-shadow:0 0 30px rgba(34,197,94,0.5);line-height:1">0</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:6px">skills detected</div>
+      </div>
+      <div id="mc-activity" style="border-radius:14px;padding:28px;background:linear-gradient(135deg,#0a0a1a,#060610);border:1px solid rgba(129,140,248,0.3);box-shadow:0 0 20px rgba(129,140,248,0.1);position:relative;overflow:hidden;opacity:0">
+        <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:10px">TOKENS · 7 DAYS</div>
+        <div id="mv-activity" style="font-family:'Bebas Neue',sans-serif;font-size:110px;color:#818cf8;text-shadow:0 0 30px rgba(129,140,248,0.5);line-height:1">0</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:6px">20 active projects</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SCENE 7: HERMES AGENT ════ -->
+  <div id="scene-hermes" class="scene" style="z-index:9;background:#070d07;display:flex;flex-direction:column">
+    <!-- hero SVG banner -->
+    <div id="hermes-banner" style="position:relative;flex-shrink:0;opacity:0">
+      <svg viewBox="0 0 1400 240" style="width:100%;height:auto;display:block">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d1f3c"/><stop offset="100%" stop-color="#081525"/></linearGradient>
+          <linearGradient id="arch" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a3a60" stop-opacity="0.5"/><stop offset="100%" stop-color="#0a1828" stop-opacity="0.8"/></linearGradient>
+          <radialGradient id="glow" cx="50%" cy="60%" r="40%"><stop offset="0%" stop-color="#4a8ac0" stop-opacity="0.3"/><stop offset="100%" stop-color="#4a8ac0" stop-opacity="0"/></radialGradient>
+        </defs>
+        <!-- sky -->
+        <rect width="1400" height="240" fill="url(#sky)"/>
+        <!-- glow -->
+        <rect width="1400" height="240" fill="url(#glow)"/>
+        <!-- mountains -->
+        <polygon points="0,200 150,120 300,160 450,100 600,140 750,90 900,130 1050,80 1200,120 1350,70 1400,90 1400,240 0,240" fill="#0a1525" opacity="0.9"/>
+        <polygon points="0,220 200,150 400,180 600,150 800,170 1000,140 1200,165 1400,145 1400,240 0,240" fill="#060e1a" opacity="0.95"/>
+        <!-- arch frame -->
+        <path d="M550,240 L550,80 Q700,20 850,80 L850,240" fill="url(#arch)"/>
+        <path d="M550,80 Q700,20 850,80" fill="none" stroke="rgba(212,160,23,0.4)" stroke-width="1.5"/>
+        <!-- light rays -->
+        <line x1="700" y1="50" x2="300" y2="240" stroke="rgba(212,160,23,0.06)" stroke-width="40"/>
+        <line x1="700" y1="50" x2="500" y2="240" stroke="rgba(212,160,23,0.05)" stroke-width="25"/>
+        <line x1="700" y1="50" x2="900" y2="240" stroke="rgba(212,160,23,0.05)" stroke-width="25"/>
+        <line x1="700" y1="50" x2="1100" y2="240" stroke="rgba(212,160,23,0.04)" stroke-width="30"/>
+        <!-- figure silhouette -->
+        <ellipse cx="700" cy="170" rx="12" ry="14" fill="#060e1a"/>
+        <rect x="694" y="184" width="12" height="40" fill="#060e1a"/>
+        <line x1="700" y1="194" x2="660" y2="225" stroke="#060e1a" stroke-width="3"/>
+        <line x1="700" y1="194" x2="740" y2="225" stroke="#060e1a" stroke-width="3"/>
+        <line x1="700" y1="220" x2="680" y2="240" stroke="#060e1a" stroke-width="3"/>
+        <line x1="700" y1="220" x2="720" y2="240" stroke="#060e1a" stroke-width="3"/>
+        <!-- staff -->
+        <line x1="730" y1="155" x2="750" y2="240" stroke="#060e1a" stroke-width="2.5"/>
+      </svg>
+      <!-- badge overlay -->
+      <div id="hermes-badge" style="position:absolute;top:12px;left:20px;display:flex;align-items:center;gap:8px;opacity:0">
+        <div style="width:28px;height:28px;background:#D4A017;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#000">H</div>
+        <span style="font-size:12px;font-weight:700;color:#D4A017">Hermes</span>
+      </div>
+      <!-- light rays element for ambient -->
+      <div id="hermes-rays" style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,160,23,0.04),transparent);pointer-events:none" data-layout-ignore></div>
+    </div>
+
+    <!-- demo banner -->
+    <div id="hermes-demo-banner" style="background:rgba(42,58,26,0.9);border:1px solid rgba(212,160,23,0.2);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;opacity:0">
+      <span style="font-size:11px;color:rgba(212,160,23,0.7);font-family:'JetBrains Mono',monospace">DEMO MODE — SHOWING SAMPLE DATA — HERMES ITSELF ISN'T BEING QUERIED</span>
+      <div style="display:flex;gap:8px">
+        <div style="padding:5px 14px;border-radius:6px;font-size:10px;font-weight:600;color:#9ca3af;border:1px solid rgba(255,255,255,0.1)">REFRESH CONNECTION</div>
+        <div style="padding:5px 14px;border-radius:6px;font-size:10px;font-weight:600;background:#D4A017;color:#000">EXIT DEMO</div>
+      </div>
+    </div>
+
+    <!-- integration tabs -->
+    <div id="hermes-tabs" style="display:flex;gap:6px;padding:12px 20px;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.05);flex-shrink:0;opacity:0">
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(212,160,23,0.12);color:#D4A017;border:1px solid rgba(212,160,23,0.3);border-bottom:2px solid #D4A017;flex-shrink:0">API</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">OpenAI Codex</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Telegram</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Notion</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Gmail</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Google Drive</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Google Calendar</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Obsidian</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Supabase</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Granola</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">n8n</div>
+      <div style="padding:5px 14px;border-radius:20px;font-size:11px;color:#6b7280;flex-shrink:0">Anthropic API</div>
+    </div>
+
+    <!-- stat cards + chat -->
+    <div style="flex:1;display:flex;gap:20px;padding:16px 20px;overflow:hidden">
+      <!-- stat cards col -->
+      <div id="hermes-stat-cards" style="display:flex;flex-direction:column;gap:12px;width:280px;flex-shrink:0;opacity:0">
+        <div style="border-radius:12px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px">ACTIVE MODEL</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:28px;height:28px;background:#f97316;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#000">G</div>
+            <div><div style="font-size:18px;font-weight:700;color:#fff">gpt-3.5</div><div style="font-size:9px;color:#6b7280">via GOOGLE CODEX</div></div>
+          </div>
+          <div style="margin-top:8px;display:inline-flex;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)">CLAUDE 4</div>
+        </div>
+        <div style="border-radius:12px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px">BUDGET</div>
+          <div style="font-size:20px;font-weight:700;color:#fff">0.4k <span style="font-size:13px;color:#6b7280">/ 101.0k GRAN</span></div>
+          <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin:8px 0"><div style="width:4%;height:100%;background:#2dd4bf;border-radius:2px;box-shadow:0 0 6px #2dd4bf80"></div></div>
+          <div style="font-size:10px;color:#6b7280">1% FULL</div>
+        </div>
+        <div style="border-radius:12px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px">SESSIONS</div>
+          <div style="font-size:32px;font-weight:700;color:#D4A017;text-shadow:0 0 20px rgba(212,160,23,0.4)">12</div>
+          <div style="display:flex;align-items:flex-end;gap:3px;margin:6px 0;height:28px">
+            <div style="height:40%;background:#D4A01750;border-radius:2px;flex:1"></div><div style="height:60%;background:#D4A01770;border-radius:2px;flex:1"></div>
+            <div style="height:35%;background:#D4A01750;border-radius:2px;flex:1"></div><div style="height:75%;background:#D4A01780;border-radius:2px;flex:1"></div>
+            <div style="height:50%;background:#D4A01760;border-radius:2px;flex:1"></div><div style="height:90%;background:#D4A017;border-radius:2px;flex:1;box-shadow:0 0 6px #D4A01780"></div>
+          </div>
+          <div style="font-size:10px;color:#6b7280">1d total · 30 day</div>
+        </div>
+      </div>
+
+      <!-- chat col -->
+      <div id="hermes-chat" style="flex:1;display:flex;flex-direction:column;border-radius:14px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);overflow:hidden;opacity:0">
+        <div id="hermes-chat-body" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px">
+          <!-- empty state -->
+          <div id="hermes-empty" style="text-align:center">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:#D4A017;text-shadow:0 0 40px rgba(212,160,23,0.4);letter-spacing:.08em">HERMES-AGENT</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#4b5563;margin-top:8px">&gt; START A NEW CONVERSATION</div>
+          </div>
+          <!-- user bubble -->
+          <div id="hermes-user-msg" style="align-self:flex-end;display:flex;align-items:flex-end;gap:8px;opacity:0;display:none">
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px 12px 2px 12px;padding:12px 16px;font-size:13px;color:#e5e7eb;max-width:480px">Run a deep-dive on this week's token usage</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9ca3af;flex-shrink:0">U</div>
+          </div>
+          <!-- assistant bubble -->
+          <div id="hermes-resp" style="align-self:flex-start;display:flex;align-items:flex-start;gap:8px;opacity:0;display:none">
+            <div id="hermes-resp-avatar" style="width:28px;height:28px;border-radius:50%;background:#D4A017;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;opacity:0">H</div>
+            <div style="background:rgba(212,160,23,0.06);border:1px solid rgba(212,160,23,0.15);border-radius:2px 12px 12px 12px;padding:12px 16px;font-size:13px;color:#e5e7eb;max-width:600px">
+              <span id="hermes-resp-text"></span><span id="hermes-cursor" style="display:inline-block;width:2px;height:14px;background:#D4A017;margin-left:2px;vertical-align:text-bottom"></span>
+            </div>
+          </div>
+        </div>
+        <!-- input bar -->
+        <div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <div style="flex:1;font-size:12px;color:#374151;font-family:'JetBrains Mono',monospace">&gt; Continue this conversation... (drop or paste an image)</div>
+          <div style="padding:8px 16px;background:#D4A017;color:#000;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer">SEND</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- session stats row -->
+    <div id="hermes-stats-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 20px 16px;flex-shrink:0;opacity:0">
+      <div style="border-radius:10px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:4px">SESSIONS</div>
+        <div style="font-size:24px;font-weight:700;color:#D4A017">12</div>
+      </div>
+      <div style="border-radius:10px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:4px">MESSAGES</div>
+        <div style="font-size:24px;font-weight:700;color:#fff">248</div>
+        <div style="font-size:9px;color:#6b7280;margin-top:2px">ACROSS ALL SESSIONS</div>
+      </div>
+      <div style="border-radius:10px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:4px">MODELS</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+          <div style="width:14px;height:14px;border-radius:3px;background:#D4A017"></div>
+          <div style="width:14px;height:14px;border-radius:3px;background:#818cf8"></div>
+          <div style="width:14px;height:14px;border-radius:3px;background:#10b981"></div>
+          <span style="font-size:20px;font-weight:700;color:#fff;margin-left:4px">3</span>
+        </div>
+        <div style="font-size:9px;color:#6b7280;margin-top:2px">DISTINCT MODELS USED</div>
+      </div>
+      <div style="border-radius:10px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:4px">LAST ACTIVE</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+          <div style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></div>
+          <span style="font-size:18px;font-weight:700;color:#fff">2m ago</span>
+        </div>
+        <div style="font-size:9px;color:#6b7280;margin-top:2px">hermes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SCENE 8: DECK PROFILES ════ -->
+  <div id="scene-profiles" class="scene" style="z-index:10;background:#070d07;display:grid;grid-template-columns:220px 1fr;overflow:hidden">
+    <!-- left sidebar: suit groups -->
+    <div id="prof-sidebar" style="border-right:1px solid rgba(255,255,255,0.05);overflow-y:auto;padding:16px 12px;opacity:0">
+      <div style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:14px;padding-left:2px">DECK OF CARDS</div>
+      <!-- ♠ STRATEGY -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-left:2px">
+          <span style="font-size:13px;color:#8b5cf6">♠</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#374151;text-transform:uppercase">STRATEGY</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.04);border:1px solid rgba(139,92,246,0.35);border-radius:10px;padding:14px 14px 12px;cursor:pointer;border-left:3px solid #8b5cf6;box-shadow:0 0 20px rgba(139,92,246,0.18)">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#8b5cf6;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♠</div>
+            <!-- mini card inset top-right -->
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(139,92,246,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#8b5cf6;box-shadow:0 0 8px rgba(139,92,246,0.25)"><span style="font-size:11px;font-weight:800">A</span><span style="font-size:16px">♠</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#8b5cf6;margin-bottom:2px">ACE OF SPADES</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Campaign Strategist</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(139,92,246,0.2);color:#8b5cf6;border:1px solid rgba(139,92,246,0.35);display:inline-block">CLAUDE-OPUS-4.7</div></div>
+          </div>
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 14px 12px;cursor:pointer">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#8b5cf6;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♠</div>
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(139,92,246,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#8b5cf6"><span style="font-size:11px;font-weight:800">K</span><span style="font-size:16px">♠</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#9ca3af;margin-bottom:2px">KING OF SPADES</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Data &amp; Tracking Lead</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(139,92,246,0.15);color:#8b5cf6;border:1px solid rgba(139,92,246,0.3);display:inline-block">CLAUDE-SONNET-4.6</div></div>
+          </div>
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 14px 12px;cursor:pointer">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#8b5cf6;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♠</div>
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(139,92,246,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#8b5cf6"><span style="font-size:11px;font-weight:800">Q</span><span style="font-size:16px">♠</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#9ca3af;margin-bottom:2px">QUEEN OF SPADES</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Media Buyer</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(139,92,246,0.15);color:#8b5cf6;border:1px solid rgba(139,92,246,0.3);display:inline-block">CLAUDE-SONNET-4.6</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- ♥ CREATIVE -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-left:2px">
+          <span style="font-size:13px;color:#f472b6">♥</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#374151;text-transform:uppercase">CREATIVE</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 14px 12px;cursor:pointer">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#f472b6;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♥</div>
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(244,114,182,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#f472b6"><span style="font-size:11px;font-weight:800">A</span><span style="font-size:16px">♥</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#9ca3af;margin-bottom:2px">ACE OF HEARTS</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Creative Director</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(244,114,182,0.15);color:#f472b6;border:1px solid rgba(244,114,182,0.3);display:inline-block">CLAUDE-OPUS-4.7</div></div>
+          </div>
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 14px 12px;cursor:pointer">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#f472b6;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♥</div>
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(244,114,182,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#f472b6"><span style="font-size:11px;font-weight:800">K</span><span style="font-size:16px">♥</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#9ca3af;margin-bottom:2px">KING OF HEARTS</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Content Strategist</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(244,114,182,0.15);color:#f472b6;border:1px solid rgba(244,114,182,0.3);display:inline-block">CLAUDE-SONNET-4.6</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- ♦ GROWTH -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-left:2px">
+          <span style="font-size:13px;color:#D4A017">♦</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#374151;text-transform:uppercase">GROWTH</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 14px 12px;cursor:pointer">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#D4A017;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♦</div>
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(212,160,23,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#D4A017"><span style="font-size:11px;font-weight:800">A</span><span style="font-size:16px">♦</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#9ca3af;margin-bottom:2px">ACE OF DIAMONDS</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Business Development</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(212,160,23,0.15);color:#D4A017;border:1px solid rgba(212,160,23,0.3);display:inline-block">CLAUDE-OPUS-4.7</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- ♣ SYSTEMS -->
+      <div style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-left:2px">
+          <span style="font-size:13px;color:#2dd4bf">♣</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#374151;text-transform:uppercase">SYSTEMS</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div class="prof-card-btn" style="position:relative;overflow:hidden;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 14px 12px;cursor:pointer">
+            <div style="position:absolute;bottom:-4px;left:8px;font-size:52px;color:#2dd4bf;opacity:0.05;font-family:serif;line-height:1;pointer-events:none">♣</div>
+            <div style="position:absolute;top:8px;right:10px;width:32px;height:44px;border-radius:5px;background:rgba(0,0,0,0.5);border:1px solid rgba(45,212,191,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#2dd4bf"><span style="font-size:11px;font-weight:800">A</span><span style="font-size:16px">♣</span></div>
+            <div style="padding-right:44px"><div style="font-size:12px;font-weight:800;letter-spacing:.07em;color:#9ca3af;margin-bottom:2px">ACE OF CLUBS</div><div style="font-size:10px;color:#6b7280;margin-bottom:8px;line-height:1.4">Systems Architect</div><div style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(45,212,191,0.15);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3);display:inline-block">CLAUDE-OPUS-4.7</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: detail panel for ACE OF SPADES -->
+    <div id="prof-detail" style="overflow-y:auto;padding:20px 24px;opacity:0">
+      <!-- card header -->
+      <div style="position:relative;overflow:hidden;background:rgba(255,255,255,0.02);border:1px solid rgba(139,92,246,0.35);border-radius:12px;padding:20px 22px 18px;margin-bottom:20px;box-shadow:0 0 30px rgba(139,92,246,0.1)">
+        <div style="position:absolute;right:-10px;top:-10px;font-size:130px;color:#8b5cf6;opacity:0.04;font-family:serif;line-height:1;pointer-events:none">♠</div>
+        <div style="position:absolute;top:12px;right:14px;text-align:center">
+          <div style="font-size:18px;font-weight:900;color:#8b5cf6;line-height:1">A</div>
+          <div style="font-size:22px;color:#8b5cf6;line-height:1">♠</div>
+        </div>
+        <div style="position:relative;padding-right:50px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(139,92,246,0.7);text-transform:uppercase;margin-bottom:4px">♠ STRATEGY</div>
+          <div style="font-size:24px;font-weight:900;letter-spacing:.1em;color:#8b5cf6;margin-bottom:4px">ACE OF SPADES</div>
+          <div style="font-size:12px;color:#9ca3af;margin-bottom:12px">Your sharpest strategic mind. Runs campaign architecture and decision-making.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(139,92,246,0.2);color:#8b5cf6;border:1px solid rgba(139,92,246,0.4)">CLAUDE-OPUS-4.7</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.25)">SYNCED</span>
+            <span style="font-size:10px;color:#4b5563">Campaign Strategist</span>
+          </div>
+        </div>
+      </div>
+      <!-- stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:12px 14px"><div style="font-size:18px;font-weight:700;color:#8b5cf6">24</div><div style="font-size:10px;color:#4b5563;margin-top:2px">Sessions</div></div>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:12px 14px"><div style="font-size:18px;font-weight:700;color:#8b5cf6">312</div><div style="font-size:10px;color:#4b5563;margin-top:2px">Messages</div></div>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:12px 14px"><div style="font-size:18px;font-weight:700;color:#8b5cf6">2m ago</div><div style="font-size:10px;color:#4b5563;margin-top:2px">Last Active</div></div>
+      </div>
+      <!-- soul tab -->
+      <div style="display:flex;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:16px">
+        <div style="padding:9px 16px;font-size:11px;font-weight:700;color:#8b5cf6;border-bottom:2px solid #8b5cf6;letter-spacing:.04em">soul</div>
+        <div style="padding:9px 16px;font-size:11px;color:#4b5563;border-bottom:2px solid transparent;letter-spacing:.04em">skills</div>
+        <div style="padding:9px 16px;font-size:11px;color:#4b5563;border-bottom:2px solid transparent;letter-spacing:.04em">integrations</div>
+        <div style="padding:9px 16px;font-size:11px;color:#4b5563;border-bottom:2px solid transparent;letter-spacing:.04em">crons</div>
+      </div>
+      <!-- soul content -->
+      <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#4b5563;margin-bottom:8px">SOUL FILE · ACE OF SPADES</div>
+      <pre style="margin:0;font-size:11px;color:#9ca3af;line-height:1.7;white-space:pre-wrap;font-family:monospace;background:#0a0a0a;border-radius:6px;padding:14px 16px;border:1px solid rgba(255,255,255,0.06)">You are the Ace of Spades — the agency's sharpest
+strategic mind. Your role is campaign architecture,
+performance auditing, and decision-making under
+pressure.
+
+You think in frameworks. You synthesise signal from
+noise. You protect the client's budget like your own.
+
+Gateway: claude-code · Model: claude-opus-4-7
+Skills: ads, ads-google, ads-meta, ads-plan, ga4
+Memory: persistent · Obsidian linked</pre>
+    </div>
+  </div>
+
+  <!-- ════ SCENE 9: SYSTEM CTA ════ -->
+  <div id="scene-system" class="scene" style="z-index:11;background:#070d07;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0">
+    <!-- vignette -->
+    <div data-layout-ignore style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,0.75) 100%);pointer-events:none"></div>
+    <div id="sys-wordmark" style="font-family:'Bebas Neue',sans-serif;font-size:140px;color:#D4A017;text-shadow:0 0 40px rgba(212,160,23,0.5),0 0 80px rgba(212,160,23,0.2);letter-spacing:.06em;line-height:1;opacity:0">HERMES HUB</div>
+    <div id="sys-agency" style="font-family:'Space Grotesk',sans-serif;font-size:26px;color:#4b5563;letter-spacing:.25em;margin-top:12px;margin-bottom:20px;opacity:0">BY SEVERUS CONNECTS</div>
+    <div id="sys-hairline" style="width:600px;height:2px;background:rgba(212,160,23,0.4);margin-bottom:48px;transform:scaleX(0);transform-origin:center"></div>
+    <div id="sys-status-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;width:1560px">
+      <div class="sys-tile" style="border-radius:14px;padding:20px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);opacity:0">
+        <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:10px">HERMES AGENT</div>
+        <div style="display:flex;align-items:center;gap:8px"><div class="sys-dot" style="width:8px;height:8px;border-radius:50%;background:#f97316;box-shadow:0 0 8px #f97316;opacity:0"></div><span style="font-size:16px;font-weight:700;color:#f97316">OFFLINE</span></div>
+        <div style="font-size:11px;color:#374151;font-family:'JetBrains Mono',monospace;margin-top:6px">port 8642</div>
+      </div>
+      <div class="sys-tile" style="border-radius:14px;padding:20px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);opacity:0">
+        <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:10px">PAPERCLIP</div>
+        <div style="display:flex;align-items:center;gap:8px"><div class="sys-dot" style="width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;opacity:0"></div><span style="font-size:16px;font-weight:700;color:#22c55e">RUNNING</span></div>
+        <div style="font-size:11px;color:#374151;font-family:'JetBrains Mono',monospace;margin-top:6px">port 3100</div>
+      </div>
+      <div class="sys-tile" style="border-radius:14px;padding:20px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);opacity:0">
+        <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:10px">MEMORY</div>
+        <div style="display:flex;align-items:center;gap:8px"><div class="sys-dot" style="width:8px;height:8px;border-radius:50%;background:#818cf8;box-shadow:0 0 8px #818cf8;opacity:0"></div><span style="font-size:16px;font-weight:700;color:#818cf8">24 nodes</span></div>
+        <div style="font-size:11px;color:#374151;font-family:'JetBrains Mono',monospace;margin-top:6px">local fs</div>
+      </div>
+      <div class="sys-tile" style="border-radius:14px;padding:20px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);opacity:0">
+        <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#4b5563;margin-bottom:10px">TTS ENGINE</div>
+        <div style="display:flex;align-items:center;gap:8px"><div class="sys-dot" style="width:8px;height:8px;border-radius:50%;background:#2dd4bf;box-shadow:0 0 8px #2dd4bf;opacity:0"></div><span style="font-size:16px;font-weight:700;color:#2dd4bf">READY</span></div>
+        <div style="font-size:11px;color:#374151;font-family:'JetBrains Mono',monospace;margin-top:6px">supertonic</div>
+      </div>
+    </div>
+    <div id="sys-footer" style="font-family:'JetBrains Mono',monospace;font-size:18px;color:#374151;letter-spacing:.1em;margin-top:40px"></div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+// WEB AUDIO SFX — noise uses seeded PRNG (no Math.random)
+// ══════════════════════════════════════════════════════════════════════════
+// Pre-generate noise tables from seeded PRNG
+var _rngSFX = mulberry32(1337); // declared before use — hoisted via var
+var _NOISE_LEN = 22050; // 0.5s at 44.1k
+var _noiseTable = new Float32Array(_NOISE_LEN);
+for(var _ni=0;_ni<_NOISE_LEN;_ni++) _noiseTable[_ni] = _rngSFX()*2-1;
+
+function createSFX() {
+  var ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+  function noiseBuffer(ac, seconds) {
+    var len = Math.ceil(ac.sampleRate * seconds);
+    var buf = ac.createBuffer(1, len, ac.sampleRate);
+    var d = buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i] = _noiseTable[i % _NOISE_LEN];
+    return buf;
+  }
+  return {
+    boom: function() { try {
+      var ac=getCtx(), buf=ac.createBuffer(1,Math.ceil(ac.sampleRate*1.2),ac.sampleRate), d=buf.getChannelData(0);
+      for(var i=0;i<d.length;i++){var t=i/ac.sampleRate;d[i]=Math.sin(2*Math.PI*55*t*Math.exp(-t*2))*Math.exp(-t*1.5)*0.7;}
+      var src=ac.createBufferSource();src.buffer=buf;
+      var g=ac.createGain();g.gain.value=0.6;src.connect(g);g.connect(ac.destination);src.start();
+    } catch(e){} },
+    ping: function() { try {
+      var ac=getCtx(),o=ac.createOscillator(),g=ac.createGain();
+      o.frequency.value=880;o.type='sine';
+      g.gain.setValueAtTime(0.4,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.6);
+      o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.6);
+    } catch(e){} },
+    click: function() { try {
+      var ac=getCtx(), buf=noiseBuffer(ac,0.05), d=buf.getChannelData(0);
+      for(var i=0;i<d.length;i++) d[i]*=Math.exp(-i/(ac.sampleRate*0.008));
+      var src=ac.createBufferSource();src.buffer=buf;
+      var g=ac.createGain();g.gain.value=0.25;src.connect(g);g.connect(ac.destination);src.start();
+    } catch(e){} },
+    sweep: function() { try {
+      var ac=getCtx(),o=ac.createOscillator(),g=ac.createGain();
+      o.type='sawtooth';o.frequency.setValueAtTime(80,ac.currentTime);o.frequency.exponentialRampToValueAtTime(1200,ac.currentTime+0.8);
+      g.gain.setValueAtTime(0.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.9);
+      o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.9);
+    } catch(e){} },
+    glitch: function() { try {
+      var ac=getCtx();
+      for(var gi=0;gi<3;gi++){
+        var buf=noiseBuffer(ac,0.04), d=buf.getChannelData(0);
+        for(var j=0;j<d.length;j++) d[j]*=0.6;
+        var src=ac.createBufferSource();src.buffer=buf;
+        var g=ac.createGain();g.gain.value=0.3;src.connect(g);g.connect(ac.destination);src.start(ac.currentTime+gi*0.06);
+      }
+    } catch(e){} },
+    slam: function() { try {
+      var ac=getCtx(),o=ac.createOscillator(),g=ac.createGain();
+      o.type='square';o.frequency.value=120;
+      g.gain.setValueAtTime(0.3,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.3);
+      o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.3);
+    } catch(e){} },
+    whoosh: function() { try {
+      var ac=getCtx(), buf=noiseBuffer(ac,0.5), d=buf.getChannelData(0);
+      for(var i=0;i<d.length;i++){var t=i/ac.sampleRate;d[i]*=Math.exp(-t*6)*0.4;}
+      var src=ac.createBufferSource();src.buffer=buf;
+      var filt=ac.createBiquadFilter();filt.type='bandpass';filt.frequency.value=800;
+      var g=ac.createGain();g.gain.value=0.5;src.connect(filt);filt.connect(g);g.connect(ac.destination);src.start();
+    } catch(e){} }
+  };
+}
+var SFX = createSFX();
+
+// ══════════════════════════════════════════════════════════════════════════
+// SEEDED PRNG — mulberry32(seed)
+// ══════════════════════════════════════════════════════════════════════════
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// ── Pre-generate all seeded values ────────────────────────────────────────
+var rngDB = mulberry32(42);
+var dbNodePositions = Array.from({length: 24}, function() {
+  return { x: rngDB() * 1500 + 60, y: rngDB() * 140 + 10 };
+});
+
+var rngOW = mulberry32(7);
+var owBuildings = [];
+for(var _gi=0;_gi<18;_gi++) {
+  for(var _gj=0;_gj<14;_gj++) {
+    var _skip = rngOW() < 0.2;
+    if(_skip){rngOW();rngOW();rngOW();continue;}
+    owBuildings.push({
+      gx: (_gi-9)*80+(rngOW()-0.5)*20,
+      gy: (_gj-7)*80+(rngOW()-0.5)*20,
+      gw: 30+rngOW()*40,
+      gd: 30+rngOW()*40,
+      gh: 10+rngOW()*200,
+      shimmerOffset: rngOW()*6.28
+    });
+  }
+}
+var owFlights = [
+  {x:480,  y:300, bearing:-30}, {x:840,  y:240, bearing:45},
+  {x:1200, y:380, bearing:120}, {x:620,  y:480, bearing:-60},
+  {x:1400, y:280, bearing:15},  {x:980,  y:560, bearing:90}
+];
+var owCams = [{x:350,y:520},{x:750,y:640},{x:1100,y:450},{x:1550,y:580}];
+var owAlerts = [{x:560,y:380},{x:1280,y:500}];
+var owClients = [{x:410,y:290},{x:920,y:430},{x:1460,y:350}];
+
+var rngMem = mulberry32(42);
+var MEM_TYPES = [
+  {type:'memory core', color:'#22c55e', r:18},
+  {type:'feedback',    color:'#f59e0b', r:9},
+  {type:'feedback',    color:'#f59e0b', r:9},
+  {type:'feedback',    color:'#f59e0b', r:9},
+  {type:'project',     color:'#34d399', r:9},
+  {type:'project',     color:'#34d399', r:9},
+  {type:'project',     color:'#34d399', r:9},
+  {type:'project',     color:'#34d399', r:9},
+  {type:'decisions',   color:'#60a5fa', r:9},
+  {type:'decisions',   color:'#60a5fa', r:9},
+  {type:'sessions',    color:'#818cf8', r:7},
+  {type:'sessions',    color:'#818cf8', r:7},
+  {type:'sessions',    color:'#818cf8', r:7},
+  {type:'skills',      color:'#f472b6', r:8},
+  {type:'skills',      color:'#f472b6', r:8},
+  {type:'reference',   color:'#a78bfa', r:8},
+  {type:'reference',   color:'#a78bfa', r:8},
+  {type:'user',        color:'#60a5fa', r:9},
+  {type:'obsidian',    color:'#7c3aed', r:8},
+  {type:'obsidian',    color:'#7c3aed', r:8},
+  {type:'stale',       color:'#f97316', r:7},
+  {type:'stale',       color:'#f97316', r:7},
+  {type:'workspace',   color:'#9ca3af', r:7},
+  {type:'workspace',   color:'#9ca3af', r:7},
+];
+var memFullNodes = MEM_TYPES.map(function(m, i) {
+  if (i === 0) return {color:m.color,r:m.r,x:960,y:540,vx:0,vy:0};
+  var angle = rngMem() * 6.28;
+  var dist  = 60 + rngMem() * 380;
+  return {color:m.color,r:m.r,
+          x:960+Math.cos(angle)*dist,
+          y:540+Math.sin(angle)*dist,
+          vx:0,vy:0};
+});
+var rngPart = mulberry32(99);
+var PART_COLORS = ['#D4A017','#22c55e','#818cf8','#2dd4bf','#f472b6'];
+var memParticles = Array.from({length:60}, function() {
+  return {
+    x: rngPart()*1920, y: rngPart()*1080,
+    vx:(rngPart()-0.5)*0.5, vy:(rngPart()-0.5)*0.5-0.1,
+    size:0.5+rngPart()*1.5,
+    color:PART_COLORS[Math.floor(rngPart()*5)],
+    phase: rngPart()*300
+  };
+});
+
+// log lines
+var SW_LOG_LINES = [
+  '[09:22] Swarm initialized. 3 agents online.',
+  '[09:22] Agent-1 claimed: Analyze GA4 attribution window',
+  '[09:22] Agent-2 claimed: Pull Meta campaign metrics',
+  '[09:22] Agent-3 claimed: Generate client insight summary',
+  '[09:23] Agent-1 → GA4 API connected. Pulling 30d data...',
+  '[09:23] Agent-2 → Meta Graph API: campaigns fetched (12)',
+  '[09:24] Agent-1 ✓ Task complete. Output saved.',
+  '[09:24] Agent-3 → Generating insight summary (GPT-4.1)',
+  '[09:24] Agent-2 ✓ Task complete. Metrics normalised.',
+  '[09:45] Agent-3 ✓ Summary ready. Pushing to Notion...',
+  '[09:45] All tasks resolved. Swarm entering idle.',
+  '[09:46] Heartbeat OK. Next cycle in 14m.'
+];
+
+// ── hex → [r,g,b] ─────────────────────────────────────────────────────────
+function hexRGB(hex) {
+  var v = parseInt(hex.slice(1),16);
+  return [(v>>16)&255,(v>>8)&255,v&255];
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// CANVAS DRAW FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════
+
+// ── Dashboard mini-memory canvas ─────────────────────────────────────────
+function drawDBMemory(tick) {
+  var canvas = document.getElementById('db-memory-canvas');
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth || 1540;
+  canvas.height = canvas.offsetHeight || 160;
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = '#030b04'; ctx.fillRect(0,0,w,h);
+
+  // scale node positions to canvas
+  var scale = w / 1600;
+  var nodes = dbNodePositions.map(function(p,i) {
+    var mt = MEM_TYPES[i] || MEM_TYPES[0];
+    return {x:p.x*scale, y:p.y*(h/160), color:mt.color, r:Math.max(3,(mt.r||5)*0.55)};
+  });
+
+  // edges
+  for (var i=0;i<nodes.length;i++) {
+    var sorted = nodes.slice().filter(function(_,j){return j!==i;})
+      .sort(function(a,b){return Math.hypot(a.x-nodes[i].x,a.y-nodes[i].y)-Math.hypot(b.x-nodes[i].x,b.y-nodes[i].y);})
+      .slice(0,2);
+    for (var k=0;k<sorted.length;k++) {
+      var dist=Math.hypot(sorted[k].x-nodes[i].x,sorted[k].y-nodes[i].y);
+      if(dist>180)continue;
+      var al=(1-dist/180)*0.12;
+      var rgb=hexRGB(nodes[i].color);
+      ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(sorted[k].x,sorted[k].y);
+      ctx.strokeStyle='rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+al+')';ctx.lineWidth=0.6;ctx.stroke();
+    }
+  }
+  // nodes
+  nodes.forEach(function(n,i) {
+    var isCore=(i===0);
+    var pulse=isCore?1+0.15*Math.sin(tick*0.05):1+0.04*Math.sin(tick*0.03+i);
+    var rad=n.r*pulse;
+    var rgb=hexRGB(n.color);
+    var bloom=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,rad*5);
+    bloom.addColorStop(0,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(isCore?0.35:0.2)+')');
+    bloom.addColorStop(1,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0)');
+    ctx.beginPath();ctx.arc(n.x,n.y,rad*5,0,Math.PI*2);ctx.fillStyle=bloom;ctx.fill();
+    ctx.beginPath();ctx.arc(n.x,n.y,rad,0,Math.PI*2);ctx.fillStyle='rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.92)';ctx.fill();
+  });
+}
+
+// ── London overwatch canvas ───────────────────────────────────────────────
+function lerpColor(a, b, t) {
+  var ar=parseInt(a.slice(1,3),16), ag=parseInt(a.slice(3,5),16), ab=parseInt(a.slice(5,7),16);
+  var br=parseInt(b.slice(1,3),16), bg=parseInt(b.slice(3,5),16), bb=parseInt(b.slice(5,7),16);
+  return 'rgb('+(ar+t*(br-ar)|0)+','+(ag+t*(bg-ag)|0)+','+(ab+t*(bb-ab)|0)+')';
+}
+function buildingColor(h, maxH) {
+  var t = h/maxH;
+  if(t<0.2)  return lerpColor('#0a0a0f','#12121a',t/0.2);
+  if(t<0.4)  return lerpColor('#12121a','#1a1a2e',(t-0.2)/0.2);
+  if(t<0.7)  return lerpColor('#1a1a2e','#004455',(t-0.4)/0.3);
+  return lerpColor('#004455','#00f0ff',(t-0.7)/0.3);
+}
+
+function drawLondonCanvas(tick) {
+  var canvas = document.getElementById('ow-canvas');
+  if (!canvas) return;
+  canvas.width = 1920; canvas.height = 1080;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,1920,1080);
+
+  // base
+  ctx.fillStyle = '#0a0a14'; ctx.fillRect(0,0,1920,1080);
+
+  // isometric projection constants
+  var CX=960, CY=400;
+  var IX=0.85, IY=0.28;   // iso x-axis
+  var JX=-0.85, JY=0.28;  // iso y-axis
+  var KY=-0.72;            // height axis (up = negative Y)
+
+  function isoProject(wx, wy, wz) {
+    return {
+      sx: CX + wx*IX + wy*JX,
+      sy: CY + wx*IY + wy*JY + wz*KY
+    };
+  }
+
+  var maxH = 210;
+  // sort painter's algorithm: ascending wy+wx
+  var sorted = owBuildings.slice().sort(function(a,b){ return (a.gy+a.gx)-(b.gy+b.gx); });
+  sorted.forEach(function(b) {
+    var shimmer = 0.8 + 0.05*Math.sin(tick*0.08 + b.shimmerOffset);
+    var col = buildingColor(b.gh, maxH);
+
+    // 8 corners: base (wz=0) and top (wz=gh)
+    var p00 = isoProject(b.gx,        b.gy,        0);
+    var p10 = isoProject(b.gx+b.gw,   b.gy,        0);
+    var p11 = isoProject(b.gx+b.gw,   b.gy+b.gd,   0);
+    var p01 = isoProject(b.gx,        b.gy+b.gd,   0);
+    var t00 = isoProject(b.gx,        b.gy,        b.gh);
+    var t10 = isoProject(b.gx+b.gw,   b.gy,        b.gh);
+    var t11 = isoProject(b.gx+b.gw,   b.gy+b.gd,   b.gh);
+    var t01 = isoProject(b.gx,        b.gy+b.gd,   b.gh);
+
+    ctx.globalAlpha = shimmer * 0.9;
+
+    // right face (darker — gy+gd side)
+    var rightCol = lerpColor(col, '#000000', 0.42);
+    ctx.fillStyle = rightCol;
+    ctx.beginPath();
+    ctx.moveTo(p01.sx,p01.sy); ctx.lineTo(t01.sx,t01.sy);
+    ctx.lineTo(t11.sx,t11.sy); ctx.lineTo(p11.sx,p11.sy);
+    ctx.closePath(); ctx.fill();
+
+    // front face (main — gx+gw side)
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.moveTo(p10.sx,p10.sy); ctx.lineTo(t10.sx,t10.sy);
+    ctx.lineTo(t11.sx,t11.sy); ctx.lineTo(p11.sx,p11.sy);
+    ctx.closePath(); ctx.fill();
+
+    // top face (lighter, cyan-tinted for tall buildings)
+    var topCol = lerpColor(col, '#00f0ff', 0.18 + (b.gh/maxH)*0.22);
+    ctx.fillStyle = topCol;
+    ctx.beginPath();
+    ctx.moveTo(t00.sx,t00.sy); ctx.lineTo(t10.sx,t10.sy);
+    ctx.lineTo(t11.sx,t11.sy); ctx.lineTo(t01.sx,t01.sy);
+    ctx.closePath(); ctx.fill();
+
+    ctx.globalAlpha = 1;
+  });
+
+  // Thames overlay — flat river polygon in iso space
+  ctx.beginPath();
+  ctx.moveTo(0,680); ctx.bezierCurveTo(300,640,600,720,900,660);
+  ctx.bezierCurveTo(1200,600,1500,680,1920,640);
+  ctx.lineTo(1920,720); ctx.bezierCurveTo(1500,760,1200,680,900,740);
+  ctx.bezierCurveTo(600,800,300,720,0,760); ctx.closePath();
+  ctx.fillStyle = 'rgba(6,12,24,0.7)'; ctx.fill();
+
+  // flight trails + markers — projected onto iso grid
+  owFlights.forEach(function(f, i) {
+    var pingPhase = (tick % 45) / 45;
+    var pingR = 8 + pingPhase * 22;
+    var pingAlpha = Math.max(0, 0.6 - pingPhase * 0.6);
+    ctx.beginPath(); ctx.arc(f.x, f.y, pingR, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(0,240,255,'+pingAlpha+')'; ctx.lineWidth = 1.5; ctx.stroke();
+    var trailAngle = (f.bearing + 180) * Math.PI/180;
+    ctx.beginPath();
+    ctx.moveTo(f.x, f.y);
+    ctx.lineTo(f.x + Math.cos(trailAngle)*50, f.y + Math.sin(trailAngle)*50);
+    ctx.strokeStyle = 'rgba(0,240,255,0.5)'; ctx.lineWidth = 2;
+    ctx.filter = 'blur(2px)'; ctx.stroke(); ctx.filter = 'none';
+    ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 14;
+    ctx.fillStyle = '#00f0ff'; ctx.fillText('✈', f.x, f.y);
+    ctx.shadowBlur = 0;
+  });
+
+  // camera markers
+  owCams.forEach(function(c) {
+    var pingPhase = ((tick+22) % 54) / 54;
+    var pingAlpha = Math.max(0, 0.5 - pingPhase * 0.5);
+    ctx.beginPath(); ctx.arc(c.x, c.y, 6+pingPhase*18, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(57,255,20,'+pingAlpha+')'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.shadowColor = '#39ff14'; ctx.shadowBlur = 12;
+    ctx.fillStyle = '#39ff14'; ctx.font = '16px sans-serif';
+    ctx.fillText('📷', c.x, c.y); ctx.shadowBlur = 0;
+  });
+
+  // disruption markers
+  owAlerts.forEach(function(a) {
+    var pingPhase = ((tick+10) % 66) / 66;
+    var pingAlpha = Math.max(0, 0.5 - pingPhase * 0.5);
+    ctx.beginPath(); ctx.arc(a.x, a.y, 6+pingPhase*20, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,0,60,'+pingAlpha+')'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.shadowColor = '#ff003c'; ctx.shadowBlur = 12;
+    ctx.fillStyle = '#ff003c'; ctx.font = '18px sans-serif';
+    ctx.fillText('⚠', a.x, a.y); ctx.shadowBlur = 0;
+  });
+
+  // client markers
+  owClients.forEach(function(cl) {
+    ctx.shadowColor = '#C9A84C'; ctx.shadowBlur = 10;
+    ctx.fillStyle = '#C9A84C'; ctx.font = '16px sans-serif';
+    ctx.fillText('🏢', cl.x, cl.y); ctx.shadowBlur = 0;
+  });
+
+  // scan lines
+  for(var sy=0;sy<1080;sy+=4) {
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
+    ctx.fillRect(0,sy,1920,2);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// LOG LINE BUILDER
+// ══════════════════════════════════════════════════════════════════════════
+function addLogLine(idx) {
+  var box = document.getElementById('sw-log');
+  if (!box) return;
+  var line = document.createElement('div');
+  line.className = 'sw-log-line';
+  var numStr = (idx+1 < 10 ? ' ' : '') + (idx+1);
+  line.innerHTML = '<span class="sw-log-num">'+numStr+'</span><span class="sw-log-text">'+SW_LOG_LINES[idx]+'</span>';
+  box.appendChild(line);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// MAIN TIMELINE
+// ══════════════════════════════════════════════════════════════════════════
+var tl = gsap.timeline({ paused: true });
+
+// Proxy objects
+var owProxy = { t: 0 };
+var dbMemProxy = { tick: 0 };
+
+// ── helper: glitch flash VFX ──────────────────────────────────────────────
+function glitchFlash(T) {
+  tl.fromTo('#vfx-glitch',{opacity:0.8},{opacity:0,duration:0.2,ease:'steps(4)',overwrite:'auto'}, T);
+}
+
+// ── T1: intro → tc-hub title card (T=4.5) ────────────────────────────────
+tl.to('#scene-intro', { filter:'blur(25px)', scale:1.05, opacity:0, duration:0.6, ease:'power1.in' }, 4.5);
+glitchFlash(4.5);
+tl.call(function(){ SFX.sweep(); }, [], 4.5);
+tl.fromTo('#tc-hub',{opacity:0,scale:1.04},{opacity:1,scale:1,duration:0.25,ease:'power3.out'}, 4.75);
+tl.call(function(){ SFX.glitch(); }, [], 4.75);
+tl.to('#tc-hub',{opacity:0,duration:0.25,ease:'power2.in'}, 5.65);
+
+// ── SCENE 1: Dashboard (T=6.0) ────────────────────────────────────────────
+tl.fromTo('#scene-dashboard',{opacity:0},{opacity:1,duration:0.35,ease:'power2.out'}, 5.85);
+var D = 6.0;
+tl.to(dbMemProxy, { tick:400, duration:11.6, ease:'none',
+  onUpdate: function() { drawDBMemory(Math.floor(dbMemProxy.tick)); }
+}, D);
+
+tl.fromTo('#db-topbar-rule',   {scaleX:0},{scaleX:1,duration:0.6,ease:'power2.out',transformOrigin:'left'}, D+0.15);
+tl.fromTo('#db-sidebar',       {x:-168,opacity:0},{x:0,opacity:1,duration:0.7,ease:'power3.out'}, D+0.2);
+tl.fromTo('#db-topbar',        {y:-20,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out'}, D+0.3);
+tl.fromTo('#db-greeting',      {x:40,opacity:0},{x:0,opacity:1,duration:0.6,ease:'expo.out'}, D+0.5);
+gsap.utils.toArray('#db-quicknav .qnav-tile').forEach(function(el,i){
+  tl.fromTo(el,{y:-30,opacity:0},{y:0,opacity:1,duration:0.45,ease:'power3.out'}, D+0.8+i*0.12);
+});
+tl.fromTo('#db-cards',         {scale:0.92,opacity:0},{scale:1,opacity:1,duration:0.55,ease:'power4.out'}, D+1.2);
+tl.fromTo('#db-memory-panel',  {y:60,opacity:0},{y:0,opacity:1,duration:0.7,ease:'sine.out'}, D+1.6);
+tl.fromTo('#db-mem-legend',    {opacity:0},{opacity:1,duration:0.4,ease:'power1.out'}, D+2.1);
+tl.fromTo('#db-subs-panel',    {y:30,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out'}, D+2.3);
+gsap.utils.toArray('#db-status-row .status-dot').forEach(function(el,i){
+  tl.fromTo(el,{scale:0,opacity:0},{scale:1,opacity:1,duration:0.3,ease:'power2.out'}, D+2.4+i*0.08);
+});
+tl.to('#db-mem-legend', {opacity:0.85,yoyo:true,repeat:Math.floor(5/1.4)-1,duration:0.7,ease:'sine.inOut',overwrite:'auto'}, D+3.5);
+
+// ── T2: dashboard → tc-field (T=16.6) ─────────────────────────────────────
+tl.to('#scene-dashboard', {scale:2.5,filter:'blur(8px)',opacity:0,duration:0.4,ease:'power3.in'}, 16.6);
+glitchFlash(16.6);
+tl.call(function(){ SFX.boom(); }, [], 16.6);
+tl.fromTo('#tc-field',{opacity:0,scale:1.04},{opacity:1,scale:1,duration:0.25,ease:'power3.out'}, 16.85);
+tl.call(function(){ SFX.glitch(); }, [], 16.85);
+tl.to('#tc-field',{opacity:0,duration:0.25,ease:'power2.in'}, 17.75);
+
+// ── SCENE 2: Overwatch Map (T=18.1) ───────────────────────────────────────
+tl.fromTo('#scene-overwatch',{scale:0.6,filter:'blur(8px)',opacity:0},{scale:1,filter:'blur(0px)',opacity:1,duration:0.5,ease:'power3.out'}, 17.9);
+var OW = 18.1;
+tl.to(owProxy, { t:480, duration:14, ease:'none',
+  onUpdate: function() { drawLondonCanvas(Math.floor(owProxy.t)); }
+}, OW);
+tl.call(function(){ SFX.ping(); }, [], OW);
+tl.call(function(){ SFX.ping(); }, [], OW+3);
+tl.call(function(){ SFX.ping(); }, [], OW+6);
+tl.call(function(){ SFX.ping(); }, [], OW+9);
+tl.call(function(){ SFX.ping(); }, [], OW+12);
+
+// brackets in/out for overwatch scene
+tl.fromTo('#vfx-brackets',{opacity:0},{opacity:1,duration:0.4,ease:'power2.out'}, OW+0.1);
+tl.to('#vfx-brackets',{opacity:0,duration:0.3,ease:'power2.in'}, 31.5);
+
+tl.fromTo('#ow-topbar',   {y:-60,opacity:0},{y:0,opacity:1,duration:0.7,ease:'power3.out'}, OW+0.2);
+tl.fromTo('#ow-tabs',     {y:-20,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out'}, OW+0.4);
+tl.fromTo('#ow-sidebar',  {x:-280,opacity:0},{x:0,opacity:1,duration:0.8,ease:'power3.out'}, OW+0.6);
+gsap.utils.toArray('#ow-sidebar .ow-flight-card').forEach(function(el,i){
+  tl.fromTo(el,{y:20,opacity:0},{y:0,opacity:1,duration:0.35,ease:'power2.out'}, OW+0.8+i*0.1);
+});
+tl.fromTo('#ow-right',    {x:320,opacity:0},{x:0,opacity:1,duration:0.9,ease:'expo.out'}, OW+1.2);
+tl.fromTo('#ow-bottom',   {y:40,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out'}, OW+1.4);
+
+// ── T3: overwatch → kanban (T=32.1) ───────────────────────────────────────
+tl.to('#scene-overwatch', {filter:'blur(12px)',opacity:0,duration:0.5,ease:'power2.inOut'}, 32.1);
+tl.fromTo('#scene-kanban',{filter:'blur(12px)',opacity:0},{filter:'blur(0px)',opacity:1,duration:0.5,ease:'power2.inOut'}, 32.2);
+tl.call(function(){ SFX.whoosh(); }, [], 32.2);
+
+// ── SCENE 3: Kanban (T=32.1) ──────────────────────────────────────────────
+var KB = 32.1;
+tl.fromTo('#kb-tabs', {y:-20,opacity:0},{y:0,opacity:1,duration:0.4,ease:'power2.out'}, KB+0.2);
+gsap.utils.toArray('#kb-board .kb-col-header').forEach(function(el,i){
+  tl.fromTo(el,{y:-40,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power3.out'}, KB+0.3+i*0.08);
+});
+gsap.utils.toArray('#kb-board .kb-col-header').forEach(function(el,i){
+  tl.fromTo(el,{borderTopColor:'rgba(255,255,255,0)'},{borderTopColor:el.style.borderTopColor||'#64748b',duration:0.4,ease:'power2.out'}, KB+0.6+i*0.08);
+});
+var cardOffset = KB+0.9;
+['#kb-board .kb-col:nth-child(1) .kb-card:nth-child(2)',
+ '#kb-board .kb-col:nth-child(1) .kb-card:nth-child(3)',
+ '#kb-board .kb-col:nth-child(2) .kb-card:nth-child(2)',
+ '#kb-board .kb-col:nth-child(2) .kb-card:nth-child(3)'].forEach(function(sel,i){
+  tl.fromTo(sel,{y:30,opacity:0},{y:0,opacity:1,duration:0.4,ease:'power3.out'}, cardOffset+i*0.1);
+});
+tl.fromTo('#kb-inprogress', {x:-40,opacity:0},{x:0,opacity:1,duration:0.5,ease:'power4.out'}, KB+1.3);
+tl.fromTo('#kb-board .kb-col:nth-child(4) .kb-card', {y:30,opacity:0},{y:0,opacity:1,duration:0.4,ease:'power2.out'}, KB+1.5);
+tl.fromTo('#kb-done', {scale:0.8,opacity:0},{scale:1,opacity:0.65,duration:0.4,ease:'power2.out'}, KB+1.7);
+tl.to('#kb-inprogress', {boxShadow:'0 0 20px rgba(245,158,11,0.3)',yoyo:true,repeat:Math.floor(8/2)-1,duration:1,ease:'sine.inOut'}, KB+2.5);
+
+// ── T4: kanban → swarm (T=42.1) ───────────────────────────────────────────
+tl.to('#scene-kanban', {filter:'blur(10px)',opacity:0,duration:0.45,ease:'power2.inOut'}, 42.1);
+tl.fromTo('#scene-swarm',{filter:'blur(10px)',opacity:0},{filter:'blur(0px)',opacity:1,duration:0.45,ease:'power2.inOut'}, 42.2);
+glitchFlash(42.1);
+
+// ── SCENE 4: Swarm (T=42.1) ───────────────────────────────────────────────
+var SW = 42.1;
+tl.fromTo('#sw-header-row', {y:-20,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out'}, SW+0.2);
+tl.fromTo('#sw-header-row .sw-running-badge',{scale:0,opacity:0},{scale:1,opacity:1,duration:0.4,ease:'power3.out'}, SW+0.3);
+gsap.utils.toArray('#sw-grid .sw-col-header').forEach(function(el,i){
+  tl.fromTo(el,{x:i===0?-20:20,opacity:0},{x:0,opacity:1,duration:0.4,ease:'power2.out'}, SW+0.5);
+});
+gsap.utils.toArray('.sw-task-row').forEach(function(el,i){
+  tl.fromTo(el,{y:16,opacity:0},{y:0,opacity:1,duration:0.35,ease:'power2.out'}, SW+0.7+i*0.1);
+});
+tl.fromTo('#sw-submit', {y:20,opacity:0},{y:0,opacity:1,duration:0.4,ease:'power2.out'}, SW+0.8);
+SW_LOG_LINES.forEach(function(_, i) {
+  var groupStart = i < 4 ? SW+1.4 : i < 8 ? SW+2.0 : SW+2.6;
+  var offset = (i % 4) * 0.1;
+  tl.call(function(idx) {
+    addLogLine(idx);
+    var lines = document.querySelectorAll('#sw-log .sw-log-line');
+    var el = lines[idx];
+    if (el) { el.style.opacity = '0'; gsap.to(el, {opacity:1,duration:0.25,ease:'power1.out'}); }
+  }, [i], groupStart + offset);
+  // SFX.click every 8 lines
+  if (i % 3 === 0) { tl.call(function(){ SFX.click(); }, [], groupStart + offset + 0.01); }
+});
+var spinProxy={r:0};
+tl.to(spinProxy, {r:2880, duration:8.5, ease:'none',
+  onUpdate: function(){
+    var deg = Math.floor(spinProxy.r)+'deg';
+    var s1=document.getElementById('sw-spin1'); if(s1) s1.style.transform='rotate('+deg+')';
+    var s2=document.getElementById('sw-spin2'); if(s2) s2.style.transform='rotate('+deg+')';
+  }
+}, SW+0.7);
+
+// ── T5: swarm → tc-memory (T=51.1) ────────────────────────────────────────
+tl.to('#scene-swarm', {scale:2.2,filter:'blur(8px)',opacity:0,duration:0.4,ease:'power3.in'}, 51.1);
+glitchFlash(51.1);
+tl.call(function(){ SFX.boom(); }, [], 51.1);
+tl.fromTo('#tc-memory',{opacity:0,scale:1.04},{opacity:1,scale:1,duration:0.25,ease:'power3.out'}, 51.35);
+tl.call(function(){ SFX.glitch(); }, [], 51.35);
+tl.to('#tc-memory',{opacity:0,duration:0.25,ease:'power2.in'}, 52.25);
+
+// ── SCENE 5: Memory Constellation (T=52.6) ──────────────────────────────
+tl.fromTo('#scene-memory',{scale:0.7,filter:'blur(8px)',opacity:0},{scale:1,filter:'blur(0px)',opacity:1,duration:0.5,ease:'power3.out'}, 52.35);
+
+// ── drawMemoryCanvas ─────────────────────────────────────────────────────
+var rngMem = mulberry32(42);
+var MEM_NODES = [
+  {type:'core',   color:'#22c55e', r:18, cx:960, cy:540},
+  {type:'project',color:'#34d399', r:9},
+  {type:'project',color:'#34d399', r:9},
+  {type:'project',color:'#34d399', r:9},
+  {type:'decision',color:'#60a5fa',r:9},
+  {type:'decision',color:'#60a5fa',r:9},
+  {type:'session', color:'#818cf8', r:7},
+  {type:'session', color:'#818cf8', r:7},
+  {type:'session', color:'#818cf8', r:7},
+  {type:'skill',   color:'#f472b6', r:8},
+  {type:'skill',   color:'#f472b6', r:8},
+  {type:'skill',   color:'#f472b6', r:8},
+  {type:'feedback',color:'#f59e0b', r:9},
+  {type:'feedback',color:'#f59e0b', r:9},
+  {type:'obsidian',color:'#7c3aed', r:8},
+  {type:'obsidian',color:'#7c3aed', r:8},
+  {type:'stale',   color:'#f97316', r:7},
+  {type:'stale',   color:'#f97316', r:7},
+  {type:'reference',color:'#a78bfa',r:8},
+  {type:'reference',color:'#a78bfa',r:8},
+  {type:'user',    color:'#60a5fa', r:9},
+  {type:'user',    color:'#60a5fa', r:9},
+  {type:'workspace',color:'#9ca3af',r:7},
+  {type:'workspace',color:'#9ca3af',r:7}
+];
+// assign seeded positions to non-core nodes
+MEM_NODES.forEach(function(n, i) {
+  if (i === 0) return; // core is pinned
+  n.cx = rngMem() * 1600 + 160;
+  n.cy = rngMem() * 700 + 120;
+});
+var rngPart = mulberry32(99);
+var MEM_PARTICLES = Array.from({length: 55}, function() {
+  return {
+    x: rngPart() * 1920, y: rngPart() * 1080,
+    vx: (rngPart() - 0.5) * 0.4, vy: (rngPart() - 0.5) * 0.4,
+    r: 0.8 + rngPart() * 1.4,
+    color: ['#22c55e','#34d399','#60a5fa','#818cf8','#f472b6'][Math.floor(rngPart() * 5)],
+    alpha: 0.2 + rngPart() * 0.35,
+    offset: rngPart() * 6.28
+  };
+});
+
+function drawMemoryCanvas(tick) {
+  var canvas = document.getElementById('mem-canvas');
+  if (!canvas) return;
+  var W = 1920, H = 1080;
+  if (canvas.width !== W) { canvas.width = W; canvas.height = H; }
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  // background
+  ctx.fillStyle = '#020804';
+  ctx.fillRect(0, 0, W, H);
+
+  // draw edges (core to each node)
+  var core = MEM_NODES[0];
+  for (var i = 1; i < MEM_NODES.length; i++) {
+    var n = MEM_NODES[i];
+    var dist = Math.sqrt(Math.pow(n.cx - core.cx, 2) + Math.pow(n.cy - core.cy, 2));
+    var alpha = Math.max(0, 0.14 - dist / 8000);
+    ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+    ctx.lineWidth = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(core.cx, core.cy);
+    ctx.lineTo(n.cx, n.cy);
+    ctx.stroke();
+    // inter-node edges (nearby)
+    for (var j = i + 1; j < MEM_NODES.length; j++) {
+      var m = MEM_NODES[j];
+      var d2 = Math.sqrt(Math.pow(m.cx - n.cx, 2) + Math.pow(m.cy - n.cy, 2));
+      if (d2 < 220) {
+        ctx.strokeStyle = 'rgba(255,255,255,' + (0.06 * (1 - d2/220)) + ')';
+        ctx.lineWidth = 0.4;
+        ctx.beginPath();
+        ctx.moveTo(n.cx, n.cy);
+        ctx.lineTo(m.cx, m.cy);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // draw particles
+  for (var p = 0; p < MEM_PARTICLES.length; p++) {
+    var pt = MEM_PARTICLES[p];
+    var px = (pt.x + pt.vx * tick * 0.6) % W;
+    var py = (pt.y + pt.vy * tick * 0.6) % H;
+    if (px < 0) px += W;
+    if (py < 0) py += H;
+    var palpha = pt.alpha * (0.6 + 0.4 * Math.sin(tick * 0.04 + pt.offset));
+    ctx.globalAlpha = palpha;
+    ctx.fillStyle = pt.color;
+    ctx.beginPath();
+    ctx.arc(px, py, pt.r, 0, 6.28);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // draw nodes
+  for (var ni = 0; ni < MEM_NODES.length; ni++) {
+    var node = MEM_NODES[ni];
+    var shimmer = 0.8 + 0.2 * Math.sin(tick * 0.04 + ni * 0.6);
+    // outer bloom
+    var grd = ctx.createRadialGradient(node.cx, node.cy, 0, node.cx, node.cy, node.r * 4);
+    grd.addColorStop(0, node.color + '30');
+    grd.addColorStop(1, node.color + '00');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(node.cx, node.cy, node.r * 4, 0, 6.28);
+    ctx.fill();
+    // glow ring
+    ctx.strokeStyle = node.color + '90';
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = shimmer;
+    ctx.beginPath();
+    ctx.arc(node.cx, node.cy, node.r * 1.6, 0, 6.28);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    // core
+    ctx.fillStyle = node.color;
+    ctx.beginPath();
+    ctx.arc(node.cx, node.cy, node.r, 0, 6.28);
+    ctx.fill();
+    // specular
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.beginPath();
+    ctx.arc(node.cx - node.r * 0.25, node.cy - node.r * 0.3, node.r * 0.28, 0, 6.28);
+    ctx.fill();
+  }
+}
+
+// ── Profile cards DOM generation ─────────────────────────────────────────
+var PROFILES = [
+  {name:'ACE OF SPADES',   suit:'♠', rank:'A', bg:'#0c1228', accent:'#8b5cf6', role:'Campaign Strategist',       model:'OPUS-4.7'},
+  {name:'KING OF SPADES',  suit:'♠', rank:'K', bg:'#0c1228', accent:'#8b5cf6', role:'Data & Tracking Lead',      model:'SONNET-4.6'},
+  {name:'ACE OF HEARTS',   suit:'♥', rank:'A', bg:'#1a0c18', accent:'#f472b6', role:'Creative Director',         model:'OPUS-4.7'},
+  {name:'KING OF HEARTS',  suit:'♥', rank:'K', bg:'#1a0c18', accent:'#f472b6', role:'Content Strategist',        model:'SONNET-4.6'},
+  {name:'ACE OF DIAMONDS', suit:'♦', rank:'A', bg:'#1a1408', accent:'#D4A017', role:'Business Development',      model:'OPUS-4.7'},
+  {name:'KING OF DIAMONDS',suit:'♦', rank:'K', bg:'#1a1408', accent:'#D4A017', role:'Client Success Manager',    model:'SONNET-4.6'},
+  {name:'QUEEN OF SPADES', suit:'♠', rank:'Q', bg:'#0c1228', accent:'#8b5cf6', role:'Media Buyer',               model:'SONNET-4.6'},
+  {name:'QUEEN OF HEARTS', suit:'♥', rank:'Q', bg:'#1a0c18', accent:'#f472b6', role:'Brand Storyteller',         model:'HAIKU-4.5'},
+  {name:'ACE OF CLUBS',    suit:'♣', rank:'A', bg:'#0c1a14', accent:'#2dd4bf', role:'Systems Architect',         model:'OPUS-4.7'},
+  {name:'KING OF CLUBS',   suit:'♣', rank:'K', bg:'#0c1a14', accent:'#2dd4bf', role:'GA4 & Tracking Specialist', model:'SONNET-4.6'}
+];
+(function buildProfileCards() {
+  var grid = document.getElementById('prof-grid');
+  if (!grid) return;
+  PROFILES.forEach(function(p, i) {
+    var card = document.createElement('div');
+    card.id = 'prof-card-' + i;
+    card.style.cssText = [
+      'border-radius:12px',
+      'background:' + p.bg,
+      'border:1px solid ' + p.accent + '30',
+      'position:relative',
+      'overflow:hidden',
+      'display:flex',
+      'flex-direction:column',
+      'justify-content:flex-end',
+      'padding:16px',
+      'opacity:0',
+      'min-height:160px'
+    ].join(';');
+    // suit watermark
+    var wm = document.createElement('div');
+    wm.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:110px;color:' + p.accent + ';opacity:0.07;pointer-events:none;user-select:none;line-height:1';
+    wm.textContent = p.suit;
+    card.appendChild(wm);
+    // synced badge
+    var badge = document.createElement('div');
+    badge.style.cssText = 'position:absolute;top:10px;left:10px;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:700;background:rgba(45,212,191,0.15);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3);letter-spacing:.06em';
+    badge.textContent = 'SYNCED';
+    card.appendChild(badge);
+    // corner rank
+    var corner = document.createElement('div');
+    corner.style.cssText = 'position:absolute;top:8px;right:12px;font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:' + p.accent + ';letter-spacing:.04em;line-height:1';
+    corner.textContent = p.rank + ' ' + p.suit;
+    card.appendChild(corner);
+    // glow overlay
+    var glow = document.createElement('div');
+    glow.id = 'prof-glow-' + i;
+    glow.style.cssText = 'position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,' + p.accent + '20,transparent 70%);opacity:0;pointer-events:none';
+    card.appendChild(glow);
+    // bottom content
+    var name = document.createElement('div');
+    name.style.cssText = 'font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:#fff;letter-spacing:.04em;line-height:1.1;position:relative;z-index:1';
+    name.textContent = p.name;
+    card.appendChild(name);
+    var role = document.createElement('div');
+    role.style.cssText = 'font-size:11px;color:' + p.accent + ';margin-top:3px;position:relative;z-index:1';
+    role.textContent = p.role;
+    card.appendChild(role);
+    var model = document.createElement('div');
+    model.style.cssText = 'margin-top:6px;display:inline-flex;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;border:1px solid ' + p.accent + '50;color:' + p.accent + ';letter-spacing:.04em;position:relative;z-index:1';
+    model.textContent = 'CLAUDE-' + p.model;
+    card.appendChild(model);
+    grid.appendChild(card);
+  });
+})();
+
+var MEM_START = 52.6;
+var memProxy = {tick: 0};
+tl.to(memProxy, {tick: 360, duration: 11.3, ease: 'none',
+  onUpdate: function() { drawMemoryCanvas(memProxy.tick); }
+}, MEM_START);
+tl.fromTo('#mem-canvas-wrap', {opacity:0,scale:0.96},{opacity:1,scale:1,duration:0.9,ease:'sine.out'}, MEM_START+0.2);
+tl.fromTo('#mem-label-vert',  {scaleY:0},{scaleY:1,duration:0.6,ease:'power3.out',transformOrigin:'top center'}, MEM_START+0.4);
+tl.fromTo('#mem-legend',  {x:40,opacity:0},{x:0,opacity:1,duration:0.5,ease:'power2.out'}, MEM_START+0.8);
+tl.fromTo('#mem-signals', {x:-40,opacity:0},{x:0,opacity:1,duration:0.5,ease:'power2.out'}, MEM_START+1.0);
+tl.fromTo('#mem-core-ring', {scale:0,opacity:0},{scale:1,opacity:0.6,duration:0.8,ease:'elastic.out(1,0.5)'}, MEM_START+1.2);
+gsap.utils.toArray('#mem-pills div').forEach(function(el, i) {
+  tl.fromTo(el, {y:20,opacity:0},{y:0,opacity:1,duration:0.35,ease:'power2.out'}, MEM_START+1.5+i*0.06);
+});
+tl.fromTo('#mem-stack', {y:30,opacity:0},{y:0,opacity:1,duration:0.6,ease:'power2.out'}, MEM_START+2.0);
+
+// ── T6: memory → tc-perf (T=63.9) ──────────────────────────────────────
+tl.to('#scene-memory', {filter:'blur(10px)',opacity:0,duration:0.35,ease:'power2.inOut'}, 63.9);
+glitchFlash(63.9);
+tl.call(function(){ SFX.boom(); }, [], 63.9);
+tl.fromTo('#tc-perf',{opacity:0,scale:1.04},{opacity:1,scale:1,duration:0.25,ease:'power3.out'}, 64.15);
+tl.call(function(){ SFX.glitch(); }, [], 64.15);
+tl.to('#tc-perf',{opacity:0,duration:0.25,ease:'power2.in'}, 65.05);
+
+// ── SCENE 6: Metrics Peak (T=65.4) ──────────────────────────────────────
+tl.fromTo('#scene-metrics',{filter:'blur(10px)',opacity:0},{filter:'blur(0px)',opacity:1,duration:0.4,ease:'power2.inOut'}, 65.2);
+var MET = 65.4;
+tl.fromTo('#metrics-ghost', {scale:1.4,opacity:0},{scale:1,opacity:1,duration:0.8,ease:'power2.out'}, MET+0.15);
+tl.fromTo('#metrics-divider',{scaleY:0},{scaleY:1,duration:0.5,ease:'power3.out'}, MET+0.2);
+tl.fromTo('#mc-spend',    {x:80,opacity:0},{x:0,opacity:1,duration:0.5,ease:'power4.out'}, MET+0.3);
+tl.fromTo('#mc-skills',   {x:100,opacity:0},{x:0,opacity:1,duration:0.5,ease:'power4.out'}, MET+0.48);
+tl.fromTo('#mc-activity', {x:120,opacity:0},{x:0,opacity:1,duration:0.5,ease:'power4.out'}, MET+0.66);
+tl.fromTo('#metrics-sparks',{opacity:0},{opacity:1,duration:0.3}, MET+0.5);
+tl.fromTo('#spk-gold',   {strokeDashoffset:320},{strokeDashoffset:0,duration:1.0,ease:'power2.out'}, MET+0.5);
+tl.fromTo('#spk-green',  {strokeDashoffset:240},{strokeDashoffset:0,duration:1.0,ease:'power2.out'}, MET+0.7);
+tl.fromTo('#spk-indigo', {strokeDashoffset:280},{strokeDashoffset:0,duration:1.0,ease:'power2.out'}, MET+0.9);
+var spendProxy = {v:0}, skillsProxy = {v:0}, actProxy = {v:0};
+tl.to(spendProxy,  {v:240,  duration:1.2,ease:'power2.out',
+  onUpdate:function(){ var el=document.getElementById('mv-spend');   if(el) el.textContent='$'+Math.floor(spendProxy.v); }
+}, MET+0.3);
+tl.to(skillsProxy, {v:69,   duration:1.2,ease:'power2.out',
+  onUpdate:function(){ var el=document.getElementById('mv-skills');  if(el) el.textContent=Math.floor(skillsProxy.v); }
+}, MET+0.48);
+tl.to(actProxy,    {v:20446,duration:1.2,ease:'power2.out',
+  onUpdate:function(){ var el=document.getElementById('mv-activity'); if(el) el.textContent=Math.floor(actProxy.v).toLocaleString(); }
+}, MET+0.66);
+tl.call(function(){ SFX.slam(); }, [], MET+1.5);
+tl.to(['#mv-spend','#mv-skills','#mv-activity'],{scale:1.02,yoyo:true,repeat:3,duration:0.5,ease:'sine.inOut',stagger:0.1}, MET+2.5);
+
+// ── T7: metrics → hermes (T=75.7, focus pull) ───────────────────────────
+tl.to('#scene-metrics', {filter:'blur(30px)',opacity:0,duration:0.6,ease:'power2.inOut'}, 75.7);
+tl.fromTo('#scene-hermes', {filter:'blur(20px)',opacity:0},{filter:'blur(0px)',opacity:1,duration:0.7,ease:'power2.inOut'}, 76.0);
+
+// ── SCENE 7: Hermes Agent (T=75.7) ──────────────────────────────────────
+var HER = 75.7;
+// brackets for hermes scene
+tl.fromTo('#vfx-brackets',{opacity:0},{opacity:1,duration:0.3,ease:'power2.out'}, HER+0.1);
+tl.to('#vfx-brackets',{opacity:0,duration:0.3,ease:'power2.in'}, 85.5);
+tl.fromTo('#hermes-banner',      {y:-30,opacity:0},{y:0,opacity:1,duration:0.9,ease:'power2.out'}, HER+0.2);
+tl.fromTo('#hermes-demo-banner', {x:-40,opacity:0},{x:0,opacity:1,duration:0.6,ease:'power3.out'}, HER+0.5);
+tl.fromTo('#hermes-tabs',        {x:-60,opacity:0},{x:0,opacity:1,duration:0.6,ease:'power3.out'}, HER+0.5);
+tl.fromTo('#hermes-badge',       {scale:0,opacity:0},{scale:1,opacity:1,duration:0.5,ease:'elastic.out(1,0.6)'}, HER+0.6);
+tl.fromTo('#hermes-stat-cards',  {y:-30,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power3.out'}, HER+0.7);
+tl.fromTo('#hermes-chat',        {y:50,opacity:0},{y:0,opacity:1,duration:0.7,ease:'sine.out'}, HER+0.9);
+tl.to('#hermes-rays', {opacity:0.5,yoyo:true,repeat:3,duration:1.5,ease:'sine.inOut'}, HER+1.0);
+tl.call(function() {
+  var userMsg = document.getElementById('hermes-user-msg');
+  var resp    = document.getElementById('hermes-resp');
+  var empty   = document.getElementById('hermes-empty');
+  if (empty) empty.style.display = 'none';
+  if (userMsg) { userMsg.style.display = 'flex'; }
+  if (resp)    { resp.style.display = 'flex'; }
+}, [], HER+1.4);
+tl.fromTo('#hermes-user-msg', {x:40,opacity:0},{x:0,opacity:1,duration:0.4,ease:'power2.out'}, HER+1.41);
+tl.fromTo('#hermes-resp-avatar',{scale:0,opacity:0},{scale:1,opacity:1,duration:0.3,ease:'power2.out'}, HER+2.0);
+var HERMES_TEXT = 'Analyzing 20,446 tokens across 20 active projects. Sonnet carries 68% of load. Recommend shifting batch tasks to Haiku — projected 31% reduction in spend.';
+var twProxy = {c: 0};
+tl.fromTo('#hermes-resp', {opacity:0},{opacity:1,duration:0.2}, HER+2.0);
+tl.to(twProxy, {c: HERMES_TEXT.length, duration: 2.8, ease: 'power1.out',
+  onUpdate: function() {
+    var el = document.getElementById('hermes-resp-text');
+    if (el) {
+      var chars = Math.floor(twProxy.c);
+      el.textContent = HERMES_TEXT.slice(0, chars);
+      if (chars % 8 === 0 && chars > 0) { SFX.click(); }
+    }
+  }
+}, HER+2.2);
+tl.to('#hermes-cursor', {opacity:0,yoyo:true,repeat:Math.floor(5.5/0.5)-1,duration:0.25,ease:'steps(1)'}, HER+2.2);
+tl.fromTo('#hermes-stats-row',{y:20,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out',stagger:0.08}, HER+2.5);
+
+// ── T8: hermes → tc-deck (T=86.0) ───────────────────────────────────────
+tl.to('#scene-hermes', {filter:'blur(10px)',opacity:0,duration:0.35,ease:'power2.inOut'}, 86.0);
+glitchFlash(86.0);
+tl.call(function(){ SFX.boom(); }, [], 86.0);
+tl.fromTo('#tc-deck',{opacity:0,scale:1.04},{opacity:1,scale:1,duration:0.25,ease:'power3.out'}, 86.25);
+tl.call(function(){ SFX.glitch(); }, [], 86.25);
+tl.to('#tc-deck',{opacity:0,duration:0.25,ease:'power2.in'}, 87.15);
+
+// ── SCENE 8: Deck Profiles (T=87.5) ─────────────────────────────────────
+tl.fromTo('#scene-profiles',{filter:'blur(10px)',opacity:0},{filter:'blur(0px)',opacity:1,duration:0.4,ease:'power2.inOut'}, 87.3);
+var PRO = 87.5;
+tl.fromTo('#prof-sidebar', {x:-220,opacity:0},{x:0,opacity:1,duration:0.7,ease:'power3.out'}, PRO+0.15);
+gsap.utils.toArray('#prof-sidebar .prof-card-btn').forEach(function(el, i) {
+  tl.fromTo(el, {y:30,opacity:0},{y:0,opacity:1,duration:0.4,ease:'power3.out'}, PRO+0.4+i*0.07);
+});
+tl.call(function(){ SFX.whoosh(); }, [], PRO+0.4);
+tl.fromTo('#prof-detail', {x:80,opacity:0},{x:0,opacity:1,duration:0.7,ease:'expo.out'}, PRO+0.5);
+
+// ── T9: profiles → system (T=96.8, color dip) ───────────────────────────
+tl.to('#scene-profiles', {opacity:0,duration:0.25,ease:'power1.inOut'}, 96.8);
+tl.to({}, {duration:0.2}, 97.05);
+tl.fromTo('#scene-system', {opacity:0},{opacity:1,duration:0.3,ease:'power1.inOut'}, 97.25);
+
+// ── SCENE 9: System CTA (T=97.1) ────────────────────────────────────────
+var SYS = 97.1;
+tl.call(function(){ SFX.boom(); }, [], SYS+0.2);
+tl.fromTo('#sys-wordmark', {scale:1.3,opacity:0},{scale:1,opacity:1,duration:0.7,ease:'power4.out'}, SYS+0.3);
+tl.fromTo('#sys-agency',   {y:20,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power2.out'}, SYS+0.7);
+tl.fromTo('#sys-hairline', {scaleX:0},{scaleX:1,duration:0.5,ease:'power3.out'}, SYS+0.9);
+gsap.utils.toArray('.sys-tile').forEach(function(el, i) {
+  tl.fromTo(el, {y:40,opacity:0},{y:0,opacity:1,duration:0.5,ease:'power3.out'}, SYS+1.1+i*0.1);
+});
+gsap.utils.toArray('.sys-dot').forEach(function(el, i) {
+  tl.fromTo(el, {scale:0,opacity:0},{scale:1,opacity:1,duration:0.3,ease:'elastic.out(1,0.5)'}, SYS+1.5+i*0.1);
+});
+var SYS_TEXT = 'Claude Code OS  ·  All systems nominal';
+var sysProxy = {c:0};
+tl.to(sysProxy, {c:SYS_TEXT.length, duration:0.8, ease:'power1.out',
+  onUpdate:function(){
+    var el=document.getElementById('sys-footer');
+    if(el) el.textContent=SYS_TEXT.slice(0,Math.floor(sysProxy.c));
+  }
+}, SYS+2.2);
+tl.to('#scene-system', {opacity:0,duration:0.9,ease:'power1.inOut'}, SYS+2.5);
+
+window.__timelines = window.__timelines || {};
+window.__timelines['hermes-hub-demo'] = tl;
+</script>
+</div>
+</body>
+</html>

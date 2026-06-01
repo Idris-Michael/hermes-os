@@ -1,0 +1,106 @@
+{
+  "name": "sc-ga4-setup",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "filePath": "={{ 'C:/Users/profs/Desktop/Sandbox/Clients/' + $json.client_name + '/brief.md' }}"
+      },
+      "id": "read-brief",
+      "name": "Read Brief from Obsidian",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the Severus Connects Analytics Agent. Given a client brief, generate a complete GA4 setup checklist. Include: property creation steps, data stream setup, conversion events to configure (purchase, add_to_cart, begin_checkout, generate_lead), audience definitions, Google Ads link instructions, and DebugView verification steps. Return as structured markdown."
+            },
+            {
+              "role": "user",
+              "content": "=Generate GA4 setup checklist for this client:\n\n{{ $('Read Brief from Obsidian').item.json.data }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-ga4-checklist",
+      "name": "Claude — GA4 Setup Checklist",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are generating a Google Tag Manager container configuration JSON for a Severus Connects client. Create a GTM container export with: GA4 Configuration tag, GA4 Event tags for key conversions (purchase, add_to_cart, begin_checkout), and corresponding triggers. Return valid GTM container JSON that can be imported directly."
+            },
+            {
+              "role": "user",
+              "content": "=Generate GTM container JSON for:\n\n{{ $('Read Brief from Obsidian').item.json.data }}"
+            }
+          ]
+        }
+      },
+      "id": "claude-gtm",
+      "name": "Claude — GTM Container Config",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [680, 480]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "filePath": "={{ 'C:/Users/profs/Desktop/Sandbox/Clients/' + $('Manual Trigger').item.json.client_name + '/ga4-setup.md' }}",
+        "fileContent": "=# GA4 Setup — {{ $('Manual Trigger').item.json.client_name }}\n\n{{ $('Claude — GA4 Setup Checklist').item.json.content }}\n\n## GTM Container Config\n\n```json\n{{ $('Claude — GTM Container Config').item.json.content }}\n```\n\n---\n*Generated: {{ $now.toISOString() }}*"
+      },
+      "id": "write-setup-doc",
+      "name": "Write Setup Doc to Obsidian",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [900, 380]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ *GA4 Setup Doc Ready*\n\n*Client:* {{ $('Manual Trigger').item.json.client_name }}\n\nChecklist + GTM container saved to Obsidian Vault.\n\n⚡ Next step: Import GTM container → verify DebugView shows 5+ conversions.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-notify",
+      "name": "Telegram — Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1120, 380]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Read Brief from Obsidian", "type": "main", "index": 0 }]] },
+    "Read Brief from Obsidian": {
+      "main": [[
+        { "node": "Claude — GA4 Setup Checklist", "type": "main", "index": 0 },
+        { "node": "Claude — GTM Container Config", "type": "main", "index": 0 }
+      ]]
+    },
+    "Claude — GA4 Setup Checklist": { "main": [[{ "node": "Write Setup Doc to Obsidian", "type": "main", "index": 0 }]] },
+    "Claude — GTM Container Config": { "main": [[{ "node": "Write Setup Doc to Obsidian", "type": "main", "index": 0 }]] },
+    "Write Setup Doc to Obsidian": { "main": [[{ "node": "Telegram — Notify", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "description": "GA4 setup executor: read Obsidian brief → generate checklist + GTM config → save to vault → Telegram notify" }
+}

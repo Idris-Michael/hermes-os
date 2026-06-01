@@ -1,0 +1,142 @@
+{
+  "id": "queen-of-spades",
+  "name": "QUEEN OF SPADES",
+  "suit": "spades",
+  "rank": "queen",
+  "role": "Meta Ads Auditor",
+  "tagline": "Tracks every pixel event. No attribution gap goes unnoticed.",
+  "model": "huggingface/Qwen/Qwen3.6:novita",
+  "modelLabel": "QWEN-3.6",
+  "modelColor": "#3b82f6",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#3b82f6",
+  "gateway": "telegram",
+  "gatewayHandle": "@queen_spades_bot",
+  "soulFile": "data/souls/queen-of-spades.md",
+  "skills": [
+    "severus-auditor",
+    "severus-connects-analytics",
+    "severus-connects-shopping",
+    "severus-connects-performance",
+    "production-audit",
+    "verification-loop",
+    "eval-harness",
+    "iterative-retrieval"
+  ],
+  "tools": [
+    {
+      "id": "meta-ads-audit",
+      "label": "Meta Ads Audit",
+      "description": "Pixel health, EMQ score, CAPI match rate, creative fatigue"
+    },
+    {
+      "id": "audience-analysis",
+      "label": "Audience Analysis",
+      "description": "Lookalike, retargeting, interest stack analysis"
+    },
+    {
+      "id": "eval-harness",
+      "label": "Eval Harness",
+      "description": "Structured audit scoring with benchmark grading"
+    },
+    {
+      "id": "verification-loop",
+      "label": "Verification Loop",
+      "description": "Multi-pass verification with self-correction"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Pixel event logs, audit reports, audience notes",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Meta policy research, attribution modelling notes",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "meta-ads",
+      "label": "Meta Ads",
+      "detail": "Business Suite — campaign read/write",
+      "status": "connected"
+    },
+    {
+      "id": "meta-pixel",
+      "label": "Meta Pixel + CAPI",
+      "detail": "Browser events + server-side CAPI events",
+      "status": "connected"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@queen_spades_bot — pixel health alerts",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-sonnet-4-6"
+    },
+    {
+      "name": "Meta Ads",
+      "status": "connected",
+      "detail": "Business Suite"
+    },
+    {
+      "name": "Meta Pixel",
+      "status": "connected",
+      "detail": "CAPI + Browser"
+    }
+  ],
+  "crons": [
+    {
+      "id": "pixel-health",
+      "label": "Pixel Health Check",
+      "schedule": "0 10 * * 2,4",
+      "human": "Tue & Thu at 10:00",
+      "lastRun": "2026-05-14T10:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 24,
+    "messagesTotal": 411,
+    "lastActive": "12h ago"
+  },
+  "whitelist": [
+    "severus-auditor",
+    "severus-connects-analytics",
+    "severus-connects-shopping",
+    "severus-connects-performance",
+    "production-audit",
+    "verification-loop",
+    "eval-harness",
+    "iterative-retrieval"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 50,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": []
+  },
+  "permissions": {
+    "level": "WHITELIST",
+    "can_install_skills": false,
+    "can_modify_agents": false,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/queen-of-spades.png"
+}

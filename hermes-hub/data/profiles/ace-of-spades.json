@@ -1,0 +1,161 @@
+{
+  "id": "ace-of-spades",
+  "name": "ACE OF SPADES",
+  "suit": "spades",
+  "rank": "ace",
+  "role": "Campaign Strategist",
+  "tagline": "Sees the whole board. Builds the plan before anyone else picks up a tool.",
+  "model": "huggingface/Qwen/Qwen3.6:novita",
+  "modelLabel": "QWEN-3.6",
+  "modelColor": "#8b5cf6",
+  "badge": "SYNCED",
+  "synced": true,
+  "accentColor": "#8b5cf6",
+  "gateway": "telegram",
+  "gatewayHandle": "@ace_spades_bot",
+  "soulFile": "data/souls/ace-of-spades.md",
+  "skills": [
+    "severus-connects-analytics",
+    "severus-connects-performance",
+    "severus-auditor",
+    "severus-intake",
+    "strategic-compact",
+    "production-audit",
+    "council",
+    "eval-harness"
+  ],
+  "tools": [
+    {
+      "id": "strategic-planning",
+      "label": "Strategic Planning",
+      "description": "Campaign architecture, media mix, phased roadmaps"
+    },
+    {
+      "id": "performance-analysis",
+      "label": "Performance Analysis",
+      "description": "Cross-channel ROAS, CPA, CPL analysis"
+    },
+    {
+      "id": "council",
+      "label": "Agent Council",
+      "description": "Orchestrates multi-agent strategic sessions"
+    },
+    {
+      "id": "eval-harness",
+      "label": "Eval Harness",
+      "description": "Grades outputs against strategic criteria"
+    }
+  ],
+  "mcps": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian Vault",
+      "description": "Client briefs, strategy docs, campaign notes",
+      "status": "connected"
+    },
+    {
+      "id": "notebooklm",
+      "label": "NotebookLM",
+      "description": "Research synthesis, competitive intelligence",
+      "status": "connected"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "google-ads",
+      "label": "Google Ads",
+      "detail": "MCC linked — campaign creation, budget, bidding",
+      "status": "connected"
+    },
+    {
+      "id": "meta-ads",
+      "label": "Meta Ads",
+      "detail": "Business Suite — campaigns, audiences, creative",
+      "status": "connected"
+    },
+    {
+      "id": "ga4",
+      "label": "GA4",
+      "detail": "Analytics linked — goals, funnels, reports",
+      "status": "connected"
+    },
+    {
+      "id": "telegram",
+      "label": "Telegram",
+      "detail": "@ace_spades_bot — strategy briefings on demand",
+      "status": "connected"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Anthropic API",
+      "status": "connected",
+      "detail": "claude-opus-4-7"
+    },
+    {
+      "name": "Google Ads",
+      "status": "connected",
+      "detail": "MCC linked"
+    },
+    {
+      "name": "Meta Ads",
+      "status": "connected",
+      "detail": "Business Suite"
+    },
+    {
+      "name": "GA4",
+      "status": "connected",
+      "detail": "Analytics linked"
+    }
+  ],
+  "crons": [
+    {
+      "id": "morning-brief",
+      "label": "Morning Strategy Brief",
+      "schedule": "0 9 * * 1-5",
+      "human": "Weekdays at 09:00",
+      "lastRun": "2026-05-15T09:00:00Z",
+      "status": "ok"
+    },
+    {
+      "id": "weekly-review",
+      "label": "Weekly Campaign Review",
+      "schedule": "0 8 * * 1",
+      "human": "Mondays at 08:00",
+      "lastRun": "2026-05-12T08:00:00Z",
+      "status": "ok"
+    }
+  ],
+  "memory": "shared",
+  "stats": {
+    "sessionsTotal": 52,
+    "messagesTotal": 940,
+    "lastActive": "1h ago"
+  },
+  "whitelist": [
+    "severus-connects-analytics",
+    "severus-connects-performance",
+    "severus-auditor",
+    "severus-intake",
+    "strategic-compact",
+    "production-audit",
+    "council",
+    "eval-harness"
+  ],
+  "guardrails": {
+    "max_api_calls_per_session": 200,
+    "blocked_actions": [
+      "delete-files",
+      "push-to-remote",
+      "modify-agent-permissions"
+    ],
+    "require_approval_for": []
+  },
+  "permissions": {
+    "level": "UNRESTRICTED",
+    "can_install_skills": true,
+    "can_modify_agents": true,
+    "can_access_vault": true
+  },
+  "imageUrl": "/assets/agents/ace-of-spades.png"
+}
