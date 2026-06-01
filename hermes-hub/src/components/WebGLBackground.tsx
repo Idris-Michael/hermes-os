@@ -1,9 +1,19 @@
-import { useRef, useMemo, useEffect } from 'react';
+import { useRef, useMemo, useEffect, Component, type ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Stars, Text, useTexture } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
+
+// Guards EffectComposer + its passes against null-pass crashes during
+// WebGL context lifecycle (StrictMode double-mount, route remount, HMR).
+// If postprocessing fails, render children without effects — never crash the route.
+class PostFXBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch() { /* swallow — scene continues without bloom/aberration */ }
+  render() { return this.state.failed ? null : this.props.children; }
+}
 
 // Moving glowing neon grid to give a cyberpunk vibe
 function NeonGrid() {
@@ -120,11 +130,13 @@ export default function WebGLBackground({ showModel = true }: { showModel?: bool
         {showModel && <Nanobanana />}
         <CyberParticles />
 
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} />
-          {/* @ts-ignore */}
-          <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.002, 0.002]} />
-        </EffectComposer>
+        <PostFXBoundary>
+          <EffectComposer>
+            <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} />
+            {/* @ts-ignore */}
+            <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.002, 0.002]} />
+          </EffectComposer>
+        </PostFXBoundary>
       </Canvas>
     </div>
   );
