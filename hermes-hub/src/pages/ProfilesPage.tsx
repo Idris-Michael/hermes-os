@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import WebGLBackground from "../components/WebGLBackground";
 import ParallaxTiltCard from "../components/ParallaxTiltCard";
+import AgentTriadNav from "../components/AgentTriadNav";
 
 interface Integration {
   name: string;
@@ -302,6 +303,8 @@ export default function ProfilesPage() {
   return (
     <div className="relative min-h-screen flex flex-col w-full text-white overflow-hidden">
       <WebGLBackground showModel={false} />
+
+      <div className="relative z-10 px-6 pt-4"><AgentTriadNav /></div>
 
       {/* Decorative SVG connection grids */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" style={{ opacity: 0.1 }}>
