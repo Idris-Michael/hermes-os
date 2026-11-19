@@ -81,7 +81,7 @@
         "message": "=Hi {{ $('Webhook — Trigger Invoice').first().json.client_name }},\n\n{{ $('Claude — Write Payment Email').first().json.text }}\n\n💳 Pay setup fee ({{ $('Webhook — Trigger Invoice').first().json.currency }}{{ $('Webhook — Trigger Invoice').first().json.setup_fee }}): {{ $json.url }}\n\nLooking forward to getting started.\n\nIdris\nSeverus Connects",
         "options": {
           "appendAttribution": false,
-          "bccList": "Idris.Bakare92@outlook.com"
+          "bccList": "={{ $env.OPERATOR_BCC_EMAIL }}"
         }
       },
       "id": "gmail-payment",
